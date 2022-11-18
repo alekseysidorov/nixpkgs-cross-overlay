@@ -12,11 +12,18 @@
 }:
 
 pkgs.mkShell {
+  strictDeps = true;
   nativeBuildInputs = with pkgs; [
+    pkgsBuildHost.pkg-config
+    pkgsBuildHost.protobuf
+  ];
+  buildInputs = with pkgs; [
     hello
     rdkafka
     rocksdb
     libopus
+    openssl.dev
+    zlib
   ];
 
   # Extra flags for Rust
