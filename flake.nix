@@ -31,19 +31,20 @@
           };
         };
 
-        defaultOverlay = self: super: {
-          inherit pkgsMusl64;
-        };
-
-        testCrossOverlayPkgs = import nixpkgs {
+        pkgsGnu64 = import patchedPkgs {
           inherit system;
-          overlays = [ defaultOverlay ];
+          overlays = [ crossOverlay ];
+          crossSystem = {
+            config = "x86_64-unknown-linux-gnu";
+          };
         };
 
         rustShell = pkgsMusl64.callPackage ./shell.nix { };
+        rustShellGnu = pkgsGnu64.callPackage ./shell.nix { };
       in
       {
         devShells.default = rustShell;
+        devShells.gnu = rustShellGnu;
 
         overlays.default = self: super: {
           pkgsCross.musl64 = pkgsMusl64;

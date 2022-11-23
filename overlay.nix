@@ -15,6 +15,6 @@ self: super: {
   });
 
   rdkafka = super.callPackage ./pkgs/rdkafka.nix { };
-
-  rustCrossEnv = import ./pkgs/rustCrossEnv.nix { pkgs = super; };
+  
+  rustCrossHook = super.callPackage ./hooks/rustCrossHook.nix {};
 }

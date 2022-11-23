@@ -1,5 +1,5 @@
 # Example Linux musl64 shell
-{ pkgs, rustCrossEnv }:
+{ pkgs, rustCrossHook }:
 
 pkgs.mkShell ({
   nativeBuildInputs = with pkgs.pkgsBuildHost; [
@@ -8,6 +8,7 @@ pkgs.mkShell ({
     rustPlatform.bindgenHook
     rustup
     git
+    pkgs.rustCrossHook
   ];
 
   buildInputs = with pkgs; [
@@ -20,4 +21,4 @@ pkgs.mkShell ({
   # Env variables for the rocksdb crate
   ROCKSDB_LIB_DIR = "${pkgs.rocksdb}/lib";
   SNAPPY_LIB_DIR = "${pkgs.snappy}/lib";
-} // rustCrossEnv)
+})
