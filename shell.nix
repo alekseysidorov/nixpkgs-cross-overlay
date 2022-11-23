@@ -14,14 +14,13 @@ pkgs.mkShell {
     rocksdb
     libopus
     openssl.dev
-    zlib
   ];
 
   shellHook = ''
     unset CC; unset CXX; unset LDFLAGS;
     export TARGET_OS=Linux
 
-    echo "Welcome to the `x86_64-unknown-linux-musl` Rust cross-compilation shell"
+    echo "Welcome to the 'x86_64-unknown-linux-musl' Rust cross-compilation shell"
   '';
 
   # Extra flags for Rust
@@ -30,6 +29,11 @@ pkgs.mkShell {
   # Fix segfaults in the Rust code, see this issue:
   # https://github.com/rust-lang/rust/issues/93084
   RUSTFLAGS = "-Ctarget-feature=-crt-static";
+
+  HOST_CC = "${pkgs.stdenv.cc.nativePrefix}cc";
+  HOST_CXX = "${pkgs.stdenv.cc.nativePrefix}cpp";
+  TARGET_CC = "${pkgs.stdenv.cc.targetPrefix}cc";
+  TARGET_CXX = "${pkgs.stdenv.cc.targetPrefix}cpp";
 
   # Env variables for the rocksdb crate
   ROCKSDB_LIB_DIR = "${pkgs.rocksdb}/lib";

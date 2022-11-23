@@ -13,4 +13,6 @@ self: super: {
       + super.lib.optionalString super.stdenv.cc.isGNU
       " -Wno-error=format-truncation= -Wno-error=maybe-uninitialized";
   });
+
+  rdkafka = super.callPackage ./pkgs/rdkafka.nix { };
 }
