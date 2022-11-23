@@ -32,8 +32,7 @@
         };
 
         defaultOverlay = self: super: {
-          pkgsCross.musl64 = pkgsMusl64;
-          rustCrossEnv = super.callPackage ./pkgs/rustCrossEnv.nix { pkgs = pkgsMusl64; };
+          inherit pkgsMusl64;
         };
 
         testCrossOverlayPkgs = import nixpkgs {
@@ -41,10 +40,9 @@
           overlays = [ defaultOverlay ];
         };
 
-        rustShell = testCrossOverlayPkgs.pkgsCross.musl64.callPackage ./shell.nix { };
+        rustShell = pkgsMusl64.callPackage ./shell.nix { };
       in
       {
-        inherit pkgsMusl64;
         devShells.default = rustShell;
 
         overlays.default = self: super: {
