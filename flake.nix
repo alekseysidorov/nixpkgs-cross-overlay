@@ -48,6 +48,7 @@
 
         overlays.default = self: super: {
           pkgsCross.musl64 = pkgsMusl64;
+          pkgsCross.gnu64 = pkgsGnu64;
         };
       }
     );
