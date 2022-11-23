@@ -11,7 +11,7 @@ pkgs.mkShell ({
   ];
 
   buildInputs = with pkgs; [
-    rust-rocksdb-sys
+    cargoDeps.rust-rocksdb-sys
     rdkafka
     libopus
     openssl.dev

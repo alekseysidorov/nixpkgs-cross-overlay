@@ -15,10 +15,12 @@ let
 in
 {
   inherit gccCrossCompileWorkaround;
-  mkEnvHook = super.callPackage ./hooks/mkEnvHook.nix {};
+  mkEnvHook = super.callPackage ./hooks/mkEnvHook.nix { };
   rustCrossHook = null;
   # Rust crates system deps
-  rust-rocksdb-sys = super.callPackage ./pkgs/rust-rocksdb-sys.nix { };
+  cargoDeps = {
+    rust-rocksdb-sys = super.callPackage ./pkgs/rust-rocksdb-sys.nix { };
+  };
 } // lib.optionalAttrs isCross {
   # Cross-compilation specific patches
 
