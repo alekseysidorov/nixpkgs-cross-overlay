@@ -1,5 +1,5 @@
 # Example Linux musl64 shell
-{ pkgs, rustCrossHook }:
+{ pkgs }:
 
 pkgs.mkShell ({
   nativeBuildInputs = with pkgs.pkgsBuildHost; [

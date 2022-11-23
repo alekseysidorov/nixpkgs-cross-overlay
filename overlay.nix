@@ -1,4 +1,5 @@
 self: super: {
+  rustCrossHook = super.callPackage ./hooks/rustCrossHook.nix {};
   # Fix 'x86_64-unknown-linux-musl-gcc: error: unrecognized command-line option' error
   gccCrossCompileWorkaround = (self: super: {
     #ToDo more precise
@@ -15,6 +16,4 @@ self: super: {
   });
 
   rdkafka = super.callPackage ./pkgs/rdkafka.nix { };
-  
-  rustCrossHook = super.callPackage ./hooks/rustCrossHook.nix {};
 }
