@@ -6,7 +6,9 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }: flake-utils.lib.eachDefaultSystem
+  outputs = { self, nixpkgs, flake-utils }: {
+    overlays.default = import ./overlay.nix;
+  } // flake-utils.lib.eachDefaultSystem
     (system:
       let
         localPkgs = import nixpkgs { inherit system; };
@@ -46,9 +48,12 @@
         devShells.default = rustShell;
         devShells.gnu = rustShellGnu;
 
-        overlays.default = self: super: {
-          pkgsCross.musl64 = pkgsMusl64;
-          pkgsCross.gnu64 = pkgsGnu64;
+        overlays = {
+          targets = self: super: {
+            pkgsCross.musl64 = pkgsMusl64;
+            pkgsCross.gnu64 = pkgsGnu64;
+          };
+          default = crossOverlay;
         };
       }
     );

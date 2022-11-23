@@ -16,7 +16,7 @@
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
-            nixpkgs-cross-overlay.overlays.${system}.default
+            nixpkgs-cross-overlay.overlays.${system}.targets
           ];
         };
       in
