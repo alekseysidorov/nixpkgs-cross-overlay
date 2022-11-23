@@ -25,6 +25,11 @@
 
         crossOverlay = import ./overlay.nix;
 
+        pkgsNative = import nixpkgs {
+          inherit system;
+          overlays = [ crossOverlay ];
+        };
+
         pkgsMusl64 = import patchedPkgs {
           inherit system;
           overlays = [ crossOverlay ];
@@ -41,12 +46,19 @@
           };
         };
 
-        rustShell = pkgsMusl64.callPackage ./shell.nix { };
-        rustShellGnu = pkgsGnu64.callPackage ./shell.nix { };
+        pkgs-aarch64-multiplatform-musl = import nixpkgs {
+          inherit system;
+          overlays = [ crossOverlay ];
+          crossSystem = {
+            config = "aarch64-unknown-linux-musl";
+          };
+        };
       in
       {
-        devShells.default = rustShell;
-        devShells.gnu = rustShellGnu;
+        devShells.default = pkgsMusl64.callPackage ./shell.nix { };
+        devShells.gnu = pkgsGnu64.callPackage ./shell.nix { };
+        devShells.aarch64 = pkgs-aarch64-multiplatform-musl.callPackage ./shell.nix { };
+        devShells.native = pkgsNative.callPackage ./shell.nix { };
 
         overlays = {
           targets = self: super: {
