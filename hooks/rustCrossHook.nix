@@ -3,19 +3,21 @@
 let
   cargoBuildTarget = lib.strings.removeSuffix "-" stdenv.cc.targetPrefix;
   cargoLinkerInfix = builtins.replaceStrings [ "-" "." ] [ "_" "_" ] (lib.toUpper cargoBuildTarget);
+  # Override cargo target dir in order to make it easier to write 
+  # complex build scripts
+  cargoBuildDir = builtins.toString cargoBuildTarget;
 in
 makeSetupHook
 {
   name = "rust-cross-hook";
 
   substitutions = {
-    inherit cargoBuildTarget cargoLinkerInfix;
-    
+    inherit cargoBuildTarget cargoLinkerInfix cargoBuildDir;
+
     nativePrefix = stdenv.cc.nativePrefix;
     targetPrefix = stdenv.cc.targetPrefix;
-    linkerPrefix = "CARGO_TARGET_${cargoLinkerInfix}_LINKER";
     # Fix segfaults in the Rust code, see this issue:
     # https://github.com/rust-lang/rust/issues/93084
-    rustcFlags = "-Ctarget-feature=-crt-static";
+    targetRustcFlags = "-Ctarget-feature=-crt-static";
   };
 } ./rust-cross-hook.sh
