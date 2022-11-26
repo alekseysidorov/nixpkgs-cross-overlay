@@ -3,7 +3,6 @@ let
   lib = super.lib;
   stdenv = super.stdenv;
 
-  targetIsLinux = stdenv.targetPlatform.isLinux;
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
 
   # Fix 'x86_64-unknown-linux-musl-gcc: error: unrecognized command-line option' error
@@ -15,17 +14,46 @@ let
 in
 {
   inherit gccCrossCompileWorkaround;
+
   mkEnvHook = super.callPackage ./hooks/mkEnvHook.nix { };
+
   rustCrossHook = null;
+
   # Rust crates system deps
   cargoDeps = {
     rust-rocksdb-sys = super.callPackage ./pkgs/rust-rocksdb-sys.nix { };
   };
-} // lib.optionalAttrs isCross {
+
+  mkCrossPkgs =
+    { src
+    , system
+    , crossSystem
+    }:
+    let
+      localPkgs = import src { inherit system; };
+
+      patchedPkgs = localPkgs.applyPatches {
+        name = "patched-pkgs";
+        inherit src;
+        # Pathces gcc to be buildable on M1 mac
+        # See https://github.com/NixOS/nixpkgs/issues/137877#issuecomment-1282126233
+        patches = [
+          ./patches/gcc-darwin-fix.patch
+        ];
+      };
+
+      crossOverlay = import ./overlay.nix;
+    in
+    import patchedPkgs {
+      inherit system crossSystem;
+      overlays = [ crossOverlay ];
+    };
+}
   # Cross-compilation specific patches
+  // lib.optionalAttrs isCross {
 
   rustCrossHook = super.callPackage ./hooks/rustCrossHook.nix { };
-
+  # Patched packages
   lz4 = super.lz4.overrideAttrs self.gccCrossCompileWorkaround;
   rdkafka = super.callPackage ./pkgs/rdkafka.nix { };
   # GCC 12 more strict than the old one
