@@ -3,6 +3,7 @@
 # 
 # This method was taken from the `flake-compat` project.
 # https://github.com/edolstra/flake-compat/blob/master/default.nix#L16
+
 { src, system ? builtins.currentSystem or "unknown-system" }:
 let
   lockFilePath = src + "/flake.lock";
@@ -64,45 +65,7 @@ let
     # FIXME: add Mercurial, tarball inputs.
       throw "flake input has unsupported input type '${info.type}'";
 
-  result =
-    builtins.mapAttrs
-      (name: value: { outPath = fetchTree value.locked; })
-      lockFile.nodes;
 in
-result
-
-
-
-# # Fetches repositories from flake.lock
-# { lockFile ? (builtins.fromJSON (builtins.readFile ../flake.lock)) }:
-# let
-#   fetchTree =
-#     info:
-#     if info.type == "github" then
-#       fetchTarball
-#         ({ url = "https://api.${info.host or "github.com"}/repos/${info.owner}/${info.repo}/tarball/${info.rev}"; }
-#           // (if info ? narHash then { sha256 = info.narHash; } else { })
-#         )
-#     else if info.type == "git" then
-#       builtins.fetchGit
-#         ({ url = info.url; }
-#           // (if info ? rev then { inherit (info) rev; } else { })
-#           // (if info ? ref then { inherit (info) ref; } else { })
-#           // (if info ? submodules then { inherit (info) submodules; } else { })
-#         )
-#     else if info.type == "path" then builtins.path { path = info.path; }
-#     else if info.type == "tarball" then
-#       fetchTarball
-#         ({ inherit (info) url; }
-#           // (if info ? narHash then { sha256 = info.narHash; } else { })
-#         )
-#     else if info.type == "gitlab" then
-#       fetchTarball
-#         ({ url = "https://${info.host or "gitlab.com"}/api/v4/projects/${info.owner}%2F${info.repo}/repository/archive.tar.gz?sha=${info.rev}"; }
-#           // (if info ? narHash then { sha256 = info.narHash; } else { })
-#         )
-#     else throw "flake input has unsupported input type '${info.type}'";
-# in
-# builtins.mapAttrs
-#   (name: value: { outPath = fetchTree value.locked; })
-#   lockFile.nodes
+builtins.mapAttrs
+  (name: value: { outPath = fetchTree value.locked; })
+  lockFile.nodes

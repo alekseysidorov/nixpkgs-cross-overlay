@@ -1,7 +1,9 @@
 #!/bin/sh
 
 echo "-> compiling for musl64 target"
-nix develop ".#x86_64-unknown-linux-musl" -c cargo build
+nix-shell -A shell --argstr config "x86_64-unknown-linux-musl"  --run "cargo build --release"
+docker load < $(nix-build -A dockerImage --argstr config "x86_64-unknown-linux-musl")
 
 echo "-> compiling for gnu64 target"
-nix develop ".#x86_64-unknown-linux-gnu" -c cargo build
+nix-shell -A shell --argstr config "x86_64-unknown-linux-gnu"  --run "cargo build --release"
+docker load < $(nix-build -A dockerImage --argstr config "x86_64-unknown-linux-gnu")

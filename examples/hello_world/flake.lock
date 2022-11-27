@@ -15,21 +15,6 @@
         "type": "github"
       }
     },
-    "flake-utils_2": {
-      "locked": {
-        "lastModified": 1667395993,
-        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1669507072,
@@ -47,17 +32,17 @@
     },
     "nixpkgs-cross-overlay": {
       "inputs": {
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils",
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1669471066,
-        "narHash": "sha256-18qT1aM2oEK21ljp6UfnFMd3rMI2rUol1ty+Du1NLwA=",
+        "lastModified": 1669540104,
+        "narHash": "sha256-BI8gOW0Yx6FhEGqMiCgLOPIvBFsdxddVX9C8MBzhQvs=",
         "owner": "alekseysidorov",
         "repo": "nixpkgs-cross-overlay",
-        "rev": "94d84c57bb084bd15cf48cae6d5e07c4c3f2739e",
+        "rev": "60f271d77580a2aa62b554fc71c43379ad308f9e",
         "type": "github"
       },
       "original": {
@@ -68,7 +53,6 @@
     },
     "root": {
       "inputs": {
-        "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
         "nixpkgs-cross-overlay": "nixpkgs-cross-overlay"
       }
