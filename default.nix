@@ -42,7 +42,7 @@ in
         ];
       };
 
-      crossOverlay = import ./overlay.nix;
+      crossOverlay = import ./.;
     in
     import patchedPkgs {
       inherit system crossSystem;
