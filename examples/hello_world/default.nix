@@ -1,9 +1,11 @@
 # An example of a local cross-compilation without `flakes`.
-{ config ? "x86_64-unknown-linux-musl" }:
+{ config ? "x86_64-unknown-linux-musl"
+, isStatic ? false
+}:
 
 let
   system = builtins.currentSystem;
-  crossSystem = { inherit config; };
+  crossSystem = { inherit config isStatic; };
 
   lockFile = import ./../../utils/flake-lock.nix { src = ./.; };
 
@@ -18,20 +20,6 @@ let
     inherit system crossSystem;
     src = lockFile.nixpkgs;
   };
-
-  copyCargoBin = name:
-    let
-      cargo-target = pkgs.stdenv.targetPlatform.config;
-      cargo-binary-path = ./target + "/${cargo-target}/release/${name}";
-    in
-    pkgs.runCommand
-      "copy-${name}-bin"
-      { buildInputs = [ ]; }
-      ''
-        mkdir -p $out/bin
-        cp ${cargo-binary-path} $out/bin/${name}
-        chmod +x $out/bin/${name}
-      '';
 in
 {
   shell = pkgs.stdenv.mkDerivation {
@@ -44,7 +32,7 @@ in
 
   dockerImage = pkgs.dockerTools.buildLayeredImage {
     name = "hello_world";
-    tag = crossSystem.config;
+    tag = crossSystem.config + (if isStatic then "-static" else "");
 
     contents = [
       (pkgs.copyBinaryFromCargoBuild {
