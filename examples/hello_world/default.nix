@@ -40,16 +40,17 @@ in
     nativeBuildInputs = [ pkgs.rustCrossHook ];
   };
 
+  inherit pkgs;
+
   dockerImage = pkgs.dockerTools.buildLayeredImage {
     name = "hello_world";
     tag = crossSystem.config;
 
     contents = [
-      pkgs.bashInteractive
-      pkgs.cacert
-      pkgs.openssl.dev
-      pkgs.coreutils
-      (copyCargoBin "hello_world")
+      (pkgs.copyBinaryFromCargoBuild {
+        name = "hello_world";
+        targetDir = ./target;
+      })
     ];
 
     config = {

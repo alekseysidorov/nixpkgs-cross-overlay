@@ -62,7 +62,12 @@ in
     in
     super.runCommand
       "copy-cargo-${name}-bin"
-      { inherit buildInputs; }
+      {
+        buildInputs = buildInputs ++ [
+          stdenv.cc.cc.lib
+          stdenv.cc.libc
+        ];
+      }
       ''
         mkdir -p $out/bin
         cp ${cargo-binary-path} $out/bin/${name}
