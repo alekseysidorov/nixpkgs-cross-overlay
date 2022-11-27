@@ -24,6 +24,7 @@ in
     rust-rocksdb-sys = super.callPackage ./pkgs/rust-rocksdb-sys.nix { };
   };
 
+  # Applies some patches on the nix packages to better cross-compilation support.
   mkCrossPkgs =
     { src
     , system
@@ -48,6 +49,25 @@ in
       inherit system crossSystem;
       overlays = [ crossOverlay ];
     };
+
+  copyBinaryFromCargoBuild =
+    { name
+    , targetDir
+    , profile ? "release"
+    , targetPlatform ? stdenv.targetPlatform.config
+    , buildInputs ? [ ]
+    }:
+    let
+      cargo-binary-path = "${targetDir}/${targetPlatform}/${profile}/${name}";
+    in
+    pkgs.runCommand
+      "copy-cargo-${name}-bin"
+      { inherit buildInputs; }
+      ''
+        mkdir -p $out/bin
+        cp ${cargo-binary-path} $out/bin/${name}
+        chmod +x $out/bin/${name}
+      '';
 }
   # Cross-compilation specific patches
   // lib.optionalAttrs isCross {
