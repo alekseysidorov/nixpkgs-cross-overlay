@@ -30,15 +30,11 @@
         };
       in
       {
-        devShells.x86_64-unknown-linux-musl = pkgsMusl64.callPackage ./shell.nix { };
-        devShells.x86_64-unknown-linux-gnu = pkgsGnu64.callPackage ./shell.nix { };
-        devShells.default = pkgsNative.callPackage ./shell.nix { };
+        devShells.x86_64-unknown-linux-musl = pkgsMusl64.callPackage ./examples/shell-rust.nix { };
+        devShells.x86_64-unknown-linux-gnu = pkgsGnu64.callPackage ./examples/shell-rust.nix { };
+        devShells.default = pkgsNative.callPackage ./examples/shell-rust.nix { };
 
         overlays = {
-          targets = self: super: {
-            pkgsCross.musl64 = pkgsMusl64;
-            pkgsCross.gnu64 = pkgsGnu64;
-          };
           default = crossOverlay;
         };
       }

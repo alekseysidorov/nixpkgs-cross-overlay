@@ -4,14 +4,14 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    
+
     nixpkgs-cross-overlay = {
-      url = path:./../..;
+      url = "github:alekseysidorov/nixpkgs-cross-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, fenix, nixpkgs-cross-overlay }:
+  outputs = { self, nixpkgs, flake-utils, nixpkgs-cross-overlay }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
