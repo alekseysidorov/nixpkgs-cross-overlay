@@ -60,7 +60,7 @@ in
     let
       cargo-binary-path = "${targetDir}/${targetPlatform}/${profile}/${name}";
     in
-    pkgs.runCommand
+    super.runCommand
       "copy-cargo-${name}-bin"
       { inherit buildInputs; }
       ''
