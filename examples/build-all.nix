@@ -8,6 +8,10 @@ mkShell {
     rdkafka
     rocksdb
     libopus
+    bash
+    bashIntractive
+    coreutils
+
     rustCrossHook
     rustBuildHostDependencies
   ]

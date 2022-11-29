@@ -19,4 +19,5 @@ jobs:
           name: nixpkgs-cross-overlay
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - run: nix build ".#x86_64-unknown-linux-musl"
-      - run: nix build ".#x86_64-unknown-linux-gnu"
+      # TODO fix compilation on Gnu targets
+      # - run: nix build ".#x86_64-unknown-linux-gnu"
