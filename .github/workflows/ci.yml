@@ -2,8 +2,12 @@ name: "Test"
 on:
   pull_request:
   push:
+
 jobs:
-  tests:
+  build-cache:
+    # strategy:
+    #   matrix:
+    #     os: [ubuntu-latest, macos-latest]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -14,6 +18,10 @@ jobs:
         with:
           name: nixpkgs-cross-overlay
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      # - run: nix flake check
+      - name: build `x86_64-unknown-linux-musl` cache
+        uses: ./
+        with:
+          name: cachix-action
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - run: nix build ".#x86_64-unknown-linux-musl"
       # - run: nix build ".#x86_64-unknown-linux-gnu"

@@ -12,5 +12,6 @@ mkShell {
     rustBuildHostDependencies
   ]
   # Build also all cargo deps
-  ++ cargoDeps.all;
+  # ++ cargoDeps.all
+  ;
 }
