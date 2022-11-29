@@ -30,6 +30,8 @@
         };
       in
       {
+        packages.x86_64-unknown-linux-musl = pkgsMusl64.callPackage ./examples/build-all.nix {};
+
         devShells.x86_64-unknown-linux-musl = pkgsMusl64.callPackage ./examples/shell-rust.nix { };
         devShells.x86_64-unknown-linux-gnu = pkgsGnu64.callPackage ./examples/shell-rust.nix { };
         devShells.default = pkgsNative.callPackage ./examples/shell-rust.nix { };

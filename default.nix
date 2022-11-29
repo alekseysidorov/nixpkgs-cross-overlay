@@ -12,16 +12,40 @@ let
     TARGET_OS = "Linux";
   });
 in
-{
-  inherit gccCrossCompileWorkaround;
+rec {
+  rustCrossHook = null;
 
   mkEnvHook = super.callPackage ./hooks/mkEnvHook.nix { };
 
-  rustCrossHook = null;
+  # Rust host dependencies
+  rustHostBuildDependencies = super.callPackage
+    ({ pkgs
+     , darwin
+     , libiconv
+     , lib
+     }: [ ]
+    # Some additional libraries for the Darwin platform
+    ++ lib.optionals stdenv.isDarwin [
+      libiconv
+      darwin.apple_sdk.frameworks.CoreFoundation
+      darwin.apple_sdk.frameworks.CoreServices
+      darwin.apple_sdk.frameworks.IOKit
+      darwin.apple_sdk.frameworks.Security
+    ])
+    { };
 
   # Rust crates system deps
   cargoDeps = {
     rust-rocksdb-sys = super.callPackage ./pkgs/rust-rocksdb-sys.nix { };
+
+    # The special hook to list all cargo packages.
+    all =
+      let
+        filteredDeps = lib.filterAttrs
+          (name: value: name != "all")
+          cargoDeps;
+      in
+      lib.attrValues filteredDeps;
   };
 
   # Applies some patches on the nix packages to better cross-compilation support.
@@ -79,7 +103,7 @@ in
 
   rustCrossHook = super.callPackage ./hooks/rustCrossHook.nix { };
   # Patched packages
-  lz4 = super.lz4.overrideAttrs self.gccCrossCompileWorkaround;
+  lz4 = super.lz4.overrideAttrs gccCrossCompileWorkaround;
   rdkafka = super.callPackage ./pkgs/rdkafka.nix { };
   # GCC 12 more strict than the old one
   rocksdb = super.rocksdb.overrideAttrs (old: rec {

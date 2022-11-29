@@ -1,5 +1,11 @@
 # Example Linux musl64 shell
-{ pkgs, lib, stdenv, darwin, libiconv, }:
+{ pkgs
+, lib
+, stdenv
+, darwin
+, libiconv
+, rustHostBuildDependencies
+}:
 
 pkgs.mkShell ({
   nativeBuildInputs = with pkgs.pkgsBuildHost; [
@@ -7,7 +13,7 @@ pkgs.mkShell ({
     protobuf
     rustup
     git
-    pkgs.pkgsHostHost.rustCrossHook
+    pkgs.rustCrossHook
   ];
 
   buildInputs = with pkgs; [
@@ -15,13 +21,7 @@ pkgs.mkShell ({
     rdkafka
     libopus
     openssl.dev
-  ]
-  # Some additional libraries for the Darwin platform
-  ++ lib.optionals stdenv.isDarwin [
-    libiconv
-    darwin.apple_sdk.frameworks.CoreFoundation
-    darwin.apple_sdk.frameworks.CoreServices
-    darwin.apple_sdk.frameworks.IOKit
-    darwin.apple_sdk.frameworks.Security
+    # Will add some dependencies like libiconv
+    rustHostBuildDependencies
   ];
 })
