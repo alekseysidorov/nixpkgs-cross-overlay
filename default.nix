@@ -70,16 +70,19 @@ rec {
         ];
       };
 
-      nixpkgs =
+      pkgs =
         if stdenv.isDarwin && stdenv.isAarch64
-        then patchedPkgs else src;
+        then
+          import patchedPkgs
+            {
+              inherit localSystem crossSystem;
+              overlays = [ crossOverlay ] ++ overlays;
+            }
+        else localSystem;
 
       crossOverlay = import ./.;
     in
-    import patchedPkgs {
-      inherit localSystem crossSystem;
-      overlays = [ crossOverlay ] ++ overlays;
-    };
+    pkgs;
 
   copyBinaryFromCargoBuild =
     { name
