@@ -1,12 +1,12 @@
-self: super:
+final: prev:
 let
-  lib = super.lib;
-  stdenv = super.stdenv;
+  lib = prev.lib;
+  stdenv = prev.stdenv;
 
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
 
   # Fix 'x86_64-unknown-linux-musl-gcc: error: unrecognized command-line option' error
-  gccCrossCompileWorkaround = (self: super: {
+  gccCrossCompileWorkaround = (final: prev: {
     #ToDo more precise
     UNAME = ''echo "Linux"'';
     TARGET_OS = "Linux";
@@ -15,10 +15,10 @@ in
 rec {
   rustCrossHook = null;
 
-  mkEnvHook = super.callPackage ./hooks/mkEnvHook.nix { };
+  mkEnvHook = prev.callPackage ./hooks/mkEnvHook.nix { };
 
   # Rust host dependencies
-  rustBuildHostDependencies = super.callPackage
+  rustBuildHostDependencies = prev.callPackage
     ({ pkgs
      , darwin
      , libiconv
@@ -37,7 +37,7 @@ rec {
 
   # Rust crates system deps
   cargoDeps = {
-    rust-rocksdb-sys = super.callPackage ./pkgs/rust-rocksdb-sys.nix { };
+    rust-rocksdb-sys = prev.callPackage ./pkgs/rust-rocksdb-sys.nix { };
 
     # The special hook to list all cargo packages.
     all =
@@ -94,7 +94,7 @@ rec {
     let
       cargo-binary-path = "${targetDir}/${targetPlatform}/${profile}/${name}";
     in
-    super.runCommand
+    prev.runCommand
       "copy-cargo-${name}-bin"
       {
         buildInputs = buildInputs ++ [
@@ -111,14 +111,14 @@ rec {
   # Cross-compilation specific patches
   // lib.optionalAttrs isCross {
 
-  rustCrossHook = super.callPackage ./hooks/rustCrossHook.nix { };
+  rustCrossHook = prev.callPackage ./hooks/rustCrossHook.nix { };
   # Patched packages
-  lz4 = super.lz4.overrideAttrs gccCrossCompileWorkaround;
-  rdkafka = super.callPackage ./pkgs/rdkafka.nix { };
+  lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
+  rdkafka = prev.callPackage ./pkgs/rdkafka.nix { };
   # GCC 12 more strict than the old one
-  rocksdb = super.rocksdb.overrideAttrs (old: rec {
+  rocksdb = prev.rocksdb.overrideAttrs (old: rec {
     NIX_CFLAGS_COMPILE = old.NIX_CFLAGS_COMPILE
-    + super.lib.optionalString super.stdenv.cc.isGNU
+    + prev.lib.optionalString prev.stdenv.cc.isGNU
       " -Wno-error=format-truncation= -Wno-error=maybe-uninitialized";
   });
 }
