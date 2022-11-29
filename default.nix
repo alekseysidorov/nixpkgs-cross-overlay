@@ -53,6 +53,7 @@ rec {
     { src
     , localSystem
     , crossSystem
+    , overlays ? []
     }:
     let
       localPkgs = import src { inherit localSystem; };
@@ -71,7 +72,7 @@ rec {
     in
     import patchedPkgs {
       inherit localSystem crossSystem;
-      overlays = [ crossOverlay ];
+      overlays = [ crossOverlay ] ++ overlays;
     };
 
   copyBinaryFromCargoBuild =
