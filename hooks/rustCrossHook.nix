@@ -1,7 +1,7 @@
 { makeSetupHook, stdenv, lib }:
 
 let
-  cargoBuildTarget = lib.strings.removeSuffix "-" stdenv.cc.targetPrefix;
+  cargoBuildTarget = stdenv.targetPlatform.config;
   cargoLinkerInfix = builtins.replaceStrings [ "-" "." ] [ "_" "_" ] (lib.toUpper cargoBuildTarget);
   # Override cargo target dir in order to make it easier to write 
   # complex build scripts
