@@ -5,13 +5,12 @@
 
 mkShell {
   buildInputs = with pkgs; [
-    # rdkafka
-    # rocksdb
-    # libopus
+    rdkafka
+    rocksdb
+    libopus
     rustCrossHook
     rustBuildHostDependencies
   ]
   # Build also all cargo deps
-  # ++ cargoDeps.all
-  ;
+  ++ cargoDeps.all;
 }
