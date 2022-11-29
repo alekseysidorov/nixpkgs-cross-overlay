@@ -9,7 +9,7 @@ mkShell {
     rocksdb
     libopus
     bash
-    bashIntractive
+    bashInteractive
     coreutils
 
     rustCrossHook
