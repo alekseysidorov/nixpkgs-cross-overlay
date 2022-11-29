@@ -1,5 +1,10 @@
 #!/bin/sh
 
+set -euo pipefail
+
+echo "-> cleaning cargo dir"
+cargo clean 
+
 echo "-> compiling for musl64 target"
 nix-shell --argstr config "x86_64-unknown-linux-musl"  --run "cargo build --release"
 docker load < $(nix-build dockerImage.nix --argstr config "x86_64-unknown-linux-musl")
