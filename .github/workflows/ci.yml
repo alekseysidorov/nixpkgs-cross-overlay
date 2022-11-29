@@ -18,10 +18,5 @@ jobs:
         with:
           name: nixpkgs-cross-overlay
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - name: build `x86_64-unknown-linux-musl` cache
-        uses: ./
-        with:
-          name: cachix-action
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - run: nix build ".#x86_64-unknown-linux-musl"
       # - run: nix build ".#x86_64-unknown-linux-gnu"
