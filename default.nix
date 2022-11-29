@@ -78,7 +78,7 @@ rec {
               inherit localSystem crossSystem;
               overlays = [ crossOverlay ] ++ overlays;
             }
-        else localSystem;
+        else localPkgs;
 
       crossOverlay = import ./.;
     in
