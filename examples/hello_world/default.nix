@@ -16,6 +16,6 @@ let
 
 in
 mkCrossPkgs {
-  inherit system crossSystem;
+  inherit localSystem crossSystem;
   src = lockFile.nixpkgs;
 }

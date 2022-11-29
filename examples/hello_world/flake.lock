@@ -38,11 +38,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1669712416,
-        "narHash": "sha256-xRRO8PvWUhLBtCOqvSuEwQ1PYW7l3DbbBpEPzqcSFPI=",
+        "lastModified": 1669715428,
+        "narHash": "sha256-zR/GbtKtu7zTzzGUszCaYaqdiGoAoVOkJ2Q5DMUhAyU=",
         "owner": "alekseysidorov",
         "repo": "nixpkgs-cross-overlay",
-        "rev": "3f19afa8aa3bb98c6d489c9931f7228fa4ef746b",
+        "rev": "4e0654fb658c2950357936a2d6a7f298a8629ed4",
         "type": "github"
       },
       "original": {
