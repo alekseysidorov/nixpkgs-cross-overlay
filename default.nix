@@ -52,10 +52,11 @@ rec {
   mkCrossPkgs =
     { src
     , system
+    , localSystem ? system
     , crossSystem
     }:
     let
-      localPkgs = import src { inherit system; };
+      localPkgs = import src { inherit localSystem; };
 
       patchedPkgs = localPkgs.applyPatches {
         name = "patched-pkgs";
@@ -70,7 +71,7 @@ rec {
       crossOverlay = import ./.;
     in
     import patchedPkgs {
-      inherit system crossSystem;
+      inherit localSystem crossSystem;
       overlays = [ crossOverlay ];
     };
 
