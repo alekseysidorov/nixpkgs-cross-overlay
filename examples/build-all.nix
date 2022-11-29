@@ -9,7 +9,7 @@ mkShell {
     rocksdb
     libopus
     rustCrossHook
-    rustHostBuildDependencies
+    rustBuildHostDependencies
   ]
   # Build also all cargo deps
   ++ cargoDeps.all;

@@ -4,7 +4,7 @@
 , stdenv
 , darwin
 , libiconv
-, rustHostBuildDependencies
+, rustBuildHostDependencies
 }:
 
 pkgs.mkShell ({
@@ -22,6 +22,6 @@ pkgs.mkShell ({
     libopus
     openssl.dev
     # Will add some dependencies like libiconv
-    rustHostBuildDependencies
+    rustBuildHostDependencies
   ];
 })

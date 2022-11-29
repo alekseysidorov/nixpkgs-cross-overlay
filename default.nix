@@ -18,7 +18,7 @@ rec {
   mkEnvHook = super.callPackage ./hooks/mkEnvHook.nix { };
 
   # Rust host dependencies
-  rustHostBuildDependencies = super.callPackage
+  rustBuildHostDependencies = super.callPackage
     ({ pkgs
      , darwin
      , libiconv
@@ -31,6 +31,7 @@ rec {
       darwin.apple_sdk.frameworks.CoreServices
       darwin.apple_sdk.frameworks.IOKit
       darwin.apple_sdk.frameworks.Security
+      darwin.apple_sdk.frameworks.SystemConfiguration
     ])
     { };
 
