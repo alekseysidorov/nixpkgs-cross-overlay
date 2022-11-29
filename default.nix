@@ -54,10 +54,11 @@ rec {
     { src
     , localSystem
     , crossSystem
-    , overlays ? []
+    , overlays ? [ ]
     }:
     let
       localPkgs = import src { inherit localSystem; };
+      stdenv = localPkgs.stdenv;
 
       patchedPkgs = localPkgs.applyPatches {
         name = "patched-pkgs";
@@ -68,6 +69,10 @@ rec {
           ./patches/gcc-darwin-fix.patch
         ];
       };
+
+      nixpkgs =
+        if stdenv.isDarwin && stdenv.isAarch64
+        then patchedPkgs else src;
 
       crossOverlay = import ./.;
     in
