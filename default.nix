@@ -51,8 +51,7 @@ rec {
   # Applies some patches on the nix packages to better cross-compilation support.
   mkCrossPkgs =
     { src
-    , system ? localSystem
-    , localSystem ? system
+    , localSystem
     , crossSystem
     }:
     let

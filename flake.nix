@@ -9,22 +9,22 @@
   outputs = { self, nixpkgs, flake-utils }: {
     overlays.default = import ./.;
   } // flake-utils.lib.eachDefaultSystem
-    (system:
+    (localSystem:
       let
         crossOverlay = import ./.;
         pkgsNative = import nixpkgs {
-          inherit system;
+          inherit localSystem;
           overlays = [ crossOverlay ];
         };
 
         pkgsMusl64 = pkgsNative.mkCrossPkgs {
-          inherit system;
+          inherit localSystem;
           src = nixpkgs;
           crossSystem = { config = "x86_64-unknown-linux-musl"; };
         };
 
         pkgsGnu64 = pkgsNative.mkCrossPkgs {
-          inherit system;
+          inherit localSystem;
           src = nixpkgs;
           crossSystem = { config = "x86_64-unknown-linux-gnu"; };
         };
