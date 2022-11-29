@@ -1,5 +1,5 @@
 {
-  description = "Rust x86_64-unknown-linux-musl target crossmpilatin utils";
+  description = "Rust cross-compilatilon utils";
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixpkgs-unstable";
@@ -30,11 +30,16 @@
         };
       in
       {
-        packages.x86_64-unknown-linux-musl = pkgsMusl64.callPackage ./examples/build-all.nix {};
+        packages = {
+          x86_64-unknown-linux-musl = pkgsMusl64.callPackage ./examples/build-all.nix { };
+          x86_64-unknown-linux-gnu = pkgsGnu64.callPackage ./examples/build-all.nix { };
+        };
 
-        devShells.x86_64-unknown-linux-musl = pkgsMusl64.callPackage ./examples/shell-rust.nix { };
-        devShells.x86_64-unknown-linux-gnu = pkgsGnu64.callPackage ./examples/shell-rust.nix { };
-        devShells.default = pkgsNative.callPackage ./examples/shell-rust.nix { };
+        devShells = {
+          default = pkgsNative.callPackage ./examples/shell-rust.nix { };
+          x86_64-unknown-linux-musl = pkgsMusl64.callPackage ./examples/shell-rust.nix { };
+          x86_64-unknown-linux-gnu = pkgsGnu64.callPackage ./examples/shell-rust.nix { };
+        };
 
         overlays = {
           default = crossOverlay;
