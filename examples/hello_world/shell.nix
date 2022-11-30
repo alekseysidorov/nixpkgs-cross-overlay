@@ -1,9 +1,7 @@
-{ config ? "x86_64-unknown-linux-musl"
-, isStatic ? false
-}:
+{ ... } @crossSystem:
 
 let
-  pkgs = import ./. { inherit config isStatic; };
+  pkgs = import ./. crossSystem;
 in
 
 pkgs.mkShell {
