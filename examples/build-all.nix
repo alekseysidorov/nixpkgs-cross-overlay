@@ -1,6 +1,6 @@
 # Build all cross packages supported by this overlay
-{ mkShell
-, pkgs
+{ pkgs
+,
 }:
 
 pkgs.stdenv.mkDerivation {

@@ -1,9 +1,8 @@
 # An example of a local cross-compilation without `flakes`.
-{ config, isStatic }:
+{ ... } @crossSystem:
 
 let
   localSystem = builtins.currentSystem;
-  crossSystem = { inherit config isStatic; };
 
   lockFile = import ./../../utils/flake-lock.nix { src = ./.; };
 

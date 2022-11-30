@@ -1,14 +1,15 @@
 #!/bin/sh
 
-set -euo pipefail
+set -euo
 
-echo "-> cleaning cargo dir"
-cargo clean 
+target=$1
+extra_args=""
+build_type=${2:-dynamic}
+if [ $build_type == "static" ]
+then
+    extra_args="--arg isStatic true"
+fi
 
-echo "-> compiling for musl64 target"
-nix-shell --argstr config "x86_64-unknown-linux-musl"  --run "cargo build --release"
-docker load < $(nix-build dockerImage.nix --argstr config "x86_64-unknown-linux-musl")
-
-echo "-> compiling for gnu64 target"
-nix-shell --argstr config "x86_64-unknown-linux-gnu"  --run "cargo build --release"
-docker load < $(nix-build dockerImage.nix --argstr config "x86_64-unknown-linux-gnu")
+echo "-> compiling for '${target}:${build_type}' target"; set -x;
+nix-shell --argstr config $target $extra_args --run "cargo build --release"
+docker load < $(nix-build dockerImage.nix --argstr config $target $extra_args)

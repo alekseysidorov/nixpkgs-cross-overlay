@@ -1,17 +1,20 @@
-{ config ? "x86_64-unknown-linux-musl"
-, isStatic ? false
-}:
+{ isStatic ? false
+, ...
+} @crossSystem:
 
 let
-  pkgs = import ./. { inherit config isStatic; };
-  shell = import ./shell.nix { inherit config isStatic; };
+  pkgs = import ./. crossSystem;
+  shell = import ./shell.nix crossSystem;
 in
-pkgs.dockerTools.buildLayeredImage {
+(pkgs.dockerTools.buildLayeredImage {
   name = "hello_world";
-  tag = config + (if isStatic then "-static" else "");
+  tag = crossSystem.config + (if isStatic then "-static" else "");
 
   contents = [
     shell.propagatedBuildInputs
+    pkgs.bashInteractive
+    pkgs.coreutils
+    pkgs.stdenv.cc.libc_bin
     (pkgs.copyBinaryFromCargoBuild {
       name = "hello_world";
       targetDir = ./target;
@@ -19,10 +22,10 @@ pkgs.dockerTools.buildLayeredImage {
   ];
 
   config = {
-    EntryPoint = [ "hello_world" ];
+    Cmd = [ "hello_world" ];
     WorkingDir = "/";
     Env = [
       "PATH=/bin"
     ];
   };
-}
+})
