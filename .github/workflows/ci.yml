@@ -21,9 +21,6 @@ jobs:
       
       - run: nix build ".#x86_64-unknown-linux-musl"
       - run: nix build ".#x86_64-unknown-linux-musl-static"
-      - run: cd examples/hello_world; ./build-images.sh "x86_64-unknown-linux-musl"
-      - run: cd examples/hello_world; ./build-images.sh "x86_64-unknown-linux-musl" static
-
 
       # TODO fix compilation on Gnu targets
       # - run: nix build ".#x86_64-unknown-linux-gnu"
