@@ -6,7 +6,7 @@ let
   pkgs = import ./. crossSystem;
   shell = import ./shell.nix crossSystem;
 in
-pkgs.dockerTools.buildLayeredImage {
+(pkgs.dockerTools.buildLayeredImage {
   name = "hello_world";
   tag = crossSystem.config + (if isStatic then "-static" else "");
 
@@ -28,4 +28,4 @@ pkgs.dockerTools.buildLayeredImage {
       "PATH=/bin"
     ];
   };
-}
+})
