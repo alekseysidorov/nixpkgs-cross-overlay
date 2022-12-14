@@ -63,8 +63,7 @@ rec {
       patchedPkgs = localPkgs.applyPatches {
         name = "patched-pkgs";
         inherit src;
-        # Pathces gcc to be buildable on M1 mac
-        # See https://github.com/NixOS/nixpkgs/issues/137877#issuecomment-1282126233
+        # Fix musl gcc permissions on M1 Mac.
         patches = [
           ./patches/gcc-darwin-permissions-fix.patch
         ];
