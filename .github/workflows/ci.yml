@@ -21,6 +21,4 @@ jobs:
       
       - run: nix build ".#x86_64-unknown-linux-musl"
       - run: nix build ".#x86_64-unknown-linux-musl-static"
-
-      # TODO fix compilation on Gnu targets
-      # - run: nix build ".#x86_64-unknown-linux-gnu"
+      - run: nix build ".#x86_64-unknown-linux-gnu"
