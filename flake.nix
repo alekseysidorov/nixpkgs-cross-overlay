@@ -17,22 +17,15 @@
           inherit localSystem;
           overlays = [ crossOverlay ];
         };
-        pkgsMusl64 = pkgsNative.mkCrossPkgs {
-          inherit localSystem;
-          src = nixpkgs;
-          crossSystem = { config = "x86_64-unknown-linux-musl"; };
-        };
-        pkgsGnu64 = pkgsNative.mkCrossPkgs {
-          inherit localSystem;
-          src = nixpkgs;
-          crossSystem = { config = "x86_64-unknown-linux-gnu"; };
-        };
+        pkgsMusl64 = pkgsNative.pkgsCross.musl64;
+        pkgsGnu64 = pkgsNative.pkgsCross.gnu64;
       in
       {
         packages = {
           x86_64-unknown-linux-musl = pkgsMusl64.callPackage ./examples/build-all.nix { };
           x86_64-unknown-linux-musl-static = pkgsMusl64.pkgsStatic.callPackage ./examples/build-all.nix { };
           x86_64-unknown-linux-gnu = pkgsGnu64.callPackage ./examples/build-all.nix { };
+          x86_64-unknown-linux-gnu-static = pkgsGnu64.pkgsStatic.callPackage ./examples/build-all.nix { };
         };
 
         devShells = {
