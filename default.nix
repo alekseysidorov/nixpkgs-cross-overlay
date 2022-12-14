@@ -49,7 +49,7 @@ rec {
       lib.attrValues filteredDeps;
   };
 
-  # Applies some patches on the nix packages to better cross-compilation support.
+  # Applies some patches on the nix packages to better cross-compilation support. (deprecated)
   mkCrossPkgs =
     { src
     , localSystem
@@ -57,27 +57,9 @@ rec {
     , overlays ? [ ]
     }:
     let
-      localPkgs = import src { inherit localSystem; };
-      stdenv = localPkgs.stdenv;
-
-      patchedPkgs = localPkgs.applyPatches {
-        name = "patched-pkgs";
-        inherit src;
-        # Pathces gcc to be buildable on M1 mac
-        # See https://github.com/NixOS/nixpkgs/issues/137877#issuecomment-1282126233
-        patches = [
-          ./patches/gcc-darwin-fix.patch
-        ];
-      };
-
-      nixpkgs =
-        if stdenv.isDarwin && stdenv.isAarch64
-        then patchedPkgs
-        else src;
-
       crossOverlay = import ./.;
     in
-    import nixpkgs {
+    import src {
       inherit localSystem crossSystem;
       overlays = [ crossOverlay ] ++ overlays;
     };
