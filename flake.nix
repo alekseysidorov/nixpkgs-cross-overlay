@@ -17,8 +17,16 @@
           inherit localSystem;
           overlays = [ crossOverlay ];
         };
-        pkgsMusl64 = pkgsNative.pkgsCross.musl64;
-        pkgsGnu64 = pkgsNative.pkgsCross.gnu64;
+        pkgsMusl64 = pkgsNative.mkCrossPkgs {
+          inherit localSystem;
+          src = nixpkgs;
+          crossSystem = { config = "x86_64-unknown-linux-musl"; };
+        };
+        pkgsGnu64 = pkgsNative.mkCrossPkgs {
+          inherit localSystem;
+          src = nixpkgs;
+          crossSystem = { config = "x86_64-unknown-linux-gnu"; };
+        };
       in
       {
         packages = {
