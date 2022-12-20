@@ -9,6 +9,7 @@
 
 pkgs.mkShell ({
   nativeBuildInputs = with pkgs.pkgsBuildHost; [
+    cmake
     pkg-config
     protobuf
     rustup
@@ -17,8 +18,8 @@ pkgs.mkShell ({
   ];
 
   buildInputs = with pkgs; [
-    cargoDeps.rust-rocksdb-sys
-    cargoDeps.rust-rdkafka-sys
+    cargoDeps.rocksdb-sys
+    cargoDeps.rdkafka-sys
     libopus
     openssl.dev
     # Will add some dependencies like libiconv

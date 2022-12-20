@@ -19,6 +19,7 @@ let
       # Since there is lack of static linking via pkg-config in rdkafka-sys we
       # cannot use the rdkafka nix package.
       deps = [
+        pkg-config
         openssl.dev
         zlib.dev
         lz4
@@ -26,9 +27,8 @@ let
       ];
       # We can force a several cargo features in the rdkafka
       envVariables = {
-        CARGO_FEATURE_CMAKE_BUILD = true;
         CARGO_FEATURE_EXTERNAL_LZ4 = true;
-        CARGO_FEATURE_ZSTD = true;
+        CARGO_FEATURE_ZSTD_PKG_CONFIG = true;
         CARGO_FEATURE_SSL = true;
       };
     } else {
@@ -42,13 +42,13 @@ let
       envVariables = {
         CARGO_FEATURE_DYNAMIC_LINKING = true;
         CARGO_FEATURE_EXTERNAL_LZ4 = true;
-        CARGO_FEATURE_ZSTD = true;
+        CARGO_FEATURE_ZSTD_PKG_CONFIG = true;
         CARGO_FEATURE_SSL = true;
       };
     };
 in
 mkEnvHook {
-  name = "rust-rdkafka-sys";
+  name = "cargo-rdkafka-sys";
 
   deps = out.deps;
   envVariables = out.envVariables;

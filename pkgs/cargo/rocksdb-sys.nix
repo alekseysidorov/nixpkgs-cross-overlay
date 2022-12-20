@@ -5,7 +5,7 @@
 }:
 
 mkEnvHook {
-  name = "rust-rocksdb-sys";
+  name = "cargo-rocksdb-sys";
 
   deps = [
     pkgs.pkgsBuildHost.rustPlatform.bindgenHook

@@ -1,6 +1,6 @@
 { lib, writeTextFile, makeSetupHook }:
 
-{ name, envVariables, substitutions ? { }, deps ? [ ] }:
+{ name, envVariables ? { }, substitutions ? { }, deps ? [ ] }:
 let
   exportList = lib.mapAttrsToList (name: value: "export ${name}=${builtins.toString value}") envVariables;
 
