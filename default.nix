@@ -38,6 +38,7 @@ rec {
   # Rust crates system deps
   cargoDeps = {
     rust-rocksdb-sys = prev.callPackage ./pkgs/rust-rocksdb-sys.nix { };
+    rust-rdkafka-sys = prev.callPackage ./pkgs/rust-rdkafka-sys.nix { };
 
     # The special hook to list all cargo packages.
     all =

@@ -2,7 +2,7 @@
 
 { name, envVariables, substitutions ? { }, deps ? [ ] }:
 let
-  exportList = lib.mapAttrsToList (name: value: "export ${name}=${value}") envVariables;
+  exportList = lib.mapAttrsToList (name: value: "export ${name}=${builtins.toString value}") envVariables;
 
   shellScript = writeTextFile {
     name = "env-hook";

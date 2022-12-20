@@ -18,7 +18,7 @@ pkgs.mkShell ({
 
   buildInputs = with pkgs; [
     cargoDeps.rust-rocksdb-sys
-    rdkafka
+    cargoDeps.rust-rdkafka-sys
     libopus
     openssl.dev
     # Will add some dependencies like libiconv
