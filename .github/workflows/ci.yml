@@ -18,6 +18,9 @@ jobs:
         with:
           name: nixpkgs-cross-overlay
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      # Install rust targets
+      - run: rustup target install x86_64-unknown-linux-musl
+      - run: rustup target install x86_64-unknown-linux-gnu
       # Build packages
       - run: nix build ".#x86_64-unknown-linux-musl" -L
       - run: nix build ".#x86_64-unknown-linux-musl-static" -L
