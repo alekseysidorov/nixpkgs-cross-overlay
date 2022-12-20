@@ -19,11 +19,11 @@ jobs:
           name: nixpkgs-cross-overlay
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       # Build packages
-      - run: nix build ".#x86_64-unknown-linux-musl"
-      - run: nix build ".#x86_64-unknown-linux-musl-static"
+      - run: nix build ".#x86_64-unknown-linux-musl" -L
+      - run: nix build ".#x86_64-unknown-linux-musl-static" -L
       # Test cargoDeps
-      - run: nix develop ".#x86_64-unknown-linux-musl" --command ./tests/build_cargo_deps.sh
-      - run: nix develop ".#x86_64-unknown-linux-musl-static" --command ./tests/build_cargo_deps.sh
+      - run: nix develop ".#x86_64-unknown-linux-musl" -L --command ./tests/build_cargo_deps.sh
+      - run: nix develop ".#x86_64-unknown-linux-musl-static" -L --command ./tests/build_cargo_deps.sh
 
       # TODO fix compilation on Gnu targets
       # - run: nix build ".#x86_64-unknown-linux-gnu"

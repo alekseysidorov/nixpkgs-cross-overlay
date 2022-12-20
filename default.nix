@@ -119,4 +119,8 @@ rec {
     + prev.lib.optionalString prev.stdenv.cc.isGNU
       " -Wno-error=format-truncation= -Wno-error=maybe-uninitialized";
   });
+  # libuv checks failed on the x86_64-unknown-linux-musl static target.
+  libuv = prev.libuv.overrideAttrs (old: rec {
+    doCheck = false;
+  });
 }

@@ -12,13 +12,13 @@
 let
   isStatic = stdenv.targetPlatform.isStatic;
   pkg-config = pkgs.pkgsBuildHost.pkg-config;
+  cmake = pkgs.pkgsBuildHost.cmake;
 
   out =
     if isStatic then {
       # Since there is lack of static linking via pkg-config in rdkafka-sys we
       # cannot use the rdkafka nix package.
       deps = [
-        cmake
         openssl.dev
         zlib.dev
         lz4
