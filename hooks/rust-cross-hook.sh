@@ -6,9 +6,9 @@ populateRustCrossEnv () {
     export CARGO_TARGET_@cargoLinkerInfix@_RUSTFLAGS=@targetRustcFlags@;
     # Setup compilers
     export HOST_CC=@nativePrefix@cc;
-    export HOST_CXX=@nativePrefix@cpp;
+    export HOST_CXX=@nativePrefix@c++;
     export TARGET_CC=@targetPrefix@cc;
-    export TARGET_CXX=@targetPrefix@cpp;
+    export TARGET_CXX=@targetPrefix@c++;
 }
 
 postHook="${postHook:-}"$'\n'"populateRustCrossEnv"$'\n'

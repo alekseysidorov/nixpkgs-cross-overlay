@@ -37,7 +37,9 @@ rec {
 
   # Rust crates system deps
   cargoDeps = {
-    rust-rocksdb-sys = prev.callPackage ./pkgs/rust-rocksdb-sys.nix { };
+    rdkafka-sys = prev.callPackage ./pkgs/cargo/rdkafka-sys.nix { };
+    rocksdb-sys = prev.callPackage ./pkgs/cargo/rocksdb-sys.nix { };
+    zstd-sys = prev.callPackage ./pkgs/cargo/zstd-sys.nix { };
 
     # The special hook to list all cargo packages.
     all =
@@ -117,5 +119,9 @@ rec {
     NIX_CFLAGS_COMPILE = old.NIX_CFLAGS_COMPILE
     + prev.lib.optionalString prev.stdenv.cc.isGNU
       " -Wno-error=format-truncation= -Wno-error=maybe-uninitialized";
+  });
+  # libuv checks failed on the x86_64-unknown-linux-musl static target.
+  libuv = prev.libuv.overrideAttrs (old: rec {
+    doCheck = false;
   });
 }
