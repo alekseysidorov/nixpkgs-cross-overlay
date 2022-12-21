@@ -11,6 +11,7 @@ jobs:
           - native
           - x86_64-unknown-linux-musl
           - x86_64-unknown-linux-musl-static
+          - aarch64-unknown-linux-musl
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
