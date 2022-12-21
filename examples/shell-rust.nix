@@ -21,6 +21,7 @@ pkgs.mkShell ({
     cargoDeps.rocksdb-sys
     cargoDeps.rdkafka-sys
     libopus
+    openssl.dev
     # Will add some dependencies like libiconv
     rustBuildHostDependencies
   ];
