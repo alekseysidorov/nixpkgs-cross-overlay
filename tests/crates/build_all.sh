@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo
+set -eo pipefail
 
 script_dir="$( dirname -- "$BASH_SOURCE"; )";
 
