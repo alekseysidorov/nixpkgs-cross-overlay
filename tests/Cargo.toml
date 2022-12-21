@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
-    "build_rdkafka",
-    "build_rocksdb"
+    "opus",
+    "rdkafka",
+    "rocksdb"
 ]
