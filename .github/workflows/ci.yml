@@ -9,8 +9,8 @@ jobs:
         os: [ubuntu-latest, macos-latest]
         target: 
           - native
-          # - x86_64-unknown-linux-musl
-          # - x86_64-unknown-linux-musl-static
+          - x86_64-unknown-linux-musl
+          - x86_64-unknown-linux-musl-static
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -23,6 +23,6 @@ jobs:
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
       # Build packages
-      - run: nix build ".#${{ matrix.target }}" -L
+      - run: nix build ".#${{ matrix.target }}"
       # Test cargoDeps
-      - run: nix develop ".#${{ matrix.target }}" -L --command ./tests/crates/build_all.sh   
+      - run: nix develop ".#${{ matrix.target }}" --command ./tests/crates/build_all.sh   
