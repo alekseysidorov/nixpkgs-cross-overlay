@@ -21,7 +21,6 @@ let
       deps = [
         lz4
         openssl.dev
-        rdkafka
         zlib.dev
         zstd
       ];
