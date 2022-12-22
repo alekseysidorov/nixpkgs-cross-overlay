@@ -1,13 +1,16 @@
 name: "Test"
 on:
   pull_request:
-  push:
 
 jobs:
   build-cache:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
+        target: 
+          - native
+          - x86_64-unknown-linux-musl
+          - x86_64-unknown-linux-musl-static
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -18,15 +21,8 @@ jobs:
         with:
           name: nixpkgs-cross-overlay
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      # Install rust targets
-      - run: rustup target install x86_64-unknown-linux-musl
-      - run: rustup target install x86_64-unknown-linux-gnu
-      # Build packages
-      - run: nix build ".#x86_64-unknown-linux-musl" -L
-      - run: nix build ".#x86_64-unknown-linux-musl-static" -L
-      # Test cargoDeps
-      - run: nix develop ".#x86_64-unknown-linux-musl" -L --command ./tests/build_cargo_deps.sh
-      - run: nix develop ".#x86_64-unknown-linux-musl-static" -L --command ./tests/build_cargo_deps.sh
 
-      # TODO fix compilation on Gnu targets
-      # - run: nix build ".#x86_64-unknown-linux-gnu"
+      # Build packages
+      - run: nix build ".#${{ matrix.target }}"
+      # Test cargoDeps
+      - run: nix develop ".#${{ matrix.target }}" --command ./tests/crates/build_all.sh   
