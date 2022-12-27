@@ -44,9 +44,11 @@
         devShells = {
           native = pkgsNative.callPackage ./examples/shell-rust.nix { };
           x86_64-unknown-linux-musl = pkgsMusl64.callPackage ./examples/shell-rust.nix { };
+          x86_64-unknown-linux-musl-static = pkgsMusl64.pkgsStatic.callPackage ./examples/shell-rust.nix { };
           x86_64-unknown-linux-gnu = pkgsGnu64.callPackage ./examples/shell-rust.nix { };
 
           aarch64-unknown-linux-musl = pkgsMuslAarch64.callPackage ./examples/shell-rust.nix { };
+          aarch64-unknown-linux-musl-static = pkgsMuslAarch64.pkgsStatic.callPackage ./examples/shell-rust.nix { };
         };
 
         overlays = {
