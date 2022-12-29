@@ -6,5 +6,5 @@ buildFHSUserEnv
 {
   name = "dprint-fhs";
   targetPkgs = pkgs: ([ pkgs.dprint-unwrapped ]);
-  runScript = "dprint";
+  runScript = "bash";
 }
