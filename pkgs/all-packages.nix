@@ -37,6 +37,12 @@ rec {
 
   cargoDeps = (import ./crates prev);
 
+  # Nice shell prompt
+  crossBashPrompt = ''
+    PS1="\[\033[38;5;39m\]\w \[\033[38;5;35m\](${final.stdenv.targetPlatform.config}) \[\033[0m\]\$ "
+  '';
+
+  # Extra utils and tools
   copyBinaryFromCargoBuild =
     { name
     , targetDir

@@ -14,6 +14,7 @@ pkgs.mkShell ({
     protobuf
     rustup
     git
+    dprint
     pkgs.rustCrossHook
   ];
 
@@ -25,4 +26,6 @@ pkgs.mkShell ({
     # Will add some dependencies like libiconv
     rustBuildHostDependencies
   ];
+
+  shellHook = "${pkgs.crossBashPrompt}";
 })

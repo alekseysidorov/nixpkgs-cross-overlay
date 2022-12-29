@@ -1,7 +1,7 @@
 [workspace]
-
 members = [
-    "opus",
-    "rdkafka",
-    "rocksdb"
+  "opus",
+  "rdkafka",
+  "rocksdb",
+  "ring",
 ]
