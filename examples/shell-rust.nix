@@ -26,4 +26,6 @@ pkgs.mkShell ({
     # Will add some dependencies like libiconv
     rustBuildHostDependencies
   ];
+
+  shellHook = "${pkgs.crossBashPrompt}";
 })
