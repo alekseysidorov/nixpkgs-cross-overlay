@@ -14,6 +14,7 @@ pkgs.mkShell ({
     protobuf
     rustup
     git
+    dprint
     pkgs.rustCrossHook
   ];
 

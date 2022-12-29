@@ -37,6 +37,7 @@ rec {
 
   cargoDeps = (import ./crates prev);
 
+  # Extra utils and tools
   copyBinaryFromCargoBuild =
     { name
     , targetDir
@@ -60,6 +61,9 @@ rec {
         cp ${cargo-binary-path} $out/bin/${name}
         chmod +x $out/bin/${name}
       '';
+
+  dprint-fhs = prev.callPackage ./tools/dprint-fhs.nix { };
+  dprint = if prev.stdenv.isLinux then dprint-fhs else prev.dprint;
 }
   # Cross-compilation specific patches
   // lib.optionalAttrs isCross {
