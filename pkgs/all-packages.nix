@@ -61,10 +61,6 @@ rec {
         cp ${cargo-binary-path} $out/bin/${name}
         chmod +x $out/bin/${name}
       '';
-
-  # dprint-unwrapped = prev.dprint;
-  # dprint-fhs = prev.callPackage ./tools/dprint-fhs.nix { };
-  # dprint = if prev.stdenv.isLinux then dprint-fhs else dprint-unwrapped;
 }
   # Cross-compilation specific patches
   // lib.optionalAttrs isCross {

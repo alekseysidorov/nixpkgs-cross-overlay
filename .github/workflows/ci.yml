@@ -10,7 +10,7 @@ jobs:
       - uses: cachix/install-nix-action@v18
         with:
           nix_path: nixpkgs=channel:nixos-unstable    
-      - run: nix develop ".#native" --command dprint check
+      - run: nix develop ".#native" --command dprint check --verbose
 
   build-cache:
     strategy:
