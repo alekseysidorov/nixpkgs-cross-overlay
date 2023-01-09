@@ -28,7 +28,7 @@ let
       envVariables = {
         CARGO_FEATURE_EXTERNAL_LZ4 = true;
         CARGO_FEATURE_ZSTD_PKG_CONFIG = true;
-        CARGO_FEATURE_SSL_VENDORED = true;
+        CARGO_FEATURE_SSL = true;
       };
     } else {
       # We can just rdkafka nix package.

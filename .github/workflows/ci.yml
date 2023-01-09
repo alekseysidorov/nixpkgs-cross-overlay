@@ -20,7 +20,8 @@ jobs:
           - native
           - x86_64-unknown-linux-musl
           - x86_64-unknown-linux-musl-static
-          - aarch64-unknown-linux-musl
+          # Disabled due to an error: thread 'main' panicked at 'unable to generate rocksdb bindings:
+          # - aarch64-unknown-linux-musl
         exclude:
           # For unknown reason Rocksdb compilation fails with an error: 
           # /usr/include/stdint.h:26:10: fatal error: 'bits/libc-header-start.h' file not found
