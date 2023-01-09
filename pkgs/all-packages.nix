@@ -51,7 +51,7 @@ rec {
     , buildInputs ? [ ]
     }:
     let
-      cargo-binary-path = targetDir + "${targetPlatform}/${profile}/${name}";
+      cargo-binary-path = targetDir + "/${targetPlatform}/${profile}/${name}";
     in
     prev.runCommand
       "copy-cargo-${name}-bin"
