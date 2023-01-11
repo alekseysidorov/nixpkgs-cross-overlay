@@ -25,7 +25,7 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [ cmake pkg-config ];
 
   buildInputs = [ openssl zstd.dev lz4.dev ];
-  propagatedBuildInputs = [ zlib ];
+  propagatedBuildInputs = [ zlib zstd.dev lz4.dev ];
 
   cmakeFlags = [
     "-DRDKAFKA_BUILD_TESTS=0"
