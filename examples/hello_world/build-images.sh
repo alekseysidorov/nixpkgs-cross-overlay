@@ -11,5 +11,5 @@ then
 fi
 
 echo "-> compiling for '${target}:${build_type}' target"; set -x;
-nix-shell --argstr config $target $extra_args --run "cargo build --release"
+nix-shell --argstr config $target $extra_args --run "cargo build --release -vv"
 docker load < $(nix-build dockerImage.nix --argstr config $target $extra_args)
