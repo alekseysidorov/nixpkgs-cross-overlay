@@ -12,7 +12,7 @@ let
     TARGET_OS = "Linux";
   });
 in
-rec {
+{
   rustCrossHook = null;
 
   mkEnvHook = prev.callPackage ./hooks/mkEnvHook.nix { };
@@ -66,6 +66,20 @@ rec {
         cp ${cargo-binary-path} $out/bin/${name}
         chmod +x $out/bin/${name}
       '';
+
+  # Remap sources to better compatiblity with perf utils.
+  cargoRemapShellHook = project:
+    let
+      extraRustcFlags = lib.optionalString isCross
+        (
+          "--remap-path-prefix=$HOME=/home/cprc"
+          + " --remap-path-prefix=$PWD=/home/cprc"
+        );
+    in
+    ''
+      # Remap sources
+      export RUSTFLAGS="$RUSTFLAGS ${extraRustcFlags}"
+    '';
 }
   # Cross-compilation specific patches
   // lib.optionalAttrs isCross {
@@ -75,13 +89,13 @@ rec {
   lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
   rdkafka = prev.callPackage ./libraries/rdkafka.nix { };
   # GCC 12 more strict than the old one
-  rocksdb = prev.rocksdb.overrideAttrs (old: rec {
+  rocksdb = prev.rocksdb.overrideAttrs (old: {
     NIX_CFLAGS_COMPILE = old.NIX_CFLAGS_COMPILE
     + prev.lib.optionalString prev.stdenv.cc.isGNU
       " -Wno-error=format-truncation= -Wno-error=maybe-uninitialized";
   });
   # libuv checks failed on the x86_64-unknown-linux-musl static target.
-  libuv = prev.libuv.overrideAttrs (old: rec {
+  libuv = prev.libuv.overrideAttrs (old: {
     doCheck = false;
   });
 }
