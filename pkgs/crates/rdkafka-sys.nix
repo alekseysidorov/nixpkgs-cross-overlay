@@ -11,8 +11,6 @@
 
 let
   isStatic = stdenv.targetPlatform.isStatic;
-  pkg-config = pkgs.pkgsBuildHost.pkg-config;
-  cmake = pkgs.pkgsBuildHost.cmake;
 
   out =
     if isStatic then {
@@ -22,7 +20,7 @@ let
         lz4
         openssl.dev
         zlib.dev
-        zstd
+        zstd.dev
       ];
       # We can force a several cargo features in the rdkafka
       envVariables = {
@@ -37,7 +35,7 @@ let
         openssl.dev
         rdkafka
         zlib.dev
-        zstd
+        zstd.dev
       ];
 
       envVariables = {
