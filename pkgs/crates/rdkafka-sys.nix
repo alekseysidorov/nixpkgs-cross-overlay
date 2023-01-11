@@ -11,18 +11,16 @@
 
 let
   isStatic = stdenv.targetPlatform.isStatic;
-  pkg-config = pkgs.pkgsBuildHost.pkg-config;
-  cmake = pkgs.pkgsBuildHost.cmake;
 
   out =
     if isStatic then {
       # Since there is lack of static linking via pkg-config in rdkafka-sys we
       # cannot use the rdkafka nix package.
       deps = [
-        lz4
+        lz4.dev
         openssl.dev
         zlib.dev
-        zstd
+        zstd.dev
       ];
       # We can force a several cargo features in the rdkafka
       envVariables = {
@@ -33,11 +31,11 @@ let
     } else {
       # We can just rdkafka nix package.
       deps = [
-        lz4
+        lz4.dev
         openssl.dev
         rdkafka
         zlib.dev
-        zstd
+        zstd.dev
       ];
 
       envVariables = {
