@@ -6,6 +6,11 @@ in
 
 pkgs.mkShell {
   name = "shell-cross";
-  nativeBuildInputs = [ pkgs.rustCrossHook pkgs.pkgsBuildHost.pkg-config ];
-  propagatedBuildInputs = [ pkgs.cargoDeps.rdkafka-sys pkgs.zstd pkgs.lz4 ];
+  nativeBuildInputs = [
+    pkgs.rustBuildHostDependencies
+    pkgs.rustCrossHook
+    pkgs.pkgsBuildHost.pkg-config
+  ];
+  buildInputs = [ pkgs.rdkafka pkgs.cargoDeps.rdkafka-sys ];
+  propagatedBuildInputs = [ pkgs.rdkafka ];
 }
