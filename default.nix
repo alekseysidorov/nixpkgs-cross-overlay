@@ -5,7 +5,7 @@ final: prev:
   mkCrossPkgs =
     { src
     , localSystem
-    , crossSystem
+    , crossSystem ? null
     , overlays ? [ ]
     }:
     let
@@ -22,7 +22,7 @@ final: prev:
       };
 
       nixpkgs =
-        if stdenv.isDarwin && stdenv.isAarch64
+        if stdenv.isDarwin && stdenv.isAarch64 && stdenv.targetPlatform.isx86
         then patchedPkgs
         else src;
 
