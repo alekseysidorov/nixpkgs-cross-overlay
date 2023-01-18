@@ -39,6 +39,7 @@
           inherit localSystem;
           crossSystem = {
             config = "aarch64-unknown-linux-musl";
+            useLLVM = true;
           };
         };
       in
