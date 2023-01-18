@@ -18,9 +18,30 @@
           overlays = [ crossOverlay ];
         };
 
-        pkgsMusl64 = pkgsNative.pkgsCross.musl64;
-        pkgsGnu64 = pkgsNative.pkgsCross.gnu64;
-        pkgsMuslAarch64 = pkgsNative.pkgsCross.aarch64-multiplatform-musl;
+        pkgsMusl64 = pkgsNative.mkCrossPkgs {
+          src = nixpkgs;
+          inherit localSystem;
+          crossSystem = {
+            config = "x86_64-unknown-linux-musl";
+          };
+        };
+
+        pkgsGnu64 = pkgsNative.mkCrossPkgs {
+          src = nixpkgs;
+          inherit localSystem;
+          crossSystem = {
+            config = "x86_64-unknown-linux-gnu";
+          };
+        };
+
+        pkgsMuslAarch64 = pkgsNative.mkCrossPkgs {
+          src = nixpkgs;
+          inherit localSystem;
+          crossSystem = {
+            config = "aarch64-unknown-linux-musl";
+            useLLVM = true;
+          };
+        };
       in
       {
         packages = {
