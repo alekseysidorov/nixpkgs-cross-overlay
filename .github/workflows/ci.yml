@@ -16,13 +16,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        target:
-          - x86_64-unknown-linux-musl
-        useLLVM: [false, true]
-        isStatic: [false, true]
+        crossSystem:
+          - 'null'
+          # Musl libc
+          - '{ config = "x86_64-unknown-linux-musl"; isStatic = false; useLLVM = false; }'
+          - '{ config = "x86_64-unknown-linux-musl"; isStatic = true; useLLVM = false; }'
+          - '{ config = "x86_64-unknown-linux-musl"; isStatic = false; useLLVM = true; }'
+          - '{ config = "x86_64-unknown-linux-musl"; isStatic = true; useLLVM = true; }'
+          # glibc
+          # - '{ config = "x86_64-unknown-linux-gnu"; isStatic = false; useLLVM = false; }'
     runs-on: ${{ matrix.os }}
-    env:
-      crossSystem: '{ config = "${{ matrix.target }}"; isStatic = "${{ matrix.isStatic }}"; useLLVM = "${{ matrix.useLLVM }}"; }'
     steps:
       - uses: actions/checkout@v3
       - uses: cachix/install-nix-action@v18
@@ -34,6 +37,6 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       # Build packages
-      - run: nix-build shell.nix --no-out-link --arg crossSystem $crossSystem
+      - run: nix-build shell.nix --no-out-link --arg crossSystem '${{ matrix.crossSystem }}'
       # Test cargoDeps
-      - run: nix-shell --arg crossSystem $crossSystem "./tests/crates/build_all.sh"
+      - run: nix-shell --arg crossSystem '${{ matrix.crossSystem }}' --run ./tests/crates/build_all.sh
