@@ -19,7 +19,25 @@ in
 {
   rustCrossHook = null;
 
-  mkEnvHook = prev.callPackage ./hooks/mkEnvHook.nix { };
+  mkEnvHook = final.callPackage ./hooks/mkEnvHook.nix { };
+
+  # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
+  llvmGccCompat = prev.runCommand
+    "llvm-gcc_s-compat"
+    {
+      buildInputs = [
+        prev.llvmPackages.libunwind
+      ];
+    }
+    ''
+      mkdir -p $out/lib
+      libdir=${prev.llvmPackages.libunwind}/lib    
+      for dylibtype in so dylib a dll; do
+        if [ -e "$libdir/libunwind.$dylibtype" ]; then
+          ln -svf $libdir/libunwind.$dylibtype $out/lib/libgcc_s.$dylibtype
+        fi
+      done
+    '';
 
   # Rust host dependencies
   rustBuildHostDependencies = prev.callPackage
@@ -88,7 +106,7 @@ in
   # Cross-compilation specific patches
   // lib.optionalAttrs isCross {
 
-  rustCrossHook = prev.callPackage ./hooks/rustCrossHook.nix { };
+  rustCrossHook = final.callPackage ./hooks/rustCrossHook.nix { };
   # Patched packages
   lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
   rdkafka = prev.callPackage ./libraries/rdkafka.nix { };
