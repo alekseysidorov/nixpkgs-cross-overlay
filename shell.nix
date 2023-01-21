@@ -11,11 +11,11 @@ pkgs.mkShell {
     cmake
     pkg-config
     protobuf
-    rustup
     git
     dprint
-    # Enable cross-compilation support.
-    pkgs.rustCrossHook
+    rustToolchain
+    # Will add some dependencies like libiconv
+    rustBuildHostDependencies
   ];
 
   buildInputs = with pkgs; [
@@ -26,8 +26,8 @@ pkgs.mkShell {
     bash
     bashInteractive
     coreutils
-    # Will add some dependencies like libiconv
-    rustBuildHostDependencies
+    # Enable cross-compilation support.
+    rustCrossHook
   ] # Build also all cargo deps
   ++ cargoDeps.all;
 
