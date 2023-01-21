@@ -24,7 +24,7 @@ final: prev:
       };
 
       nixpkgs =
-        if stdenv.isDarwin && stdenv.isAarch64 && fakeCrossPkgs.stdenv.targetPlatform.isx86_64
+        if stdenv.isDarwin && fakeCrossPkgs.stdenv.targetPlatform.isx86_64
         then patchedPkgs
         else src;
 
