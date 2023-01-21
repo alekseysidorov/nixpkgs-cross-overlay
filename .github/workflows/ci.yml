@@ -21,8 +21,8 @@ jobs:
           # Musl libc
           - '{ config = "x86_64-unknown-linux-musl"; isStatic = false; useLLVM = false; }'
           - '{ config = "x86_64-unknown-linux-musl"; isStatic = true; useLLVM = false; }'
-          # - '{ config = "x86_64-unknown-linux-musl"; isStatic = false; useLLVM = true; }'
-          # - '{ config = "x86_64-unknown-linux-musl"; isStatic = true; useLLVM = true; }'
+          - '{ config = "x86_64-unknown-linux-musl"; isStatic = false; useLLVM = true; }'
+          - '{ config = "x86_64-unknown-linux-musl"; isStatic = true; useLLVM = true; }'
           # glibc
           # - '{ config = "x86_64-unknown-linux-gnu"; isStatic = false; useLLVM = false; }'
     runs-on: ${{ matrix.os }}
