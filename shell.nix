@@ -11,9 +11,9 @@ pkgs.mkShell {
     cmake
     pkg-config
     protobuf
+    rustToolchain
     git
     dprint
-    rustToolchain
     # Will add some dependencies like libiconv
     rustBuildHostDependencies
   ];

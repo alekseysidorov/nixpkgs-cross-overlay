@@ -23,5 +23,5 @@ makeSetupHook
     targetPrefix = stdenv.cc.targetPrefix;
   };
   # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
-  deps = lib.optionals stdenv.cc.isClang [ llvmGccCompat ];
+  deps = lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvmGccCompat ];
 } ./rust-cross-hook.sh
