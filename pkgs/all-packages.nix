@@ -102,4 +102,5 @@ in
   libuv = prev.libuv.overrideAttrs disableChecks;
   libopus = prev.libopus.overrideAttrs disableChecks;
   gmp = prev.gmp.overrideAttrs disableChecks;
+  zlib = prev.zlib.overrideAttrs disableChecks;
 }
