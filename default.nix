@@ -11,8 +11,6 @@ final: prev:
     let
       localPkgs = import src { inherit localSystem; };
       stdenv = localPkgs.stdenv;
-      # Create fake cross packages to query target platform.
-      fakeCrossPkgs = import src { inherit localSystem crossSystem; };
 
       patchedPkgs = localPkgs.applyPatches {
         name = "patched-pkgs";
@@ -24,7 +22,7 @@ final: prev:
       };
 
       nixpkgs =
-        if stdenv.isDarwin && fakeCrossPkgs.stdenv.targetPlatform.isx86_64
+        if stdenv.isDarwin
         then patchedPkgs
         else src;
 
