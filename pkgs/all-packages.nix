@@ -101,4 +101,5 @@ in
   # Some checks failed on the x86_64-unknown-linux-musl static target.
   libuv = prev.libuv.overrideAttrs disableChecks;
   libopus = prev.libopus.overrideAttrs disableChecks;
+  gmp = prev.gmp.overrideAttrs disableChecks;
 }
