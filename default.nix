@@ -22,7 +22,7 @@ final: prev:
       };
 
       nixpkgs =
-        if stdenv.isDarwin && stdenv.isAarch64 && stdenv.targetPlatform.isx86
+        if stdenv.isDarwin
         then patchedPkgs
         else src;
 

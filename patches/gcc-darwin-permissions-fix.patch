@@ -12,9 +12,9 @@ index bef1fa6e33a..409cfb64f33 100644
 +    # on a symlink using busybox's chmod: it lacks -h option.
 +    # Try to change permissions on source libc.so and recreate the link, it would change permissions
 +    # on the resulting symlink
-+    rm -f $out/lib/ld-musl-${arch}.so.1
++    rm -f $out/lib/ld-musl-${stdenv.hostPlatform.uname.processor}.so.1
 +    chmod 0555 $out/lib/libc.so
-+    ln -rs $out/lib/libc.so $out/lib/ld-musl-${arch}.so.1
++    ln -rs $out/lib/libc.so $out/lib/ld-musl-${stdenv.hostPlatform.uname.processor}.so.1
 
      # Create 'ldd' symlink, builtin
      ln -rs $out/lib/libc.so $out/bin/ldd

@@ -8,7 +8,7 @@ mkEnvHook {
   name = "cargo-rocksdb-sys";
 
   deps = [
-    pkgs.pkgsBuildHost.rustPlatform.bindgenHook
+    pkgs.pkgsBuildBuild.rustPlatform.bindgenHook
     rocksdb
     snappy
   ];
