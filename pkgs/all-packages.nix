@@ -69,7 +69,7 @@ in
     { name
     , targetDir
     , profile ? "release"
-    , targetPlatform ? stdenv.targetPlatform.config
+    , targetPlatform ? if isCross then stdenv.targetPlatform.config else null
     , buildInputs ? [ ]
     }:
     let
