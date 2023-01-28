@@ -27,6 +27,7 @@ let
         CARGO_FEATURE_EXTERNAL_LZ4 = true;
         CARGO_FEATURE_ZSTD_PKG_CONFIG = true;
         CARGO_FEATURE_SSL = true;
+        CARGO_FEATURE_CMAKE_BUILD = true;
       };
     } else {
       # We can just rdkafka nix package.
