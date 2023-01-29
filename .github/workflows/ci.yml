@@ -49,17 +49,17 @@ jobs:
 
       # Build packages
       - run: >-
-          nix-build shell.nix 
-            --no-out-link 
+          nix-build shell.nix \
+            --no-out-link \
             --arg crossSystem '${{ matrix.crossSystem }}'
       # Test cargoDeps
       - run: >-
-          nix-shell --pure 
-            --arg crossSystem '${{ matrix.crossSystem }}'
+          nix-shell --pure \
+            --arg crossSystem '${{ matrix.crossSystem }}' \
             --run ./tests/crates/build_all.sh
       # Test standalone example
       - run: >-
-          nix-shell ./examples/shell-rust-cross.nix
-            --arg crossSystem '${{ matrix.crossSystem }}'
-            --argstr branch ${{ steps.branch-name.outputs.current_branch }}
+          nix-shell ./examples/shell-rust-cross.nix \
+            --arg crossSystem '${{ matrix.crossSystem }}' \
+            --argstr branch ${{ steps.branch-name.outputs.current_branch }} \
             --run ./tests/crates/build_all.sh
