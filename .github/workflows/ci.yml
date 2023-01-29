@@ -47,18 +47,18 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v6
 
-      # Build packages
-      - run: >-
+      - name: "Build Packages"
+        run: |
           nix-build shell.nix \
             --no-out-link \
             --arg crossSystem '${{ matrix.crossSystem }}'
-      # Test cargoDeps
-      - run: >-
+      - name: "Test default shell"
+        run: |
           nix-shell --pure \
             --arg crossSystem '${{ matrix.crossSystem }}' \
             --run ./tests/crates/build_all.sh
-      # Test standalone example
-      - run: >-
+      - name: "Test example shell"
+        run: |
           nix-shell ./examples/shell-rust-cross.nix \
             --arg crossSystem '${{ matrix.crossSystem }}' \
             --argstr branch ${{ steps.branch-name.outputs.current_branch }} \
