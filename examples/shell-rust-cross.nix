@@ -17,12 +17,14 @@
   # Default cross-compilation configuration, you may override it by passing the 
   # `--arg crossSystem '<our-own-config>'` to `nix-shell`.
 , crossSystem ? { config = "x86_64-unknown-linux-musl"; isStatic = true; useLLVM = true; }
-  # Override nixpkgs-cross-overlay branch
+  # Override nixpkgs-cross-overlay branch.
 , branch ? "main"
+  # Override nixpkgs source.
+, channel ? "channel:nixos-unstable"
 }:
 let
   # Fetch the latest nixpkgs snapshot.
-  src = builtins.fetchTarball "channel:nixpkgs-unstable";
+  src = builtins.fetchTarball channel;
   # Setup local Nix packages to get the `mkCrossPkgs` function.
   localPkgs = (import src {
     config = {
@@ -66,7 +68,7 @@ pkgs.mkShell {
 
     # Uncomment this line if you want to use the Rust toolchain provided by this shell.
     # rustToolchain
-    
+
     # Will add some dependencies like libiconv.
     rustBuildHostDependencies
   ];
