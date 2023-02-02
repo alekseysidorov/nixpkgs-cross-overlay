@@ -64,8 +64,9 @@ pkgs.mkShell {
     cmake
     perl
 
-    # Comment this line if you want to use an external Rust toolchain.
-    rustToolchain
+    # Uncomment this line if you want to use the Rust toolchain provided by this shell.
+    # rustToolchain
+    
     # Will add some dependencies like libiconv.
     rustBuildHostDependencies
   ];
