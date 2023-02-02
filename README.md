@@ -4,7 +4,7 @@ Nix Package Manager has incredible cross-compilation support, but vanilla packag
 sometimes have some cross-compilation issues. This overlay contains some extensions
 and bugfixes to provide a better experience.
 
-nixpkgs-cross-overlay targets `nixpkgs-unstable` channel, they are tested on CI.
+nixpkgs-cross-overlay targets `nixos-unstable` channel, they are tested on CI.
 It may also work on other channels but it is not guaranteed.
 
 ## Usage examples
