@@ -2,7 +2,6 @@ final: prev:
 let
   lib = prev.lib;
   stdenv = prev.stdenv;
-
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
 
   # Fix 'x86_64-unknown-linux-musl-gcc: error: unrecognized command-line option' error
@@ -31,10 +30,31 @@ in
     }
     ''
       mkdir -p $out/lib
-      libdir=${prev.llvmPackages.libunwind}/lib    
+      libdir=${prev.llvmPackages.libunwind}/lib
       for dylibtype in so dylib a dll; do
         if [ -e "$libdir/libunwind.$dylibtype" ]; then
           ln -svf $libdir/libunwind.$dylibtype $out/lib/libgcc_s.$dylibtype
+        fi
+      done
+    '';
+
+  # Use libcxx as libstdc++ replacement on the LLVM targets.
+  # It can fix some crates like Rocksdb that relies that there is only `libstdc++` 
+  # on Linux systems.
+  llvmLibcxxCompat = prev.runCommand
+    "llvm-libstdc++-compat"
+    {
+      buildInputs = [
+        prev.llvmPackages.libcxx
+      ];
+    }
+    ''
+      mkdir -p $out/lib
+      libdir=${prev.llvmPackages.libcxx}/lib
+      ls $libdir
+      for dylibtype in so dylib a dll; do
+        if [ -e "$libdir/libc++.$dylibtype" ]; then
+          ln -svf $libdir/libc++.$dylibtype $out/lib/libstdc++.$dylibtype
         fi
       done
     '';
@@ -103,20 +123,13 @@ in
       export RUSTFLAGS="$RUSTFLAGS ${extraRustcFlags}"
     '';
 }
-  # Cross-compilation specific patches
   // lib.optionalAttrs isCross {
-
+  # Setup Rust for cross-compiling.
   rustCrossHook = final.callPackage ./hooks/rustCrossHook.nix { };
   # Patched packages
-  lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
   rdkafka = prev.callPackage ./libraries/rdkafka.nix { };
-  # GCC 12 more strict than the old one
-  rocksdb = prev.rocksdb.overrideAttrs (old: {
-    NIX_CFLAGS_COMPILE = old.NIX_CFLAGS_COMPILE
-    + prev.lib.optionalString prev.stdenv.cc.isGNU
-      " -Wno-error=format-truncation= -Wno-error=maybe-uninitialized";
-  });
-  # Some checks failed on the x86_64-unknown-linux-musl static target.
+  # Fix compilation by overriding the packages attributes.
+  lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
   libuv = prev.libuv.overrideAttrs disableChecks;
   libopus = prev.libopus.overrideAttrs disableChecks;
   gmp = prev.gmp.overrideAttrs disableChecks;

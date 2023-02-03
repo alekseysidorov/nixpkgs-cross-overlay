@@ -19,11 +19,13 @@ let
       deps = [
         lz4.dev
         openssl.dev
+        rdkafka
         zlib.dev
         zstd.dev
       ];
       # We can force a several cargo features in the rdkafka
       envVariables = {
+        CARGO_FEATURE_DYNAMIC_LINKING = true;
         CARGO_FEATURE_EXTERNAL_LZ4 = true;
         CARGO_FEATURE_ZSTD_PKG_CONFIG = true;
         CARGO_FEATURE_SSL = true;
