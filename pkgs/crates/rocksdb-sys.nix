@@ -5,7 +5,7 @@
 , lib
 , stdenv
 , llvmPackages
-, llvmLibcxxCompat
+, libcxx-gcc-compat
 }:
 
 mkEnvHook {
@@ -17,16 +17,10 @@ mkEnvHook {
   ]
   # The rocksdb build script thinks that Linux targets can have only the `libstdc++` library.
   # We have to pretend that the `libc++` is the `libstdc++`.
-  ++ lib.optionals stdenv.cc.isClang [ llvmLibcxxCompat ];
+  ++ lib.optionals stdenv.cc.isClang [ libcxx-gcc-compat ];
 
   envVariables = {
     ROCKSDB_LIB_DIR = "${rocksdb}/lib";
     SNAPPY_LIB_DIR = "${snappy}/lib";
-  }
-  // lib.optionalAttrs (stdenv.cc.isClang && stdenv.targetPlatform.isStatic) {
-    # In static linking, in addition to the `libc++` as is, it must additionally 
-    #link with the `libc++abi`, which the build script can't do.
-    RUSTFLAGS = "\" -L${llvmPackages.libcxxabi}/lib -lc++abi\"" + "\${RUSTFLAGS-}";
-  }
-  ;
+  };
 }

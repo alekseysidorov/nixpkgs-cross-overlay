@@ -1,4 +1,10 @@
-{ makeSetupHook, stdenv, lib, runCommand, llvmGccCompat, rust }:
+{ makeSetupHook
+, stdenv
+, lib
+, runCommand
+, llvm-gcc_s-compat
+, rust
+}:
 
 let
   # FIXME: This workaround was taken from the
@@ -31,5 +37,5 @@ makeSetupHook
     targetPrefix = stdenv.cc.targetPrefix;
   };
   # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
-  deps = lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvmGccCompat ];
+  deps = lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvm-gcc_s-compat ];
 } ./rust-cross-hook.sh

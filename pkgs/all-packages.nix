@@ -3,6 +3,7 @@ let
   lib = prev.lib;
   stdenv = prev.stdenv;
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
+  isStatic = stdenv.targetPlatform.isStatic;
 
   # Fix 'x86_64-unknown-linux-musl-gcc: error: unrecognized command-line option' error
   gccCrossCompileWorkaround = (final: prev: {
@@ -21,7 +22,7 @@ in
   mkEnvHook = final.callPackage ./hooks/mkEnvHook.nix { };
 
   # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
-  llvmGccCompat = prev.runCommand
+  llvm-gcc_s-compat = prev.runCommand
     "llvm-gcc_s-compat"
     {
       buildInputs = [
@@ -38,26 +39,81 @@ in
       done
     '';
 
+  # Link libc++ libraries together just like it's done in the Android NDK.
+  libcxx-full-static = prev.callPackage ./libraries/libcxx_static { };
+  # libcxx-full-static = prev.stdenv.mkDerivation {
+  #   name = "libcxx-static";
+  #   # dontUnpack = true;
+
+  #   src = ./.;
+
+  #   nativeBuildInputs = [ final.pkgsBuildHost.cmake ];`
+  #   buildInputs = [
+  #     # prev.pkgsBuildBuild.binutils.bintools
+  #     prev.llvmPackages.libcxx
+  #     prev.llvmPackages.libcxxabi
+  #   ];
+
+  #   # buildPhase = let ar = "${prev.stdenv.cc.targetPrefix}ar"; in ''
+  #   #   runHook preBuild
+
+  #   #   echo "${ar} x ${prev.llvmPackages.libcxxabi}/lib/libc++abi.a"
+  #   #   ${ar} -x ${prev.llvmPackages.libcxxabi}/lib/libc++abi.a
+  #   #   ${ar} -x ${prev.llvmPackages.libcxx}/lib/libc++.a
+  #   #   ${ar} -c libc++_static.a *.o
+
+  #   #   ${ar} tv libc++_static.a
+  #   #   # ${prev.stdenv.cc.targetPrefix}ar tv ${prev.llvmPackages.libcxx}/lib/libc++.a
+
+  #   #   runHook postBuild
+  #   # '';
+
+  #   # installPhase = ''
+  #   #   runHook preInstall
+  #   #   mkdir -p $out/lib
+  #   #   install -m755 -D libc++_static.a $out/lib/libc++_static.a
+  #   #   runHook postInstall
+  #   # '';
+  # };
+
   # Use libcxx as libstdc++ replacement on the LLVM targets.
   # It can fix some crates like Rocksdb that relies that there is only `libstdc++` 
   # on Linux systems.
-  llvmLibcxxCompat = prev.runCommand
-    "llvm-libstdc++-compat"
-    {
-      buildInputs = [
-        prev.llvmPackages.libcxx
-      ];
-    }
-    ''
-      mkdir -p $out/lib
-      libdir=${prev.llvmPackages.libcxx}/lib
-      ls $libdir
-      for dylibtype in so dylib a dll; do
-        if [ -e "$libdir/libc++.$dylibtype" ]; then
-          ln -svf $libdir/libc++.$dylibtype $out/lib/libstdc++.$dylibtype
-        fi
-      done
-    '';
+  libcxx-gcc-compat =
+    let
+      compat-dynamic = final.runCommand
+        "libcxx-gcc-compat-dynamic"
+        {
+          buildInputs = [
+            final.llvmPackages.libcxx
+          ];
+        }
+        ''
+          mkdir -p $out/lib
+          libdir=${final.llvmPackages.libcxx}/lib
+          for dylibtype in so dylib a dll; do
+            if [ -e "$libdir/libc++.$dylibtype" ]; then
+              ln -svf $libdir/libc++.$dylibtype $out/lib/libstdc++.$dylibtype
+            fi
+          done
+        '';
+
+      compat-static = final.runCommand
+        "libcxx-gcc-compat-static"
+        {
+          buildInputs = [
+            final.libcxx-full-static
+          ];
+        }
+        ''
+          mkdir -p $out/lib
+          libdir=${final.libcxx-full-static}/lib
+          ln -svf $libdir/libc++_static.a $out/lib/libstdc++.a
+        '';
+
+    in
+    # compat-dynamic;
+    if isStatic then compat-static else compat-dynamic;
 
   # Rust host dependencies
   rustBuildHostDependencies = prev.callPackage
