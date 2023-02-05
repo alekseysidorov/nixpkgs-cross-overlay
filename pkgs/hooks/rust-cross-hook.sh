@@ -3,7 +3,7 @@ populateRustCrossEnv () {
     # Setup cargo
     export CARGO_BUILD_TARGET=@cargoBuildTarget@
     export CARGO_TARGET_@cargoLinkerInfix@_LINKER=@targetPrefix@cc
-    export RUSTFLAGS=@targetRustcFlags@
+    export RUSTFLAGS=@targetRustcFlags@${RUSTFLAGS-}
     # Setup compilers
     export HOST_CC=@nativePrefix@cc
     export HOST_CXX=@nativePrefix@c++

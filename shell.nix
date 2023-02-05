@@ -23,6 +23,7 @@ pkgs.mkShell {
     rdkafka
     rocksdb
     libopus
+    icu
     bash
     bashInteractive
     coreutils
