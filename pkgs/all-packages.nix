@@ -41,40 +41,6 @@ in
 
   # Link libc++ libraries together just like it's done in the Android NDK.
   libcxx-full-static = prev.callPackage ./libraries/libcxx_static { };
-  # libcxx-full-static = prev.stdenv.mkDerivation {
-  #   name = "libcxx-static";
-  #   # dontUnpack = true;
-
-  #   src = ./.;
-
-  #   nativeBuildInputs = [ final.pkgsBuildHost.cmake ];`
-  #   buildInputs = [
-  #     # prev.pkgsBuildBuild.binutils.bintools
-  #     prev.llvmPackages.libcxx
-  #     prev.llvmPackages.libcxxabi
-  #   ];
-
-  #   # buildPhase = let ar = "${prev.stdenv.cc.targetPrefix}ar"; in ''
-  #   #   runHook preBuild
-
-  #   #   echo "${ar} x ${prev.llvmPackages.libcxxabi}/lib/libc++abi.a"
-  #   #   ${ar} -x ${prev.llvmPackages.libcxxabi}/lib/libc++abi.a
-  #   #   ${ar} -x ${prev.llvmPackages.libcxx}/lib/libc++.a
-  #   #   ${ar} -c libc++_static.a *.o
-
-  #   #   ${ar} tv libc++_static.a
-  #   #   # ${prev.stdenv.cc.targetPrefix}ar tv ${prev.llvmPackages.libcxx}/lib/libc++.a
-
-  #   #   runHook postBuild
-  #   # '';
-
-  #   # installPhase = ''
-  #   #   runHook preInstall
-  #   #   mkdir -p $out/lib
-  #   #   install -m755 -D libc++_static.a $out/lib/libc++_static.a
-  #   #   runHook postInstall
-  #   # '';
-  # };
 
   # Use libcxx as libstdc++ replacement on the LLVM targets.
   # It can fix some crates like Rocksdb that relies that there is only `libstdc++` 
@@ -112,7 +78,6 @@ in
         '';
 
     in
-    # compat-dynamic;
     if isStatic then compat-static else compat-dynamic;
 
   # Rust host dependencies

@@ -17,17 +17,12 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         crossSystem:
-          - 'null'
-          # musl
-          - '{ config = "x86_64-unknown-linux-musl"; isStatic = false; useLLVM = false; }'
-          - '{ config = "x86_64-unknown-linux-musl"; isStatic = true; useLLVM = false; }'
-          - '{ config = "x86_64-unknown-linux-musl"; isStatic = false; useLLVM = true; }'
-          - '{ config = "x86_64-unknown-linux-musl"; isStatic = true; useLLVM = true; }'
-        exclude:
-          # New binutils working weirdly on MacOS
-          - os: macos-latest
-            crossSystem: '{ config = "x86_64-unknown-linux-musl"; isStatic = false; useLLVM = false; }'
-          
+          - '{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false;  }'
+          - '{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = true;  }'
+          # New nixpkgs snapshot works weirdly :(
+          # - 'null'
+          # - '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = false;  }'
+          # - '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = true;  }'
 
     runs-on: ${{ matrix.os }}
     steps:

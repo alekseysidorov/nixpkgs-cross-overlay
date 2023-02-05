@@ -22,5 +22,6 @@ mkEnvHook {
   envVariables = {
     ROCKSDB_LIB_DIR = "${rocksdb}/lib";
     SNAPPY_LIB_DIR = "${snappy}/lib";
+    # CXXSTDLIB = "c++_static";
   };
 }

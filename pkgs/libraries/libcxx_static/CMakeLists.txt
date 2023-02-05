@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.2)
-project(c++_static)
+cmake_minimum_required(VERSION 3.21)
+project(c++_static_link)
 
 include(bundle_static_library.cmake)
 
@@ -15,5 +15,4 @@ set_target_properties(libc++abi PROPERTIES IMPORTED_LOCATION ${LIBCXXABI_LIBRARY
 add_library(libc++_unbundled STATIC dummy.cpp)
 target_link_libraries(libc++_unbundled libc++)
 target_link_libraries(libc++_unbundled libc++abi)
-
 bundle_static_library(libc++_unbundled c++_static)
