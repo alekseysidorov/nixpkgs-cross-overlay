@@ -47,10 +47,9 @@ let
         (builtins.fetchTarball "http://github.com/oxalica/rust-overlay/tarball/master")
       )
       # Setup Rust toolchain.
-      (final: prev:
-        {
-          rustToolchain = prev.rust-bin.stable.latest.default;
-        }
+      (final: prev: {
+        rustToolchain = prev.rust-bin.stable.latest.default;
+      }
       )
       # <- You may add your extra overlays here.
     ];
@@ -67,7 +66,7 @@ pkgs.mkShell {
     perl
 
     # Uncomment this line if you want to use the Rust toolchain provided by this shell.
-    # rustToolchain
+    rustToolchain
 
     # Will add some dependencies like libiconv.
     rustBuildHostDependencies

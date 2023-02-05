@@ -1,6 +1,4 @@
-final: prev:
-
-{
+final: prev: {
   # Applies some patches on the nix packages to better cross-compilation support.
   mkCrossPkgs =
     { src
@@ -15,7 +13,7 @@ final: prev:
       patchedPkgs = localPkgs.applyPatches {
         name = "patched-pkgs";
         inherit src;
-        # Fix musl gcc permissions on M1 Mac.
+        # Fix musl permissions on Darwin hosts.
         patches = [
           ./patches/gcc-darwin-permissions-fix.patch
         ];
@@ -32,5 +30,4 @@ final: prev:
       inherit localSystem crossSystem;
       overlays = [ crossOverlay ] ++ overlays;
     };
-}
-  // (import ./pkgs/all-packages.nix final prev)
+} // (import ./pkgs/all-packages.nix final prev)

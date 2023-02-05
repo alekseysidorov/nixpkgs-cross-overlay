@@ -17,12 +17,12 @@ It may also work on other channels but it is not guaranteed.
 This overlay is in an early development stage, so there is a lack of documentation,
 especially about useful extensions like `rustCrossHook`. Anyway, a contribution is very welcome.
 
-- Works fine on the Intel and Silicon macOS machines.
+- Works fine on the Intel and Apple Silicon macOS machines.
 - Compilation fixes and workarounds for the some libraries and binaries.
 - Static Musl targets, that can produce distro-independent binaries.
 - Almost zero cross-compilation shell setup for Rust by the `rustCrossHook`
   and `rustBuildHostDependencies` hooks.
-- Binary cache with the precompilled [packages](https://app.cachix.org/cache/nixpkgs-cross-overlay#pull).
+- Binary cache with the precompiled [packages](https://app.cachix.org/cache/nixpkgs-cross-overlay#pull).
 
 ## License
 
