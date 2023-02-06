@@ -20,7 +20,8 @@
   # Override nixpkgs-cross-overlay branch.
 , branch ? "main"
   # Override nixpkgs source.
-, channel ? "channel:nixpkgs-unstable"
+  # FIXME Move to "channel:nixos-unstable" again.
+, channel ? "https://github.com/NixOS/nixpkgs/archive/aa1d74709f5dac623adb4d48fdfb27cc2c92a4d4.tar.gz"
 }:
 let
   # Fetch the latest nixpkgs snapshot.
@@ -47,10 +48,9 @@ let
         (builtins.fetchTarball "http://github.com/oxalica/rust-overlay/tarball/master")
       )
       # Setup Rust toolchain.
-      (final: prev:
-        {
-          rustToolchain = prev.rust-bin.stable.latest.default;
-        }
+      (final: prev: {
+        rustToolchain = prev.rust-bin.stable.latest.default;
+      }
       )
       # <- You may add your extra overlays here.
     ];
@@ -67,7 +67,7 @@ pkgs.mkShell {
     perl
 
     # Uncomment this line if you want to use the Rust toolchain provided by this shell.
-    # rustToolchain
+    rustToolchain
 
     # Will add some dependencies like libiconv.
     rustBuildHostDependencies
