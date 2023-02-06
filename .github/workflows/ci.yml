@@ -47,10 +47,9 @@ jobs:
           nix-shell --pure \
             --arg crossSystem '${{ matrix.crossSystem }}' \
             --run ./tests/crates/build_all.sh
-      # FIXME New nixpkgs snapshot works weirdly :( 
-      # - name: "Test example shell"
-      #   run: |
-      #     nix-shell ./examples/shell-rust-cross.nix \
-      #       --arg crossSystem '${{ matrix.crossSystem }}' \
-      #       --argstr branch ${{ steps.branch-name.outputs.current_branch }} \
-      #       --run ./tests/crates/build_all.sh
+      - name: "Test example shell"
+        run: |
+          nix-shell ./examples/shell-rust-cross.nix \
+            --arg crossSystem '${{ matrix.crossSystem }}' \
+            --argstr branch ${{ steps.branch-name.outputs.current_branch }} \
+            --run ./tests/crates/build_all.sh
