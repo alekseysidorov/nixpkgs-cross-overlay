@@ -20,7 +20,7 @@
   # Override nixpkgs-cross-overlay branch.
 , branch ? "main"
   # Override nixpkgs source.
-, channel ? "channel:nixpkgs-unstable"
+, channel ? "channel:nixos-unstable"
 }:
 let
   # Fetch the latest nixpkgs snapshot.

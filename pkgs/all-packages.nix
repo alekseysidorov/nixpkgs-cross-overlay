@@ -143,12 +143,19 @@ in
       # Remap sources
       export RUSTFLAGS="$RUSTFLAGS ${extraRustcFlags}"
     '';
+
+  # Cmake-built Kafka works better than the origin one.
+  rdkafka = prev.rdkafka.overrideAttrs (now: old: {
+    nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
+    cmakeFlags = [
+      "-DRDKAFKA_BUILD_TESTS=0"
+      "-DRDKAFKA_BUILD_EXAMPLES=0"
+    ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
+  });
 }
   // lib.optionalAttrs isCross {
   # Setup Rust for cross-compiling.
   rustCrossHook = final.callPackage ./hooks/rustCrossHook.nix { };
-  # Patched packages
-  rdkafka = prev.callPackage ./libraries/rdkafka.nix { };
   # Fix compilation by overriding the packages attributes.
   lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
   libuv = prev.libuv.overrideAttrs disableChecks;
