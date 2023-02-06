@@ -3,6 +3,8 @@ project(c++_static_link)
 
 include(bundle_static_library.cmake)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 find_library(LIBCXX_LIBRARY NAMES c++ cxx REQUIRED)
 find_library(LIBCXXABI_LIBRARY NAMES c++abi REQUIRED)
 
@@ -15,4 +17,5 @@ set_target_properties(libc++abi PROPERTIES IMPORTED_LOCATION ${LIBCXXABI_LIBRARY
 add_library(libc++_unbundled STATIC dummy.cpp)
 target_link_libraries(libc++_unbundled libc++)
 target_link_libraries(libc++_unbundled libc++abi)
+
 bundle_static_library(libc++_unbundled c++_static)

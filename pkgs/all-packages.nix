@@ -153,6 +153,12 @@ in
       "-DRDKAFKA_BUILD_EXAMPLES=0"
     ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
   });
+
+  rocksdb = prev.rocksdb.overrideAttrs (now: old: {
+    # Fix form "relocation R_X86_64_32 against `.bss._ZGVZN12_GLOBAL__N_18key_initEvE2ks'"
+    cmakeFlags = old.cmakeFlags
+    ++ lib.optional isStatic "-DCMAKE_POSITION_INDEPENDENT_CODE=ON";
+  });
 }
   // lib.optionalAttrs isCross {
   # Setup Rust for cross-compiling.
