@@ -147,19 +147,12 @@ in
   # Cmake-built Kafka works better than the origin one.
   rdkafka = prev.rdkafka.overrideAttrs (now: old: {
     nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
-    buildInputs = old.buildInputs ++ [ final.lz4 ];
+    buildInputs = old.buildInputs ++ [ final.lz4 final.openssl.dev ];
     cmakeFlags = [
       "-DRDKAFKA_BUILD_TESTS=0"
       "-DRDKAFKA_BUILD_EXAMPLES=0"
     ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
   });
-  
-  rocksdb = prev.rocksdb.overrideAttrs (now: old: {
-    NIX_CFLAGS_COMPILE = old.NIX_CFLAGS_COMPILE
-    # Fix form "relocation R_X86_64_32 against `.bss._ZGVZN12_GLOBAL__N_18key_initEvE2ks'"
-    + lib.optionalString (stdenv.cc.isGNU && isStatic) "-fPIE";
-  });
-
 }
   // lib.optionalAttrs isCross {
   # Setup Rust for cross-compiling.
