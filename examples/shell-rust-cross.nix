@@ -20,7 +20,8 @@
   # Override nixpkgs-cross-overlay branch.
 , branch ? "main"
   # Override nixpkgs source.
-, channel ? "channel:nixos-unstable"
+  # FIXME Move to "channel:nixos-unstable" again.
+, channel ? "https://github.com/NixOS/nixpkgs/archive/aa1d74709f5dac623adb4d48fdfb27cc2c92a4d4.tar.gz"
 }:
 let
   # Fetch the latest nixpkgs snapshot.
