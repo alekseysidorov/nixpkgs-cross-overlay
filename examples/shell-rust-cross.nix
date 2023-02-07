@@ -19,39 +19,25 @@
 , crossSystem ? { config = "x86_64-unknown-linux-musl"; isStatic = true; useLLVM = true; }
   # Override nixpkgs-cross-overlay branch.
 , branch ? "main"
-  # Override nixpkgs source.
-  # FIXME Move to "channel:nixos-unstable" again.
-, channel ? "https://github.com/NixOS/nixpkgs/archive/aa1d74709f5dac623adb4d48fdfb27cc2c92a4d4.tar.gz"
 }:
 let
-  # Fetch the latest nixpkgs snapshot.
-  src = builtins.fetchTarball channel;
-  # Setup local Nix packages to get the `mkCrossPkgs` function.
-  localPkgs = (import src {
-    config = {
-      inherit localSystem;
-    };
-    overlays = [
-      # Fetch the latest nixpkgs-cross-overlay snapshot.
-      (import
-        (builtins.fetchTarball "http://github.com/alekseysidorov/nixpkgs-cross-overlay/tarball/${branch}")
-      )
-    ];
-  });
+  # Fetch the nixpkgs-cross-overlay sources.
+  src = builtins.fetchTarball "http://github.com/alekseysidorov/nixpkgs-cross-overlay/tarball/${branch}";
+  # Use the nixpkgs revision provided by the overlay. 
+  # This is the best way, as they are the most proven and compatible.
+  nixpkgs = "${src}/utils/nixpkgs.nix";
   # Make cross system packages.
-  pkgs = localPkgs.mkCrossPkgs {
-    inherit src localSystem crossSystem;
-
+  pkgs = import nixpkgs {
+    inherit localSystem crossSystem;
     overlays = [
-      # Fetch the latest rust-overlay snapshot.
-      (import
-        (builtins.fetchTarball "http://github.com/oxalica/rust-overlay/tarball/master")
-      )
-      # Setup Rust toolchain.
-      (final: prev: {
+      # Overlay also provides the `rust-overlay`, so it is easy to override the default Rust toolchain setup.
+      (final: prev: rec {
         rustToolchain = prev.rust-bin.stable.latest.default;
-      }
-      )
+        rustc = rustToolchain;
+        cargo = rustToolchain;
+        clippy = rustToolchain;
+        rustfmt = rustToolchain;
+      })
       # <- You may add your extra overlays here.
     ];
   };
