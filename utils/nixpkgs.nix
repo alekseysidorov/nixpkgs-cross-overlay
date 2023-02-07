@@ -26,16 +26,8 @@ pkgs.mkCrossPkgs {
   overlays = [
     # Setup Rust toolchain via rustup.
     (import lockFile.rust-overlay)
-    (final: prev:
-      let
-        rustToolchain = prev.rust-bin.fromRustupToolchainFile ./../rust-toolchain.toml;
-      in
-      {
-        inherit rustToolchain;
-        rustc = rustToolchain;
-        cargo = rustToolchain;
-        clippy = rustToolchain;
-        rustfmt = rustToolchain;
-      })
+    (final: prev: {
+      rustToolchain = prev.rust-bin.fromRustupToolchainFile ./../rust-toolchain.toml;
+    })
   ] ++ overlays;
 }
