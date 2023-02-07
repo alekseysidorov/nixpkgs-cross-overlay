@@ -20,8 +20,10 @@ jobs:
           - 'null'
           - '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = false;  }'
           - '{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false;  }'
-          # - '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = true;  }'
           - '{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = true;  }'
+          # Broken targets
+          # - '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = true;  }'
+
 
     runs-on: ${{ matrix.os }}
     steps:
