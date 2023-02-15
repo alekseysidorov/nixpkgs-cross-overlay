@@ -20,7 +20,7 @@ final: prev: {
       };
 
       nixpkgs =
-        if stdenv.isDarwin
+        if (stdenv.isDarwin && crossSystem != null)
         then patchedPkgs
         else src;
 
