@@ -5,7 +5,7 @@ on:
 jobs:
   chatgpt_comment:
     runs-on: ubuntu-latest
-    name: Let chatgpt comment on your PR.
+    name: ChatGPT Review
     steps:
       - name: ChatGPT comment
         uses: kxxt/chatgpt-action@v0.3
