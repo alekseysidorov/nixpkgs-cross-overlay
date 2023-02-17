@@ -8,14 +8,16 @@ let
 in
 pkgs.mkShell {
   nativeBuildInputs = with pkgs.pkgsBuildHost; [
+    rustToolchain
     cmake
     pkg-config
     protobuf
-    rustToolchain
     git
-    dprint
     # Will add some dependencies like libiconv
     rustBuildHostDependencies
+    # Linters
+    nixpkgs-fmt
+    dprint
   ];
 
   buildInputs = with pkgs; [

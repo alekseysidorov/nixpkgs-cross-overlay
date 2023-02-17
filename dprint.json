@@ -3,26 +3,25 @@
   "markdown": {},
   "toml": {},
   "dockerfile": {},
-  "rustfmt": {
-    "edition": "2021",
-    "newline_style": "Unix",
-    "unstable_features": true,
-    "group_imports": "StdExternalCrate",
-    "imports_granularity": "Crate"
-  },
   "includes": [
-    "**/*.{json,md,toml,dockerfile,rs,proto,js}"
+    "**/*.{json,md,toml,dockerfile,rs,proto,js,nix}"
   ],
   "excludes": [
-    ".embuild",
     "**/*-lock.json",
     "**/target/**"
   ],
+  "exec": {
+    "associations": "**/*.{rs,nix}",
+    "rustfmt": "rustfmt --config-path {{cwd}}/rustfmt.toml",
+    "rustfmt.associations": "**/*.rs",
+    "nixpkgs-fmt": "nixpkgs-fmt",
+    "nixpkgs-fmt.associations": "**/*.nix"
+  },
   "plugins": [
-    "https://plugins.dprint.dev/json-0.15.5.wasm",
-    "https://plugins.dprint.dev/markdown-0.14.0.wasm",
+    "https://plugins.dprint.dev/json-0.17.0.wasm",
+    "https://plugins.dprint.dev/markdown-0.15.2.wasm",
     "https://plugins.dprint.dev/toml-0.5.4.wasm",
-    "https://plugins.dprint.dev/dockerfile-0.2.3.wasm",
-    "https://plugins.dprint.dev/rustfmt-0.6.1.exe-plugin@99b89a0599fd3a63e597e03436862157901f3facae2f0c2fbd0b9f656cdbc2a5"
+    "https://plugins.dprint.dev/dockerfile-0.3.0.wasm",
+    "https://plugins.dprint.dev/exec-0.3.5.json@d687dda57be0fe9a0088ccdaefa5147649ff24127d8b3ea227536c68ee7abeab"
   ]
 }

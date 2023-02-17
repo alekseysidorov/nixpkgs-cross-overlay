@@ -31,12 +31,8 @@ let
     inherit localSystem crossSystem;
     overlays = [
       # Overlay also provides the `rust-overlay`, so it is easy to override the default Rust toolchain setup.
-      (final: prev: rec {
+      (final: prev: {
         rustToolchain = prev.rust-bin.stable.latest.default;
-        rustc = rustToolchain;
-        cargo = rustToolchain;
-        clippy = rustToolchain;
-        rustfmt = rustToolchain;
       })
       # <- You may add your extra overlays here.
     ];
