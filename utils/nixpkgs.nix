@@ -24,10 +24,6 @@ pkgs.mkCrossPkgs {
   inherit src localSystem crossSystem;
   # Setup extra overlays.
   overlays = [
-    # Setup Rust toolchain via rustup.
     (import lockFile.rust-overlay)
-    (final: prev: {
-      rustToolchain = prev.rust-bin.fromRustupToolchainFile ./../rust-toolchain.toml;
-    })
   ] ++ overlays;
 }

@@ -8,7 +8,9 @@ let
 in
 pkgs.mkShell {
   nativeBuildInputs = with pkgs.pkgsBuildHost; [
-    rustToolchain
+    # Setup Rust overlay
+    (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
+
     cmake
     pkg-config
     protobuf
