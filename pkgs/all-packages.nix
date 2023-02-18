@@ -98,6 +98,7 @@ in
     ])
     { };
 
+  # Metapackage with all crates dependencies.
   cargoDeps = (import ./crates prev);
 
   # Nice shell prompt
@@ -105,7 +106,9 @@ in
     PS1="\[\033[38;5;39m\]\w \[\033[38;5;35m\](${final.stdenv.targetPlatform.config}) \[\033[0m\]\$ "
   '';
 
-  # Extra utils and tools
+  # Utility to copy built by cargo binary into the `bin` directory.
+  # Can be used to copy binaries built by the `nix-shell` with the corresponding Rust 
+  # toolchain to the docker images.
   copyBinaryFromCargoBuild =
     { name
     , targetDir
@@ -154,12 +157,13 @@ in
     ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
   });
 
+  # Fix rocksdb on some environments.
   rocksdb = prev.rocksdb.overrideAttrs (now: old: {
     # Fix form "relocation R_X86_64_32 against `.bss._ZGVZN12_GLOBAL__N_18key_initEvE2ks'"
     cmakeFlags = old.cmakeFlags
     ++ lib.optional isStatic "-DCMAKE_POSITION_INDEPENDENT_CODE=ON";
   });
-}
+} # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Setup Rust for cross-compiling.
   rustCrossHook = final.callPackage ./hooks/rustCrossHook.nix { };
