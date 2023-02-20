@@ -20,9 +20,7 @@ pkgs.mkShell {
     # Linters
     nixpkgs-fmt
     dprint
-  ]
-  # Build also all cargo deps.
-  ++ cargoDeps.all;
+  ];
 
   buildInputs = with pkgs; [
     # List of tested native libraries.
@@ -35,7 +33,9 @@ pkgs.mkShell {
     coreutils
     # Enable cross-compilation support.
     rustCrossHook
-  ];
+  ]
+  # Build also all cargo deps.
+  ++ cargoDeps.all;
 
   shellHook = "${pkgs.crossBashPrompt}";
 

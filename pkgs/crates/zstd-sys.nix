@@ -7,7 +7,7 @@ mkEnvHook {
   name = "cargo-zstd-sys";
 
   deps = [
-    pkgs.pkgsBuildBuild.pkg-config
+    pkgs.pkgsBuildHost.pkg-config
     zstd
   ];
 }
