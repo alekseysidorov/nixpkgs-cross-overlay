@@ -10,7 +10,7 @@ pkgs.mkShell {
   nativeBuildInputs = with pkgs.pkgsBuildHost; [
     # Setup Rust overlay
     (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
-
+    # Native utilities
     cmake
     pkg-config
     protobuf
@@ -20,7 +20,9 @@ pkgs.mkShell {
     # Linters
     nixpkgs-fmt
     dprint
-  ];
+  ]
+  # Build also all cargo deps.
+  ++ cargoDeps.all;
 
   buildInputs = with pkgs; [
     # List of tested native libraries.
@@ -33,8 +35,7 @@ pkgs.mkShell {
     coreutils
     # Enable cross-compilation support.
     rustCrossHook
-  ] # Build also all cargo deps
-  ++ cargoDeps.all;
+  ];
 
   shellHook = "${pkgs.crossBashPrompt}";
 

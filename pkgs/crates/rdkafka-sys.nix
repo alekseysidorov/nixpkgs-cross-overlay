@@ -17,6 +17,7 @@ let
       # Since there is lack of static linking via pkg-config in rdkafka-sys we
       # cannot use the rdkafka nix package.
       deps = [
+        pkgs.pkgsBuildBuild.cmake
         openssl.dev
       ];
       # We can force a several cargo features in the rdkafka
