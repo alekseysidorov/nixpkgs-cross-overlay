@@ -30,10 +30,6 @@ let
   pkgs = import nixpkgs {
     inherit localSystem crossSystem;
     overlays = [
-      # Overlay also provides the `rust-overlay`, so it is easy to override the default Rust toolchain setup.
-      (final: prev: {
-        rustToolchain = prev.rust-bin.stable.latest.default;
-      })
       # <- You may add your extra overlays here.
     ];
   };
@@ -48,8 +44,9 @@ pkgs.mkShell {
     cmake
     perl
 
+    # This overlay also provides the `rust-overlay`, so it is easy to override the default Rust toolchain setup.
     # Uncomment this line if you want to use the Rust toolchain provided by this shell.
-    rustToolchain
+    rust-bin.stable.latest.default
 
     # Will add some dependencies like libiconv.
     rustBuildHostDependencies
