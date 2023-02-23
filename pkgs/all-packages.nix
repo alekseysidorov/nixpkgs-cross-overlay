@@ -124,6 +124,10 @@ in
       {
         buildInputs = buildInputs ++ [
           stdenv.cc.libc_lib
+        ]
+        # Non-gnu platforms use llvm libunwind replacement for libgcc_s.
+        ++ lib.optionals (!stdenv.targetPlatform.isGnu) [
+          final.llvm-gcc_s-compat
         ];
       }
       ''
