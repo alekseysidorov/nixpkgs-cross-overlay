@@ -123,8 +123,11 @@ in
       "copy-cargo-${name}-bin"
       {
         buildInputs = buildInputs ++ [
-          stdenv.cc.cc.lib
-          stdenv.cc.libc
+          stdenv.cc.libc_lib
+        ]
+        # Non-gnu platforms use llvm libunwind replacement for libgcc_s.
+        ++ lib.optionals (!stdenv.targetPlatform.isGnu) [
+          final.llvm-gcc_s-compat
         ];
       }
       ''
