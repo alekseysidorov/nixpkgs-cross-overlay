@@ -123,8 +123,7 @@ in
       "copy-cargo-${name}-bin"
       {
         buildInputs = buildInputs ++ [
-          stdenv.cc.cc.lib
-          stdenv.cc.libc
+          stdenv.cc.libc_lib
         ];
       }
       ''
