@@ -43,6 +43,6 @@ in
 mkEnvHook {
   name = "cargo-rdkafka-sys";
 
-  deps = out.deps;
+  propagatedBuildInputs = out.deps;
   envVariables = out.envVariables;
 }

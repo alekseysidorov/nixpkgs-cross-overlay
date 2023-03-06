@@ -25,6 +25,7 @@ let
   targetRustcFlags =
     if stdenv.targetPlatform.isStatic then "-Ctarget-feature=+crt-static"
     else "-Ctarget-feature=-crt-static";
+
 in
 makeSetupHook
 {
@@ -37,5 +38,5 @@ makeSetupHook
     targetPrefix = stdenv.cc.targetPrefix;
   };
   # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
-  deps = lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvm-gcc_s-compat ];
+  propagatedBuildInputs = lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvm-gcc_s-compat ];
 } ./rust-cross-hook.sh

@@ -11,7 +11,7 @@
 mkEnvHook {
   name = "cargo-rocksdb-sys";
 
-  deps = [
+  propagatedBuildInputs = [
     pkgs.pkgsBuildBuild.rustPlatform.bindgenHook
     rocksdb
   ]

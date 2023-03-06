@@ -1,6 +1,10 @@
 { lib, writeTextFile, makeSetupHook }:
 
-{ name, envVariables ? { }, substitutions ? { }, deps ? [ ] }:
+{ name
+, envVariables ? { }
+, substitutions ? { }
+, propagatedBuildInputs ? [ ]
+}:
 let
   exportList = lib.mapAttrsToList (name: value: "export ${name}=${builtins.toString value}") envVariables;
 
@@ -10,4 +14,4 @@ let
     text = lib.concatStringsSep "\n" exportList;
   };
 in
-makeSetupHook { inherit name deps substitutions; } shellScript
+makeSetupHook { inherit name propagatedBuildInputs substitutions; } shellScript
