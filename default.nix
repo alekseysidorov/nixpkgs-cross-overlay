@@ -30,4 +30,4 @@ final: prev: {
       inherit localSystem crossSystem;
       overlays = [ crossOverlay ] ++ overlays;
     };
-} // (import ./pkgs/all-packages.nix final prev)
+} // (import ./lib final prev)
