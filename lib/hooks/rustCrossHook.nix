@@ -39,7 +39,7 @@ let
         targetPrefix = stdenv.cc.targetPrefix;
       };
       # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
-      depsTargetTargetPropagated = lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvm-gcc_s-compat ];
+      propagatedBuildInputs = lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvm-gcc_s-compat ];
     }
     ./rust-cross-hook.sh
   );
