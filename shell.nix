@@ -20,7 +20,7 @@ pkgs.mkShell {
     dprint
   ]
   # Build also all cargo deps.
-  ++ pkgs.cargoDeps.all; 
+  ++ pkgs.cargoDeps.all;
 
   buildInputs = with pkgs; [
     # List of tested native libraries.
