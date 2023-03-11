@@ -14,8 +14,6 @@ pkgs.mkShell {
     (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
     # Will add some dependencies like libiconv
     rustBuildHostDependencies
-    # Enable cross-compilation support.
-    pkgs.rustCrossHook
     # Linters
     nixpkgs-fmt
     dprint
@@ -24,6 +22,8 @@ pkgs.mkShell {
   ++ pkgs.cargoDeps.all;
 
   buildInputs = with pkgs; [
+    # Enable Rust cross-compilation support.
+    rustCrossHook
     # List of tested native libraries.
     icu
     bash

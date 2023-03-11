@@ -44,8 +44,6 @@ pkgs.mkShell {
     pkgs.pkgsBuildHost.rust-bin.stable.latest.default
     # Will add some dependencies like libiconv.
     pkgs.pkgsBuildHost.rustBuildHostDependencies
-    # Enable cross-compilation mode in Rust.
-    pkgs.rustCrossHook
     # Crates dependencies
     pkgs.cargoDeps.audiopus_sys
     pkgs.cargoDeps.rocksdb-sys
@@ -54,6 +52,8 @@ pkgs.mkShell {
   ];
   # Libraries essential to build the service binaries.
   buildInputs = with pkgs; [
+    # Enable Rust cross-compilation support.
+    rustCrossHook
     # Some native libraries.
     icu
   ];
