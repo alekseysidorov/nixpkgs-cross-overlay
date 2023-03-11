@@ -24,9 +24,6 @@ pkgs.mkShell {
 
   buildInputs = with pkgs; [
     # List of tested native libraries.
-    rdkafka
-    rocksdb
-    libopus
     icu
     bash
     bashInteractive

@@ -46,6 +46,7 @@ pkgs.mkShell {
     # Will add some dependencies like libiconv.
     rustBuildHostDependencies
     # Crates dependencies
+    cargoDeps.audiopus_sys
     cargoDeps.rocksdb-sys
     cargoDeps.rdkafka-sys
     cargoDeps.openssl-sys

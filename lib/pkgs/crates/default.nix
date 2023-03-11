@@ -8,6 +8,7 @@ let
     cargoDeps;
 
   cargoDeps = {
+    audiopus_sys = prev.callPackage ./audiopus_sys.nix { };
     rdkafka-sys = prev.callPackage ./rdkafka-sys.nix { };
     rocksdb-sys = prev.callPackage ./rocksdb-sys.nix { };
     zstd-sys = prev.callPackage ./zstd-sys.nix { };
