@@ -38,20 +38,19 @@ in
 pkgs.mkShell {
   # Native project dependencies like build utilities and additional routines 
   # like container building, linters, etc.
-  nativeBuildInputs = with pkgs.pkgsBuildHost; [
-    git
+  nativeBuildInputs = [
     # This overlay also provides the `rust-overlay`, so it is easy to override the default Rust toolchain setup.
     # Uncomment this line if you want to use the Rust toolchain provided by this shell.
-    rust-bin.stable.latest.default
+    pkgs.pkgsBuildHost.rust-bin.stable.latest.default
+    # Will add some dependencies like libiconv.
+    pkgs.pkgsBuildHost.rustBuildHostDependencies
     # Enable cross-compilation mode in Rust.
     pkgs.rustCrossHook
-    # Will add some dependencies like libiconv.
-    rustBuildHostDependencies
     # Crates dependencies
-    cargoDeps.audiopus_sys
-    cargoDeps.rocksdb-sys
-    cargoDeps.rdkafka-sys
-    cargoDeps.openssl-sys
+    pkgs.cargoDeps.audiopus_sys
+    pkgs.cargoDeps.rocksdb-sys
+    pkgs.cargoDeps.rdkafka-sys
+    pkgs.cargoDeps.openssl-sys
   ];
   # Libraries essential to build the service binaries.
   buildInputs = with pkgs; [

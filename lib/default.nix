@@ -16,7 +16,7 @@ in
      , darwin
      , libiconv
      , lib
-     }: [ ]
+     }: [ prev.pkgsBuildHost.git ]
     # Some additional libraries for the Darwin platform
     ++ lib.optionals stdenv.isDarwin [
       libiconv
