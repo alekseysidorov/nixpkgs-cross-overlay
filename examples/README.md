@@ -15,7 +15,7 @@ nix-shell ./shell-rust-cross.nix
 
 ## Tips:
 
-- You can attach a binary cache by running the command:
+- You can enable a binary cache by running the command:
   `nix-shell -p cachix --run "cachix use nixpkgs-cross-overlay"`
 - If you have compilation issues, try to add `--pure` argument to the `nix-shell`.
 - You can override the default cross-compilation target by passing the argument to nix-shell:

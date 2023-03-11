@@ -8,6 +8,8 @@ mkEnvHook {
 
   propagatedBuildInputs = [
     pkgs.pkgsBuildHost.pkg-config
+  ];
+  depsTargetTargetPropagated = [
     zstd
   ];
 }

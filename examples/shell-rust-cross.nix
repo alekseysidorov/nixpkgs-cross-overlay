@@ -22,7 +22,7 @@
 }:
 let
   # Fetch the nixpkgs-cross-overlay sources.
-  src = builtins.fetchTarball "http://github.com/alekseysidorov/nixpkgs-cross-overlay/tarball/${branch}";
+  src = builtins.fetchTarball "https://github.com/alekseysidorov/nixpkgs-cross-overlay/tarball/${branch}";
   # Use the nixpkgs revision provided by the overlay. 
   # This is the best way, as they are the most proven and compatible.
   nixpkgs = "${src}/utils/nixpkgs.nix";
@@ -38,28 +38,24 @@ in
 pkgs.mkShell {
   # Native project dependencies like build utilities and additional routines 
   # like container building, linters, etc.
-  nativeBuildInputs = with pkgs.pkgsBuildHost; [
-    pkg-config
-    git
-    cmake
-    perl
-
+  nativeBuildInputs = [
     # This overlay also provides the `rust-overlay`, so it is easy to override the default Rust toolchain setup.
     # Uncomment this line if you want to use the Rust toolchain provided by this shell.
-    rust-bin.stable.latest.default
-
+    pkgs.pkgsBuildHost.rust-bin.stable.latest.default
     # Will add some dependencies like libiconv.
-    rustBuildHostDependencies
+    pkgs.pkgsBuildHost.rustBuildHostDependencies
+    # Crates dependencies
+    pkgs.cargoDeps.audiopus_sys
+    pkgs.cargoDeps.rocksdb-sys
+    pkgs.cargoDeps.rdkafka-sys
+    pkgs.cargoDeps.openssl-sys
   ];
   # Libraries essential to build the service binaries.
   buildInputs = with pkgs; [
-    # Enable cross-compilation mode in Rust.
+    # Enable Rust cross-compilation support.
     rustCrossHook
-    # Add crate dependencies.
-    cargoDeps.rocksdb-sys
-    cargoDeps.rdkafka-sys
     # Some native libraries.
-    openssl.dev
+    icu
   ];
   # Prettify shell prompt.
   shellHook = "${pkgs.crossBashPrompt}";

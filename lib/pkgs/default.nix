@@ -17,15 +17,15 @@ let
   });
 in
 {
-  rustCrossHook = null;
-
-  mkEnvHook = final.callPackage ./hooks/mkEnvHook.nix { };
-
+  # Metapackage with all crates dependencies.
+  cargoDeps = (import ./crates prev);
+  # Link libc++ libraries together just like it's done in the Android NDK.
+  libcxx-full-static = prev.callPackage ./libcxx_static { };
   # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
   llvm-gcc_s-compat = prev.runCommand
     "llvm-gcc_s-compat"
     {
-      buildInputs = [
+      propagatedBuildInputs = [
         prev.llvmPackages.libunwind
       ];
     }
@@ -38,10 +38,6 @@ in
         fi
       done
     '';
-
-  # Link libc++ libraries together just like it's done in the Android NDK.
-  libcxx-full-static = prev.callPackage ./libraries/libcxx_static { };
-
   # Use libcxx as libstdc++ replacement on the LLVM targets.
   # It can fix some crates like Rocksdb that relies that there is only `libstdc++` 
   # on Linux systems.
@@ -50,7 +46,7 @@ in
       compat-dynamic = final.runCommand
         "libcxx-gcc-compat-dynamic"
         {
-          buildInputs = [
+          propagatedBuildInputs = [
             final.llvmPackages.libcxx
           ];
         }
@@ -67,7 +63,7 @@ in
       compat-static = final.runCommand
         "libcxx-gcc-compat-static"
         {
-          buildInputs = [
+          propagatedBuildInputs = [
             final.libcxx-full-static
           ];
         }
@@ -80,76 +76,6 @@ in
     in
     if isStatic then compat-static else compat-dynamic;
 
-  # Rust host dependencies
-  rustBuildHostDependencies = prev.callPackage
-    ({ pkgs
-     , darwin
-     , libiconv
-     , lib
-     }: [ ]
-    # Some additional libraries for the Darwin platform
-    ++ lib.optionals stdenv.isDarwin [
-      libiconv
-      darwin.apple_sdk.frameworks.CoreFoundation
-      darwin.apple_sdk.frameworks.CoreServices
-      darwin.apple_sdk.frameworks.IOKit
-      darwin.apple_sdk.frameworks.Security
-      darwin.apple_sdk.frameworks.SystemConfiguration
-    ])
-    { };
-
-  # Metapackage with all crates dependencies.
-  cargoDeps = (import ./crates prev);
-
-  # Nice shell prompt
-  crossBashPrompt = ''
-    PS1="\[\033[38;5;39m\]\w \[\033[38;5;35m\](${final.stdenv.targetPlatform.config}) \[\033[0m\]\$ "
-  '';
-
-  # Utility to copy built by cargo binary into the `bin` directory.
-  # Can be used to copy binaries built by the `nix-shell` with the corresponding Rust 
-  # toolchain to the docker images.
-  copyBinaryFromCargoBuild =
-    { name
-    , targetDir
-    , profile ? "release"
-    , targetPlatform ? if isCross then stdenv.targetPlatform.config else ""
-    , buildInputs ? [ ]
-    }:
-    let
-      cargo-binary-path = targetDir + "/${targetPlatform}/${profile}/${name}";
-    in
-    prev.runCommand
-      "copy-cargo-${name}-bin"
-      {
-        buildInputs = buildInputs ++ [
-          stdenv.cc.libc_lib
-        ]
-        # Non-gnu platforms use llvm libunwind replacement for libgcc_s.
-        ++ lib.optionals (!stdenv.targetPlatform.isGnu) [
-          final.llvm-gcc_s-compat
-        ];
-      }
-      ''
-        mkdir -p $out/bin
-        cp ${cargo-binary-path} $out/bin/${name}
-        chmod +x $out/bin/${name}
-      '';
-
-  # Remap sources to better compatiblity with perf utils.
-  cargoRemapShellHook = project:
-    let
-      extraRustcFlags = lib.optionalString isCross
-        (
-          "--remap-path-prefix=$HOME=/home/cprc"
-          + " --remap-path-prefix=$PWD=/home/cprc"
-        );
-    in
-    ''
-      # Remap sources
-      export RUSTFLAGS="$RUSTFLAGS ${extraRustcFlags}"
-    '';
-
   # Cmake-built Kafka works better than the origin one.
   rdkafka = prev.rdkafka.overrideAttrs (now: old: {
     nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
@@ -159,17 +85,14 @@ in
       "-DRDKAFKA_BUILD_EXAMPLES=0"
     ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
   });
-
   # Fix rocksdb on some environments.
   rocksdb = prev.rocksdb.overrideAttrs (now: old: {
-    # Fix form "relocation R_X86_64_32 against `.bss._ZGVZN12_GLOBAL__N_18key_initEvE2ks'"
+    # Fix "relocation R_X86_64_32 against `.bss._ZGVZN12_GLOBAL__N_18key_initEvE2ks'"
     cmakeFlags = old.cmakeFlags
     ++ lib.optional isStatic "-DCMAKE_POSITION_INDEPENDENT_CODE=ON";
   });
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
-  # Setup Rust for cross-compiling.
-  rustCrossHook = final.callPackage ./hooks/rustCrossHook.nix { };
   # Fix compilation by overriding the packages attributes.
   lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
   libuv = prev.libuv.overrideAttrs disableChecks;

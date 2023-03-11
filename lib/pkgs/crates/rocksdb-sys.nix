@@ -13,6 +13,8 @@ mkEnvHook {
 
   propagatedBuildInputs = [
     pkgs.pkgsBuildBuild.rustPlatform.bindgenHook
+  ];
+  depsTargetTargetPropagated = [
     rocksdb
   ]
   # The rocksdb build script thinks that Linux targets can have only the `libstdc++` library.
@@ -22,6 +24,5 @@ mkEnvHook {
   envVariables = {
     ROCKSDB_LIB_DIR = "${rocksdb}/lib";
     SNAPPY_LIB_DIR = "${snappy}/lib";
-    # CXXSTDLIB = "c++_static";
   };
 }

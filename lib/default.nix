@@ -1,0 +1,79 @@
+final: prev:
+let
+  lib = prev.lib;
+  stdenv = prev.stdenv;
+  isCross = stdenv.hostPlatform != stdenv.buildPlatform;
+
+  defaultTargetPlatform = if isCross then stdenv.targetPlatform.config else "";
+in
+{
+  rustCrossHook = final.callPackage ./hooks/rustCrossHook.nix { };
+  mkEnvHook = final.callPackage ./hooks/mkEnvHook.nix { };
+
+  # Rust host dependencies
+  rustBuildHostDependencies = prev.callPackage
+    ({ pkgs
+     , darwin
+     , libiconv
+     , lib
+     }: [ prev.pkgsBuildHost.git ]
+    # Some additional libraries for the Darwin platform
+    ++ lib.optionals stdenv.isDarwin [
+      libiconv
+      darwin.apple_sdk.frameworks.CoreFoundation
+      darwin.apple_sdk.frameworks.CoreServices
+      darwin.apple_sdk.frameworks.IOKit
+      darwin.apple_sdk.frameworks.Security
+      darwin.apple_sdk.frameworks.SystemConfiguration
+    ])
+    { };
+
+  # Nice shell prompt
+  crossBashPrompt = ''
+    PS1="\[\033[38;5;39m\]\w \[\033[38;5;35m\](${final.stdenv.targetPlatform.config}) \[\033[0m\]\$ "
+  '';
+
+  # Utility to copy built by cargo binary into the `bin` directory.
+  # Can be used to copy binaries built by the `nix-shell` with the corresponding Rust 
+  # toolchain to the docker images.
+  copyBinaryFromCargoBuild =
+    { name
+    , targetDir
+    , profile ? "release"
+    , targetPlatform ? defaultTargetPlatform
+    , buildInputs ? [ ]
+    }:
+    let
+      cargo-binary-path = targetDir + "/${targetPlatform}/${profile}/${name}";
+    in
+    prev.runCommand
+      "copy-cargo-${name}-bin"
+      {
+        buildInputs = buildInputs ++ [
+          stdenv.cc.libc_lib
+        ]
+        # Non-gnu platforms use llvm libunwind replacement for libgcc_s.
+        ++ lib.optionals (!stdenv.targetPlatform.isGnu) [
+          final.llvm-gcc_s-compat
+        ];
+      }
+      ''
+        mkdir -p $out/bin
+        cp ${cargo-binary-path} $out/bin/${name}
+        chmod +x $out/bin/${name}
+      '';
+
+  # Remap sources to better compatiblity with perf utils.
+  cargoRemapShellHook = project:
+    let
+      extraRustcFlags = lib.optionalString isCross
+        (
+          "--remap-path-prefix=$HOME=/home/cprc"
+          + " --remap-path-prefix=$PWD=/home/cprc"
+        );
+    in
+    ''
+      # Remap sources
+      export RUSTFLAGS="$RUSTFLAGS ${extraRustcFlags}"
+    '';
+} // (import ./pkgs final prev)
