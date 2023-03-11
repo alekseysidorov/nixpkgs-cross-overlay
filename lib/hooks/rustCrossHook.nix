@@ -7,6 +7,7 @@
 }:
 
 let
+  isCross = stdenv.hostPlatform != stdenv.buildPlatform;
   # FIXME: This workaround was taken from the
   # https://github.com/oxalica/rust-overlay/blob/be3a8a8b59aaec5cd96d3ea6e4470bd14bdd8b37/rust-overlay.nix#L18
   toRustTarget = platform:
@@ -25,11 +26,13 @@ let
   targetRustcFlags =
     if stdenv.targetPlatform.isStatic then "-Ctarget-feature=+crt-static"
     else "-Ctarget-feature=-crt-static";
-
-  isCross = stdenv.hostPlatform != stdenv.buildPlatform;
+  # Cross hook dependencies
+  hookDeps =
+    # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
+    lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvm-gcc_s-compat ];
 
   crossHook = (makeSetupHook
-    rec {
+    {
       name = "rust-cross-hook";
 
       substitutions = {
@@ -38,9 +41,8 @@ let
         nativePrefix = stdenv.cc.nativePrefix;
         targetPrefix = stdenv.cc.targetPrefix;
       };
-      # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
-      depsTargetTargetPropagated = lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvm-gcc_s-compat ];
-      propagatedBuildInputs = depsTargetTargetPropagated;
+      depsTargetTargetPropagated = hookDeps;
+      propagatedBuildInputs = hookDeps;
     }
     ./rust-cross-hook.sh
   );
