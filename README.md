@@ -7,7 +7,7 @@ and bugfixes to provide a better experience.
 nixpkgs-cross-overlay targets `nixos-unstable` channels, they are tested on CI.
 It may also work on other channels but it is not guaranteed.
 
-## Usage examples
+## Usage
 
 - [Standalone cross compilation Rust Shell](./examples/README.md)
 - [Rust service packaged to a docker image](https://github.com/alekseysidorov/nixpkgs-rust-service-example)

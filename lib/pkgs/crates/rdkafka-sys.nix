@@ -1,7 +1,6 @@
 { mkEnvHook
 , stdenv
 , rdkafka
-, cmake
 , openssl
 , zlib
 , lz4
@@ -17,7 +16,7 @@ let
       # Since there is lack of static linking via pkg-config in rdkafka-sys we
       # cannot use the rdkafka nix package.
       propagatedBuildInputs = [
-        cmake
+        pkgs.pkgsBuildHost.cmake
       ];
       depsTargetTargetPropagated = [
         openssl.dev
