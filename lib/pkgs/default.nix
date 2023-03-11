@@ -25,7 +25,7 @@ in
   llvm-gcc_s-compat = prev.runCommand
     "llvm-gcc_s-compat"
     {
-      buildInputs = [
+      propagatedBuildInputs = [
         prev.llvmPackages.libunwind
       ];
     }
@@ -46,7 +46,7 @@ in
       compat-dynamic = final.runCommand
         "libcxx-gcc-compat-dynamic"
         {
-          buildInputs = [
+          propagatedBuildInputs = [
             final.llvmPackages.libcxx
           ];
         }
@@ -63,7 +63,7 @@ in
       compat-static = final.runCommand
         "libcxx-gcc-compat-static"
         {
-          buildInputs = [
+          propagatedBuildInputs = [
             final.libcxx-full-static
           ];
         }
