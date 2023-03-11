@@ -55,7 +55,7 @@ pkgs.mkShell {
     # Enable cross-compilation mode in Rust.
     rustCrossHook
     # Some native libraries.
-    icu4c
+    icu
   ];
   # Prettify shell prompt.
   shellHook = "${pkgs.crossBashPrompt}";
