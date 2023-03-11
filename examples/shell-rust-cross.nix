@@ -22,7 +22,7 @@
 }:
 let
   # Fetch the nixpkgs-cross-overlay sources.
-  src = builtins.fetchTarball "http://github.com/alekseysidorov/nixpkgs-cross-overlay/tarball/${branch}";
+  src = builtins.fetchTarball "https://github.com/alekseysidorov/nixpkgs-cross-overlay/tarball/${branch}";
   # Use the nixpkgs revision provided by the overlay. 
   # This is the best way, as they are the most proven and compatible.
   nixpkgs = "${src}/utils/nixpkgs.nix";
