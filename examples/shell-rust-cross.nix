@@ -43,6 +43,8 @@ pkgs.mkShell {
     # This overlay also provides the `rust-overlay`, so it is easy to override the default Rust toolchain setup.
     # Uncomment this line if you want to use the Rust toolchain provided by this shell.
     rust-bin.stable.latest.default
+    # Enable cross-compilation mode in Rust.
+    pkgs.rustCrossHook
     # Will add some dependencies like libiconv.
     rustBuildHostDependencies
     # Crates dependencies
@@ -53,8 +55,6 @@ pkgs.mkShell {
   ];
   # Libraries essential to build the service binaries.
   buildInputs = with pkgs; [
-    # Enable cross-compilation mode in Rust.
-    rustCrossHook
     # Some native libraries.
     icu
   ];

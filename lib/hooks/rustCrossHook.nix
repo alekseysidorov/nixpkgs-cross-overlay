@@ -29,7 +29,7 @@ let
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
 
   crossHook = (makeSetupHook
-    {
+    rec {
       name = "rust-cross-hook";
 
       substitutions = {
@@ -39,7 +39,8 @@ let
         targetPrefix = stdenv.cc.targetPrefix;
       };
       # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
-      propagatedBuildInputs = lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvm-gcc_s-compat ];
+      depsTargetTargetPropagated = lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvm-gcc_s-compat ];
+      propagatedBuildInputs = depsTargetTargetPropagated;
     }
     ./rust-cross-hook.sh
   );
