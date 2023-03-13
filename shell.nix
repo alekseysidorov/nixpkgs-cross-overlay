@@ -23,7 +23,7 @@ pkgs.mkShell {
 
   buildInputs = with pkgs; [
     # Enable Rust cross-compilation support.
-    rustCrossHook
+    pkgs.rustCrossHook
     # List of tested native libraries.
     icu
     bash
