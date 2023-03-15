@@ -5,17 +5,15 @@ on:
 jobs:
   chatgpt_comment:
     runs-on: ubuntu-latest
-    name: ChatGPT Review
+    name: ChatGPT explain code
     steps:
-      - name: ChatGPT comment
-        uses: kxxt/chatgpt-action@v0.3
-        id: chatgpt
+      - name: ChatGTP explain code
+        uses: cirolini/chatgpt-github-actions@v1.3
         with:
-          number: ${{ github.event.pull_request.number }}
-          sessionToken: ${{ secrets.CHATGPT_SESSION_TOKEN }}
-          split: 'yolo'  # Use true to enable the unstable split feature.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          openai_api_key: ${{ secrets.CHATGPT_SESSION_TOKEN }}
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+          github_pr_id: ${{ github.event.number }}
+          mode: file # file or patch 
 
   lints:
     runs-on: ubuntu-latest
