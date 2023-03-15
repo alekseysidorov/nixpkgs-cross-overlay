@@ -3,18 +3,6 @@ on:
   pull_request:
 
 jobs:
-  chatgpt_comment:
-    runs-on: ubuntu-latest
-    name: ChatGPT explain code
-    steps:
-      - name: ChatGTP explain code
-        uses: cirolini/chatgpt-github-actions@v1.3
-        with:
-          openai_api_key: ${{ secrets.CHATGPT_SESSION_TOKEN }}
-          github_token: ${{ secrets.ACCESS_TOKEN }}
-          github_pr_id: ${{ github.event.number }}
-          mode: file # file or patch 
-
   lints:
     runs-on: ubuntu-latest
     steps:
