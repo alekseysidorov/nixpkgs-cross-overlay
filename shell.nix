@@ -18,13 +18,13 @@ pkgs.mkShell {
     nixpkgs-fmt
     dprint
   ]
-  # Build also all cargo deps.
+  # Build also all cargo deps
   ++ pkgs.cargoDeps.all;
 
   buildInputs = with pkgs; [
-    # Enable Rust cross-compilation support.
+    # Enable Rust cross-compilation support
     pkgs.rustCrossHook
-    # List of tested native libraries.
+    # List of tested native libraries
     icu
     bash
     bashInteractive
