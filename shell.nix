@@ -8,8 +8,6 @@ let
 in
 pkgs.mkShell {
   nativeBuildInputs = with pkgs.pkgsBuildHost; [
-    # Native utilities
-    protobuf
     # Setup Rust overlay
     (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
     # Will add some dependencies like libiconv

@@ -49,6 +49,7 @@ pkgs.mkShell {
     pkgs.cargoDeps.rocksdb-sys
     pkgs.cargoDeps.rdkafka-sys
     pkgs.cargoDeps.openssl-sys
+    pkgs.cargoDeps.prost
   ];
   # Libraries essential to build the service binaries.
   buildInputs = with pkgs; [
