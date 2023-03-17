@@ -1,10 +1,14 @@
 final: prev: {
   # Applies some patches on the nix packages to better cross-compilation support.
   mkCrossPkgs =
-    { src
+    {
+      # Nixpkgs sources snapshot
+      src
     , localSystem
     , crossSystem ? null
     , overlays ? [ ]
+      # Don't apply any patches to the nixpkgs snapshot referred to in the `src` argument
+    , useVanilla ? false
     }:
     let
       localPkgs = import src { inherit localSystem; };
@@ -20,7 +24,7 @@ final: prev: {
       };
 
       nixpkgs =
-        if (stdenv.isDarwin && crossSystem != null)
+        if !useVanilla && stdenv.isDarwin && crossSystem != null
         then patchedPkgs
         else src;
 

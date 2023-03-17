@@ -7,6 +7,7 @@ in
 , src ? lockFile.nixpkgs
 , config ? { }
 , overlays ? [ ]
+, useVanilla ? false
 }:
 let
   # Import local packages.
@@ -21,7 +22,7 @@ let
 in
 # Make cross system packages.
 pkgs.mkCrossPkgs {
-  inherit src localSystem crossSystem;
+  inherit src localSystem crossSystem useVanilla;
   # Setup extra overlays.
   overlays = [
     (import lockFile.rust-overlay)
