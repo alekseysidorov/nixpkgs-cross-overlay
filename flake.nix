@@ -18,7 +18,7 @@
       overlays =
         let
           nixpkgs-cross-overlay = import ./.;
-          rust-overlay' = import rust-overlay.overlays.default;
+          rust-overlay' = import rust-overlay;
         in
         {
           inherit nixpkgs-cross-overlay;
