@@ -13,7 +13,16 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, rust-overlay, }: { } // flake-utils.lib.eachDefaultSystem
+  outputs = { flake-utils, rust-overlay, ... }: {
+    overlays = rec {
+      inherit rust-overlay;
+      nixpkgs-cross-overlay = import ./.;
+      # Export as a flake overlay including all dependent overlays.
+      default = final: prev:
+        (rust-overlay final prev)
+          // (nixpkgs-cross-overlay final prev);
+    };
+  } // flake-utils.lib.eachDefaultSystem
     (localSystem:
       {
         devShells = {
