@@ -13,25 +13,31 @@
     };
   };
 
-  outputs = { flake-utils, rust-overlay, ... }: {
-    overlays = rec {
-      inherit rust-overlay;
-      nixpkgs-cross-overlay = import ./.;
-      # Export as a flake overlay including all dependent overlays.
-      default = final: prev:
-        (rust-overlay final prev)
-          // (nixpkgs-cross-overlay final prev);
-    };
-  } // flake-utils.lib.eachDefaultSystem
-    (localSystem:
-      {
-        devShells = {
-          default = import ./shell.nix { inherit localSystem; };
-          cross = import ./shell.nix {
-            inherit localSystem;
-            crossSystem = { config = "x86_64-unknown-linux-musl"; useLLVM = true; };
-          };
+  outputs = { flake-utils, rust-overlay, ... }:
+    {
+      overlays =
+        let
+          nixpkgs-cross-overlay = import ./.;
+          rust-overlay' = import rust-overlay.overlays.default;
+        in
+        {
+          inherit nixpkgs-cross-overlay;
+          rust-overlay = rust-overlay';
+          # Export as a flake overlay including all dependent overlays.
+          default = final: prev:
+            (rust-overlay' final prev)
+            // (nixpkgs-cross-overlay final prev);
         };
-      }
-    );
+    } // flake-utils.lib.eachDefaultSystem
+      (localSystem:
+        {
+          devShells = {
+            default = import ./shell.nix { inherit localSystem; };
+            cross = import ./shell.nix {
+              inherit localSystem;
+              crossSystem = { config = "x86_64-unknown-linux-musl"; useLLVM = true; };
+            };
+          };
+        }
+      );
 }
