@@ -42,21 +42,27 @@ in
     , profile ? "release"
     , targetPlatform ? defaultTargetPlatform
     , buildInputs ? [ ]
+    , derivationArgs ? { inherit buildInputs; }
     }:
     let
       cargo-binary-path = targetDir + "/${targetPlatform}/${profile}/${name}";
+      # Add an extra build inputs to the derivation args
+      commandEnv = derivationArgs // {
+        buildInputs =
+          [
+            stdenv.cc.libc_lib
+          ]
+          # Non-gnu platforms use llvm libunwind replacement for libgcc_s.
+          ++ lib.optionals (!stdenv.targetPlatform.isGnu) [
+            final.llvm-gcc_s-compat
+          ]
+          ++ lib.optionals (builtins.hasAttr "buildInputs" derivationArgs) derivationArgs.buildInputs
+        ;
+      };
     in
     prev.runCommand
       "copy-cargo-${name}-bin"
-      {
-        buildInputs = buildInputs ++ [
-          stdenv.cc.libc_lib
-        ]
-        # Non-gnu platforms use llvm libunwind replacement for libgcc_s.
-        ++ lib.optionals (!stdenv.targetPlatform.isGnu) [
-          final.llvm-gcc_s-compat
-        ];
-      }
+      commandEnv
       ''
         mkdir -p $out/bin
         cp ${cargo-binary-path} $out/bin/${name}
