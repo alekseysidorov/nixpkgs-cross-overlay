@@ -91,6 +91,8 @@ in
     cmakeFlags = old.cmakeFlags
     ++ lib.optional isStatic "-DCMAKE_POSITION_INDEPENDENT_CODE=ON";
   });
+  # Use a newest LLVM instead of an old one in order to fix snappy cross-compilation.
+  llvmPackages = prev.llvmPackages_14;
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.
