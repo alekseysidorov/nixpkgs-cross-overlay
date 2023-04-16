@@ -26,12 +26,12 @@ in
     "llvm-gcc_s-compat"
     {
       propagatedBuildInputs = [
-        prev.llvmPackages.libunwind
+        final.llvmPackages.libunwind
       ];
     }
     ''
       mkdir -p $out/lib
-      libdir=${prev.llvmPackages.libunwind}/lib
+      libdir=${final.llvmPackages.libunwind}/lib
       for dylibtype in so dylib a dll; do
         if [ -e "$libdir/libunwind.$dylibtype" ]; then
           ln -svf $libdir/libunwind.$dylibtype $out/lib/libgcc_s.$dylibtype
