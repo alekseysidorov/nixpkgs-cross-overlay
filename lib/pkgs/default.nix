@@ -4,6 +4,7 @@ let
   stdenv = prev.stdenv;
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
   isStatic = stdenv.targetPlatform.isStatic;
+  isClang = stdenv.cc.isClang;
 
   # Fix 'x86_64-unknown-linux-musl-gcc: error: unrecognized command-line option' error
   gccCrossCompileWorkaround = (final: prev: {
@@ -91,8 +92,11 @@ in
     cmakeFlags = old.cmakeFlags
     ++ lib.optional isStatic "-DCMAKE_POSITION_INDEPENDENT_CODE=ON";
   });
-  # Use a newest LLVM instead of an old one in order to fix snappy cross-compilation.
-  llvmPackages = prev.llvmPackages_12;
+  # Fix snappy cross-compilation.
+  snappy = prev.snappy.overrideAttrs (now: old: {
+    # Fix "error: comparison of integers of different signs: 'unsigned long' and 'ptrdiff_t"
+    env.NIX_CFLAGS_COMPILE = lib.optionalString isClang "-Wno-sign-compare";
+  });
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.
