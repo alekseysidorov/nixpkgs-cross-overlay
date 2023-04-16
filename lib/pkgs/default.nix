@@ -97,6 +97,11 @@ in
     # Fix "error: comparison of integers of different signs: 'unsigned long' and 'ptrdiff_t"
     env.NIX_CFLAGS_COMPILE = lib.optionalString isClang "-Wno-sign-compare";
   });
+  # Useful utilites
+  cargo-espflash = prev.callPackage ./utils/cargo-espflash.nix { };
+  espflash = prev.callPackage ./utils/espflash.nix { };
+  ldproxy = prev.callPackage ./utils/ldproxy.nix { };
+  espup = prev.callPackage ./utils/espup.nix { };
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.
