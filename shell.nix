@@ -15,6 +15,11 @@ pkgs.mkShell {
     # Linters
     nixpkgs-fmt
     dprint
+    # Useful utilites
+    ldproxy
+    espflash
+    espup
+    cargo-espflash
   ]
   # Build also all cargo deps
   ++ pkgs.cargoDeps.all;

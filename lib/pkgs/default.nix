@@ -4,6 +4,7 @@ let
   stdenv = prev.stdenv;
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
   isStatic = stdenv.targetPlatform.isStatic;
+  isClang = stdenv.cc.isClang;
 
   # Fix 'x86_64-unknown-linux-musl-gcc: error: unrecognized command-line option' error
   gccCrossCompileWorkaround = (final: prev: {
@@ -26,12 +27,12 @@ in
     "llvm-gcc_s-compat"
     {
       propagatedBuildInputs = [
-        prev.llvmPackages.libunwind
+        final.llvmPackages.libunwind
       ];
     }
     ''
       mkdir -p $out/lib
-      libdir=${prev.llvmPackages.libunwind}/lib
+      libdir=${final.llvmPackages.libunwind}/lib
       for dylibtype in so dylib a dll; do
         if [ -e "$libdir/libunwind.$dylibtype" ]; then
           ln -svf $libdir/libunwind.$dylibtype $out/lib/libgcc_s.$dylibtype
@@ -91,6 +92,16 @@ in
     cmakeFlags = old.cmakeFlags
     ++ lib.optional isStatic "-DCMAKE_POSITION_INDEPENDENT_CODE=ON";
   });
+  # Fix snappy cross-compilation.
+  snappy = prev.snappy.overrideAttrs (now: old: {
+    # Fix "error: comparison of integers of different signs: 'unsigned long' and 'ptrdiff_t"
+    env.NIX_CFLAGS_COMPILE = lib.optionalString isClang "-Wno-sign-compare";
+  });
+  # Useful utilites
+  cargo-espflash = prev.callPackage ./utils/cargo-espflash.nix { };
+  espflash = prev.callPackage ./utils/espflash.nix { };
+  ldproxy = prev.callPackage ./utils/ldproxy.nix { };
+  espup = prev.callPackage ./utils/espup.nix { };
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.

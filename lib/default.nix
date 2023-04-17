@@ -6,7 +6,7 @@ let
 
   defaultTargetPlatform = if isCross then stdenv.targetPlatform.config else "";
 in
-{
+rec {
   rustCrossHook = final.callPackage ./hooks/rustCrossHook.nix { };
   mkEnvHook = final.callPackage ./hooks/mkEnvHook.nix { };
 
@@ -28,10 +28,11 @@ in
     ])
     { };
 
-  # Nice shell prompt
-  crossBashPrompt = ''
+  # Nice shell prompt maker
+  mkBashPrompt = envName: ''
     PS1="\[\033[38;5;39m\]\w \[\033[38;5;35m\](${final.stdenv.targetPlatform.config}) \[\033[0m\]\$ "
   '';
+  crossBashPrompt = mkBashPrompt final.stdenv.targetPlatform.config;
 
   # Utility to copy built by cargo binary into the `bin` directory.
   # Can be used to copy binaries built by the `nix-shell` with the corresponding Rust 
