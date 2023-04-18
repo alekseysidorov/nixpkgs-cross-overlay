@@ -21,7 +21,7 @@ let
       depsTargetTargetPropagated = [
         openssl.dev
       ];
-      envVariables = { };
+      env = { };
     } else {
       # We can just rdkafka nix package.
       propagatedBuildInputs = [
@@ -35,7 +35,7 @@ let
         zstd.dev
       ];
       # We have to force a several cargo features in the rdkafka
-      envVariables = {
+      env = {
         CARGO_FEATURE_DYNAMIC_LINKING = true;
         CARGO_FEATURE_EXTERNAL_LZ4 = true;
         CARGO_FEATURE_ZSTD_PKG_CONFIG = true;

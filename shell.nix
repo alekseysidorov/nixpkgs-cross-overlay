@@ -35,11 +35,4 @@ pkgs.mkShell {
   ];
 
   shellHook = "${pkgs.crossBashPrompt}";
-
-  # Make it buildable, to make it possible to upload it to cache
-  phases = [ "installPhase" ];
-  installPhase = ''
-    mkdir -p $out
-    echo "''${buildInputs}"        > $out/inputs.txt
-  '';
 }

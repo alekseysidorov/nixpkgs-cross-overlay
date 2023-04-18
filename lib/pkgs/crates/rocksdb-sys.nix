@@ -4,7 +4,6 @@
 , pkgs
 , lib
 , stdenv
-, llvmPackages
 , libcxx-gcc-compat
 }:
 
@@ -21,7 +20,7 @@ mkEnvHook {
   # We have to pretend that the `libc++` is the `libstdc++`.
   ++ lib.optionals stdenv.cc.isClang [ libcxx-gcc-compat ];
 
-  envVariables = {
+  env = {
     ROCKSDB_LIB_DIR = "${rocksdb}/lib";
     SNAPPY_LIB_DIR = "${snappy}/lib";
   };
