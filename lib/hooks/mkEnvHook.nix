@@ -1,7 +1,7 @@
 { lib, writeTextFile, makeSetupHook }:
 
 { name
-, envVariables ? { }
+, env ? { }
 , substitutions ? { }
   # hooks go in nativeBuildInput so these will be nativeBuildInput
 , propagatedBuildInputs ? [ ]
@@ -10,7 +10,7 @@
 , passthru ? { }
 }:
 let
-  exportList = lib.mapAttrsToList (name: value: "export ${name}=${builtins.toString value}") envVariables;
+  exportList = lib.mapAttrsToList (name: value: "export ${name}=${builtins.toString value}") env;
 
   shellScript = writeTextFile {
     name = "env-hook";

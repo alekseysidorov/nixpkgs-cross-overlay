@@ -12,7 +12,7 @@ mkEnvHook {
     protobuf
   ];
 
-  envVariables = {
+  env = {
     PROTOC = "${protobuf}/bin/protoc";
     PROTOC_INCLUDE = "${protobuf}/include";
   };
