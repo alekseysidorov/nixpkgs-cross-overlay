@@ -30,7 +30,7 @@ rec {
 
   # Nice shell prompt maker
   mkBashPrompt = envName: ''
-    PS1="\[\033[38;5;39m\]\w \[\033[38;5;35m\](${final.stdenv.targetPlatform.config}) \[\033[0m\]\$ "
+    PS1="\[\033[38;5;39m\]\w \[\033[38;5;35m\](${envName}) \[\033[0m\]\$ "
   '';
   crossBashPrompt = mkBashPrompt final.stdenv.targetPlatform.config;
 
