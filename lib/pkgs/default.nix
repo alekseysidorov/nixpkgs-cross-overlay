@@ -110,4 +110,5 @@ in
   libopus = prev.libopus.overrideAttrs disableChecks;
   gmp = prev.gmp.overrideAttrs disableChecks;
   zlib = prev.zlib.overrideAttrs disableChecks;
+  gnugrep = prev.gnugrep.overrideAttrs disableChecks;
 }
