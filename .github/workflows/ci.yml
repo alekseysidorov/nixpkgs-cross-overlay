@@ -32,7 +32,6 @@ jobs:
           # - '{ config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = false; }'
           # - '{ config = "aarch64-unknown-linux-musl"; useLLVM = false; isStatic = false; }'
 
-
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3

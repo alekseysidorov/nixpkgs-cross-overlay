@@ -33,7 +33,8 @@
         {
           devShells = {
             default = import ./shell.nix { inherit localSystem; };
-            cross = import ./shell.nix {
+            # Example cross shell.
+            example-cross = import ./shell.nix {
               inherit localSystem;
               crossSystem = { config = "x86_64-unknown-linux-musl"; useLLVM = true; };
             };
