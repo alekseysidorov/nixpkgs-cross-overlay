@@ -13,11 +13,11 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "cargo-espflash";
-  version = "2.0.0-rc.3";
+  version = "2.0.0-rc.4";
 
   src = fetchCrate {
     inherit pname version;
-    sha256 = "sha256-c2wgdPh70xPnW0KCIPQ6snQNdLPeF6J7VQNoxSYojE8=";
+    sha256 = "sha256-ILz33pwKeH867gJrFrZzJK945cxTyAXl4Pvvqha05WE=";
   };
 
   nativeBuildInputs = [
@@ -36,7 +36,7 @@ rustPlatform.buildRustPackage rec {
     darwin.apple_sdk.frameworks.SystemConfiguration
   ];
 
-  cargoSha256 = "sha256-AHgXZMYm9syD3k+PwXeawSLrGELTgWjrZWVXBRXBwKw=";
+  cargoSha256 = "sha256-SpXxTTs1re8PPqZurm+K7mPFJ2X2Jjl0j9/SmKaX1Y0=";
 
   meta = with lib; {
     description = "Cargo subcommand for flashing Espressif devices over serial";

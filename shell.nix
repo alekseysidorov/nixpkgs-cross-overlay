@@ -26,7 +26,7 @@ pkgs.mkShell {
 
   buildInputs = with pkgs; [
     # Enable Rust cross-compilation support
-    pkgs.rustCrossHook
+    rustCrossHook
     # List of tested native libraries
     icu
     bash
@@ -35,4 +35,21 @@ pkgs.mkShell {
   ];
 
   shellHook = "${pkgs.crossBashPrompt}";
+
+  # Minimal shell for partialy supported targets.
+  passthru.minimalShell = pkgs.mkShell {
+    nativeBuildInputs = with pkgs.pkgsBuildHost; [
+      # Setup Rust overlay
+      (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
+      # Will add some dependencies like libiconv
+      rustBuildHostDependencies
+    ];
+
+    buildInputs = with pkgs; [
+      # Enable Rust cross-compilation support
+      rustCrossHook
+    ];
+
+    shellHook = "${pkgs.crossBashPrompt}";
+  };
 }
