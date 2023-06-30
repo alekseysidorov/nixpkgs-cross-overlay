@@ -13,11 +13,11 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "espflash";
-  version = "2.0.0-rc.4";
+  version = "2.0.0";
 
   src = fetchCrate {
     inherit pname version;
-    sha256 = "sha256-BMGKFDkgme2rnrU2mrk/OLnCg5GigTcg7EGEE1zJ1E8=";
+    sha256 = "sha256-m/FeXCwIq5TcCrmEN+J0/bmjkqpQcNh9CU5rXdhs4jE=";
   };
 
   nativeBuildInputs = [
@@ -36,7 +36,7 @@ rustPlatform.buildRustPackage rec {
     darwin.apple_sdk.frameworks.SystemConfiguration
   ];
 
-  cargoSha256 = "sha256-QD74VpOtkp17g4gW8Q70V2aa6RGEuEPsT2urZKFeK2g=";
+  cargoSha256 = "sha256-mOdJ6ZyMjUg+tipTVZ+yOXhD2heziBR5pVsehP5IG3A=";
 
   # Failed to get partition table
   doCheck = false;
