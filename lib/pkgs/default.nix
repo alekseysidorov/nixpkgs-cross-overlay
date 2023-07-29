@@ -98,7 +98,6 @@ in
     env.NIX_CFLAGS_COMPILE = lib.optionalString isClang "-Wno-sign-compare";
   });
   # Useful utilites
-  cargo-espflash = prev.callPackage ./utils/cargo-espflash.nix { };
   espflash = prev.callPackage ./utils/espflash.nix { };
   ldproxy = prev.callPackage ./utils/ldproxy.nix { };
   espup = prev.callPackage ./utils/espup.nix { };
