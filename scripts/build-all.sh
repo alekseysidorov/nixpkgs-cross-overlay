@@ -19,5 +19,5 @@ for CROSS_SYSTEM in "${CROSS_SYSTEMS[@]}"
         nix-shell --pure --arg crossSystem "${CROSS_SYSTEM}" --run ./tests/crates/build_all.sh
 
         echo "-> Pushing '${CROSS_SYSTEM}' artifacts to the Cachix"
-        cachix push nixpkgs-cross-overlay "$BUILD_OUTPUT" -j1
+        cachix push nixpkgs-cross-overlay "$BUILD_OUTPUT" -j4
     done
