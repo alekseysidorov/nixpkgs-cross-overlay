@@ -1,5 +1,7 @@
 # nixpkgs-cross-overlay
 
+![nixos-unstable](https://github.com/alekseysidorov/nixpkgs-cross-overlay/actions/workflows/ci.yml/badge.svg)
+
 Nix Package Manager has incredible cross-compilation support, but vanilla packages
 sometimes have some cross-compilation issues. This overlay contains some extensions
 and bugfixes to provide a better experience.
