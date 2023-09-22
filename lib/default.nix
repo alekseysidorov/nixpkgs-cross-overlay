@@ -17,7 +17,10 @@ rec {
      , libiconv
      , lib
      }:
-      [ prev.pkgsBuildHost.git ]
+      [
+        prev.pkgsBuildHost.git
+        prev.pkgsBuildHost.zlib.dev
+      ]
       # Some additional libraries for the Darwin platform
       ++ lib.optionals stdenv.isDarwin [
         libiconv
