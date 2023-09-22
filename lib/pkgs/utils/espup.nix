@@ -10,11 +10,11 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "espup";
-  version = "0.4.1";
+  version = "0.5.0";
 
   src = fetchCrate {
     inherit pname version;
-    sha256 = "sha256-VqeUG2gyAnzedzuCqwlGI9F5FL+z7OuaR2pv8J5J39M=";
+    sha256 = "sha256-ZqeZvhqyhuFk+5lGLdrX6vUu0kXZ/NFLzLIAl1nyUcU=";
   };
 
   nativeBuildInputs = [ pkg-config perl ];
@@ -22,7 +22,7 @@ rustPlatform.buildRustPackage rec {
     darwin.apple_sdk.frameworks.Security
   ];
 
-  cargoSha256 = "sha256-GYhF6VDBAieZbu4x9EiQVVJkmx0aRYK0xwGGP0nuVGc=";
+  cargoSha256 = "sha256-ZKku6ElEtYXxwqeWTDKcCuZ4Wgqonc0B9nMyNd0VcdU=";
 
   # thread 'tests::test_get_export_file' panicked at 'assertion failed: get_export_file(Some(home_dir)).is_err()', src/main.rs:542:9
   doCheck = false;

@@ -17,7 +17,6 @@ pkgs.mkShell {
     dprint
     # Useful utilites
     ldproxy
-    espflash
     espup
     cargo-espflash
   ]
