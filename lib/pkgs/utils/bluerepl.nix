@@ -4,6 +4,8 @@
 , darwin
 , stdenv
 , bluez
+, pkg-config
+, dbus
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -15,12 +17,14 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-LYWs8VjOCdjoc+A6tklVmkg0eW8m8lNIRCwZ1u7HrDc=";
   };
 
-  buildInputs = lib.optionals stdenv.isLinux [ bluez ]
-    ++
-    lib.optionals stdenv.isDarwin [
-      darwin.apple_sdk.frameworks.AppKit
-      darwin.apple_sdk.frameworks.CoreBluetooth
-    ];
+  nativeBuildInputs = [ pkg-config ];
+  buildInputs = lib.optionals stdenv.isLinux [
+    bluez.dev
+    dbus.dev
+  ] ++ lib.optionals stdenv.isDarwin [
+    darwin.apple_sdk.frameworks.AppKit
+    darwin.apple_sdk.frameworks.CoreBluetooth
+  ];
 
   cargoSha256 = "sha256-BbgAVdkH3LiFVyWwRl/dE5SReDSOayZjX3Rw9vJ49Q0=";
 
