@@ -17,9 +17,9 @@ pkgs.mkShell {
     dprint
     # Useful utilites
     ldproxy
-    espflash
     espup
     cargo-espflash
+    bluerepl
   ]
   # Build also all cargo deps
   ++ pkgs.cargoDeps.all;

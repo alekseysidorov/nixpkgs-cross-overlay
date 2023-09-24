@@ -98,9 +98,9 @@ in
     env.NIX_CFLAGS_COMPILE = lib.optionalString isClang "-Wno-sign-compare";
   });
   # Useful utilites
-  espflash = prev.callPackage ./utils/espflash.nix { };
   ldproxy = prev.callPackage ./utils/ldproxy.nix { };
   espup = prev.callPackage ./utils/espup.nix { };
+  bluerepl = prev.callPackage ./utils/bluerepl.nix { };
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.
