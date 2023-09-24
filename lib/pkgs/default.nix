@@ -101,6 +101,7 @@ in
   ldproxy = prev.callPackage ./utils/ldproxy.nix { };
   espup = prev.callPackage ./utils/espup.nix { };
   bluerepl = prev.callPackage ./utils/bluerepl.nix { };
+  blendr = prev.callPackage ./utils/blendr.nix { };
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.

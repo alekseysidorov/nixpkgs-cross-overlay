@@ -20,6 +20,7 @@ pkgs.mkShell {
     espup
     cargo-espflash
     bluerepl
+    blendr
   ]
   # Build also all cargo deps
   ++ pkgs.cargoDeps.all;
