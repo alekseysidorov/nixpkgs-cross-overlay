@@ -26,6 +26,7 @@ jobs:
           - '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = false;  }'
           - '{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false;  }'
           - '{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = true;  }'
+          - '{ config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = true;  }'
           # Broken targets
           # - '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = true;  }'
           # - '{ config = "x86_64-unknown-linux-gnu"; useLLVM = false; isStatic = false;  }'
