@@ -15,7 +15,7 @@ jobs:
           name: nixpkgs-cross-overlay
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
-      - run: nix flake check
+      - run: nix flake check --all-systems
 
   build-cache:
     strategy:
