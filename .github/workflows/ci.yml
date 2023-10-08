@@ -20,7 +20,7 @@ jobs:
   build-cache:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, macos-latest-xlarge]
         crossSystem:
           - 'null'
           - '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = false;  }'
