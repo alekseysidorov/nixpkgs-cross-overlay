@@ -8,6 +8,7 @@ CROSS_SYSTEMS=(
     '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = false; }'
     '{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }'
     '{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = true; }'
+    # '{ config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = true; }'
 )
 
 for CROSS_SYSTEM in "${CROSS_SYSTEMS[@]}"
@@ -19,5 +20,5 @@ for CROSS_SYSTEM in "${CROSS_SYSTEMS[@]}"
         nix-shell --pure --arg crossSystem "${CROSS_SYSTEM}" --run ./tests/crates/build_all.sh
 
         echo "-> Pushing '${CROSS_SYSTEM}' artifacts to the Cachix"
-        cachix push nixpkgs-cross-overlay "$BUILD_OUTPUT" -j4
+        cachix push nixpkgs-cross-overlay "$BUILD_OUTPUT"
     done

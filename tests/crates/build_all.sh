@@ -1,5 +1,5 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
+#
 set -eo pipefail
 
 current_dir="$( dirname -- "$BASH_SOURCE"; )";
