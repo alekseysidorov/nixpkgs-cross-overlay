@@ -37,16 +37,14 @@ pkgs.mkShell {
 
   shellHook = "${pkgs.crossBashPrompt}";
 
-  checkPhase = ''
-    tests/crates/build_all.sh
-  '';
-  doCheck = true;
-
   # Minimal shell for partialy supported targets.
   passthru.minimalShell = pkgs.mkShell {
     nativeBuildInputs = with pkgs.pkgsBuildHost; [
-      # Setup Rust overlay
-      (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
+      # Manage Rust via rustup
+      rustup
+      # Uncomment following line to setup Rust via overlay
+      # (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
+      
       # Will add some dependencies like libiconv
       rustBuildHostDependencies
     ];
