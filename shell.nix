@@ -8,7 +8,7 @@ let
 in
 pkgs.mkShell {
   nativeBuildInputs = with pkgs.pkgsBuildHost; [
-    # Setup Rust overlay
+    # Setup rust
     (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
     # Will add some dependencies like libiconv
     rustBuildHostDependencies
@@ -40,11 +40,8 @@ pkgs.mkShell {
   # Minimal shell for partialy supported targets.
   passthru.minimalShell = pkgs.mkShell {
     nativeBuildInputs = with pkgs.pkgsBuildHost; [
-      # Manage Rust via rustup
-      rustup
-      # Uncomment following line to setup Rust via overlay
-      # (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
-      
+      # Setup rust
+      (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
       # Will add some dependencies like libiconv
       rustBuildHostDependencies
     ];
