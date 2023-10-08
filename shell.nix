@@ -14,7 +14,7 @@ pkgs.mkShell {
     rustBuildHostDependencies
     # Linters
     nixpkgs-fmt
-    dprint
+    shellcheck
     # Useful utilites
     ldproxy
     espup
@@ -36,6 +36,11 @@ pkgs.mkShell {
   ];
 
   shellHook = "${pkgs.crossBashPrompt}";
+
+  checkPhase = ''
+    tests/crates/build_all.sh
+  '';
+  doCheck = true;
 
   # Minimal shell for partialy supported targets.
   passthru.minimalShell = pkgs.mkShell {
