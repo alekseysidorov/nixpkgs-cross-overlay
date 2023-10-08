@@ -10,12 +10,14 @@
       };
     };
     treefmt-nix.url = "github:numtide/treefmt-nix";
+    flake-root.url = "github:srid/flake-root";
   };
 
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         inputs.treefmt-nix.flakeModule
+        inputs.flake-root.flakeModule
       ];
 
       systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
@@ -45,7 +47,9 @@
         # system.
 
         devShells = {
-          default = import ./shell.nix { localSystem = system; };
+          default = import ./shell.nix { localSystem = system; }
+            # Add treefmt to your devshell
+            // config.treefmt.build.devShell;
           # Example cross shell.
           example-cross = import ./shell.nix {
             localSystem = system;
@@ -54,11 +58,12 @@
         };
 
         treefmt.config = {
-          projectRootFile = "flake.nix";
+          inherit (config.flake-root) projectRootFile;
           programs.nixpkgs-fmt.enable = true;
           programs.rustfmt.enable = true;
           programs.beautysh.enable = true;
           programs.deno.enable = true;
+          programs.taplo.enable = true;
         };
 
         formatter = config.treefmt.build.wrapper;
