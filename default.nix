@@ -29,5 +29,9 @@ final: prev: {
     import nixpkgs {
       inherit localSystem crossSystem;
       overlays = [ crossOverlay ] ++ overlays;
+      config.packageOverrides = pkgs: {
+        # HACK: Don't use antique LLVM 11
+        llvmPackages = pkgs.llvmPackages_latest;
+      };
     };
 } // (import ./lib final prev)
