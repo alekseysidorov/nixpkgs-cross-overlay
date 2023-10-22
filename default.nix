@@ -21,7 +21,7 @@ final: prev: {
 
       nixpkgs =
         if (stdenv.isDarwin && crossSystem != null)
-        then patchedPkgs
+        then src # patchedPkgs
         else src;
 
       crossOverlay = import ./.;
