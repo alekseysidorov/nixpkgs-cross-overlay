@@ -1,6 +1,5 @@
 { mkEnvHook
 , pkgs
-, zstd
 , openssl
 }:
 
