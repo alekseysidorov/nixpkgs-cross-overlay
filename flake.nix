@@ -32,12 +32,11 @@
             rust-overlay' = import inputs.rust-overlay;
           in
           {
-            inherit nixpkgs-cross-overlay;
+            default = nixpkgs-cross-overlay;
             rust-overlay = rust-overlay';
             # Export as a flake overlay including all dependent overlays.
-            default = final: prev:
-              (rust-overlay' final prev)
-              // (nixpkgs-cross-overlay final prev);
+            full = final: prev:
+              (rust-overlay' final prev) // (nixpkgs-cross-overlay final prev);
           };
       };
 
