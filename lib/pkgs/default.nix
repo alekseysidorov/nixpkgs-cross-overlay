@@ -78,7 +78,7 @@ in
     if isStatic then compat-static else compat-dynamic;
 
   # TODO Remove this package when nixpkgs will update their rdkafka package
-  rdkafka = prev.callPackage ./rdkafka.nix {};
+  rdkafka = prev.callPackage ./rdkafka.nix { };
   # Cmake-built Kafka works better than the origin one.
   # rdkafka = prev.rdkafka.overrideAttrs (now: old: {
   #   nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
