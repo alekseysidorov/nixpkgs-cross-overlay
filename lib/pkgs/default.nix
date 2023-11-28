@@ -101,7 +101,6 @@ in
   });
   # Useful utilites
   ldproxy = prev.callPackage ./utils/ldproxy.nix { };
-  espup = prev.callPackage ./utils/espup.nix { };
   bluerepl = prev.callPackage ./utils/bluerepl.nix { };
   blendr = prev.callPackage ./utils/blendr.nix { };
 } # Special case for the cross-compilation.

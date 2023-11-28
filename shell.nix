@@ -17,8 +17,6 @@ pkgs.mkShell {
     shellcheck
     # Useful utilites
     ldproxy
-    espup
-    cargo-espflash
     bluerepl
     blendr
   ]
