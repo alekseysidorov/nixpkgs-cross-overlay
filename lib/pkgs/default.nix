@@ -77,17 +77,18 @@ in
     in
     if isStatic then compat-static else compat-dynamic;
 
-  # TODO Remove this package when nixpkgs will update their rdkafka package
-  rdkafka = prev.callPackage ./rdkafka.nix { };
   # Cmake-built Kafka works better than the origin one.
-  # rdkafka = prev.rdkafka.overrideAttrs (now: old: {
-  #   nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
-  #   buildInputs = old.buildInputs ++ [ final.lz4 final.openssl.dev ];
-  #   cmakeFlags = [
-  #     "-DRDKAFKA_BUILD_TESTS=0"
-  #     "-DRDKAFKA_BUILD_EXAMPLES=0"
-  #   ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
-  # });
+  rdkafka = prev.rdkafka.overrideAttrs (now: old: {
+    nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
+    buildInputs = old.buildInputs ++ [ final.lz4 final.openssl.dev ];
+    cmakeFlags = [
+      "-DRDKAFKA_BUILD_TESTS=0"
+      "-DRDKAFKA_BUILD_EXAMPLES=0"
+    ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
+  });
+  # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
+  # rdkafka = prev.callPackage ./rdkafka.nix { };
+
   # Fix rocksdb on some environments.
   rocksdb = prev.rocksdb.overrideAttrs (now: old: {
     # Fix "relocation R_X86_64_32 against `.bss._ZGVZN12_GLOBAL__N_18key_initEvE2ks'"
