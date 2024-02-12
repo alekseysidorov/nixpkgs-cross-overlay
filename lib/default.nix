@@ -15,11 +15,13 @@ rec {
     ({ pkgs
      , darwin
      , libiconv
+     , cacert
      , lib
      }:
       [
         prev.pkgsBuildHost.git
         prev.pkgsBuildHost.zlib.dev
+        cacert
       ]
       # Some additional libraries for the Darwin platform
       ++ lib.optionals stdenv.isDarwin [
