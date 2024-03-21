@@ -6,8 +6,8 @@ Nix Package Manager has incredible cross-compilation support, but vanilla
 packages sometimes have some cross-compilation issues. This overlay contains
 some extensions and bugfixes to provide a better experience.
 
-nixpkgs-cross-overlay targets `nixos-23.11` channels, they are tested on CI.
-It may also work on other channels but it is not guaranteed.
+nixpkgs-cross-overlay targets `nixos-23.11` channels, they are tested on CI. It
+may also work on other channels but it is not guaranteed.
 
 ## Usage
 
