@@ -27,6 +27,7 @@ pkgs.mkShell {
     # List of tested native libraries
     icu
     coreutils
+    fdbPackages.foundationdb73
   ];
 
   shellHook = "${pkgs.crossBashPrompt}";

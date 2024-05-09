@@ -1,5 +1,4 @@
-{ lib
-, stdenv
+{ stdenv
 , cmake
 , llvmPackages
 }:
