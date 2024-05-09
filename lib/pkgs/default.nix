@@ -78,16 +78,16 @@ in
     if isStatic then compat-static else compat-dynamic;
 
   # Cmake-built Kafka works better than the origin one.
-  # rdkafka = prev.rdkafka.overrideAttrs (now: old: {
-  #   nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
-  #   buildInputs = old.buildInputs ++ [ final.lz4 final.openssl.dev ];
-  #   cmakeFlags = [
-  #     "-DRDKAFKA_BUILD_TESTS=0"
-  #     "-DRDKAFKA_BUILD_EXAMPLES=0"
-  #   ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
-  # });
+  rdkafka = prev.rdkafka.overrideAttrs (now: old: {
+    nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
+    buildInputs = old.buildInputs ++ [ final.lz4 final.openssl.dev ];
+    cmakeFlags = [
+      "-DRDKAFKA_BUILD_TESTS=0"
+      "-DRDKAFKA_BUILD_EXAMPLES=0"
+    ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
+  });
   # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
-  rdkafka = prev.callPackage ./rdkafka.nix { };
+  # rdkafka = prev.callPackage ./rdkafka.nix { };
 
   # Fix rocksdb on some environments.
   rocksdb = prev.rocksdb.overrideAttrs (now: old: {
@@ -102,8 +102,6 @@ in
   });
   # Useful utilites
   ldproxy = prev.callPackage ./utils/ldproxy.nix { };
-  bluerepl = prev.callPackage ./utils/bluerepl.nix { };
-  blendr = prev.callPackage ./utils/blendr.nix { };
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.

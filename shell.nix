@@ -17,8 +17,6 @@ pkgs.mkShell {
     shellcheck
     # Useful utilites
     ldproxy
-    bluerepl
-    blendr
   ]
   # Build also all cargo deps
   ++ pkgs.cargoDeps.all;
@@ -28,8 +26,6 @@ pkgs.mkShell {
     rustCrossHook
     # List of tested native libraries
     icu
-    bash
-    bashInteractive
     coreutils
   ];
 
