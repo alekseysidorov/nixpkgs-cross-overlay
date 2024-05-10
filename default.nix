@@ -4,10 +4,11 @@ final: prev: {
     { src
     , localSystem
     , crossSystem ? null
+    , config ? { }
     , overlays ? [ ]
     }:
     let
-      localPkgs = import src { inherit localSystem; };
+      localPkgs = import src { inherit localSystem config; };
       stdenv = localPkgs.stdenv;
 
       patchedPkgs = localPkgs.applyPatches {
@@ -27,7 +28,7 @@ final: prev: {
       crossOverlay = import ./.;
     in
     import nixpkgs {
-      inherit localSystem crossSystem;
+      inherit localSystem crossSystem config;
       overlays = [ crossOverlay ] ++ overlays;
     };
 } // (import ./lib final prev)
