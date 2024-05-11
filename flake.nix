@@ -49,10 +49,16 @@
           default = import ./shell.nix { localSystem = system; }
             # Add treefmt to your devshell
             // config.treefmt.build.devShell;
-          # Example cross shell.
+
+          # Example cross shells
           example-cross = import ./shell.nix {
             localSystem = system;
             crossSystem = { config = "x86_64-unknown-linux-musl"; useLLVM = true; };
+          };
+
+          example-cross-gnu = import ./shell.nix {
+            localSystem = system;
+            crossSystem = { config = "x86_64-unknown-linux-gnu"; };
           };
         };
 

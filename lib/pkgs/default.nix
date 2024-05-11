@@ -102,8 +102,7 @@ in
   });
   # Useful utilites
   ldproxy = prev.callPackage ./utils/ldproxy.nix { };
-  bluerepl = prev.callPackage ./utils/bluerepl.nix { };
-  blendr = prev.callPackage ./utils/blendr.nix { };
+  fdbPackages = prev.callPackage ./foundationdb { };
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.
