@@ -102,7 +102,6 @@ in
   });
   # Useful utilites
   ldproxy = prev.callPackage ./utils/ldproxy.nix { };
-  fdbPackages = prev.callPackage ./foundationdb { };
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.
