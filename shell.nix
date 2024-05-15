@@ -26,7 +26,6 @@ pkgs.mkShell {
     rustCrossHook
     # List of tested native libraries
     icu
-    coreutils
   ];
 
   shellHook = "${pkgs.crossBashPrompt}";
