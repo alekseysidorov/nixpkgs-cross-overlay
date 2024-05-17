@@ -105,7 +105,6 @@ in
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.
-  bash = prev.bash.overrideAttrs gccCrossCompileWorkaround;
   gmp = prev.gmp.overrideAttrs disableChecks;
   gnugrep = prev.gnugrep.overrideAttrs disableChecks;
   libopus = prev.libopus.overrideAttrs disableChecks;
