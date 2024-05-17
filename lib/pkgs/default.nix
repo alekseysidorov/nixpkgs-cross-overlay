@@ -102,14 +102,13 @@ in
   });
   # Useful utilites
   ldproxy = prev.callPackage ./utils/ldproxy.nix { };
-  fdbPackages = prev.callPackage ./foundationdb { };
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.
-  lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
-  libuv = prev.libuv.overrideAttrs disableChecks;
-  libopus = prev.libopus.overrideAttrs disableChecks;
   gmp = prev.gmp.overrideAttrs disableChecks;
-  zlib = prev.zlib.overrideAttrs disableChecks;
   gnugrep = prev.gnugrep.overrideAttrs disableChecks;
+  libopus = prev.libopus.overrideAttrs disableChecks;
+  libuv = prev.libuv.overrideAttrs disableChecks;
+  lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
+  zlib = prev.zlib.overrideAttrs disableChecks;
 }
