@@ -18,7 +18,7 @@ pkgs.mkShell {
     # Useful utilites
     ldproxy
     # Cache llvm stdenv on gcc platforms
-    llvmPackages.libcxxStdenv
+    (pkgs.hello.override { stdenv = llvmPackages.libcxxStdenv; })
   ]
   # Build also all cargo deps
   ++ pkgs.cargoDeps.all;
