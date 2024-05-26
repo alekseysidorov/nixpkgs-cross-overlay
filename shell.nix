@@ -26,12 +26,13 @@ pkgs.mkShell {
     rustCrossHook
     # List of tested native libraries
     icu
-    boost178
     coreutils
     bash
-    msgpack-cxx
     toml11
     nano
+  ] ++ lib.optionals (!stdenv.cc.isClang) [
+    msgpack-cxx
+    boost178
   ];
 
   shellHook = "${pkgs.crossBashPrompt}";
