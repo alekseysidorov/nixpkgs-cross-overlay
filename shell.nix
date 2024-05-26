@@ -17,6 +17,8 @@ pkgs.mkShell {
     shellcheck
     # Useful utilites
     ldproxy
+    # Cache llvm stdenv on gcc platforms
+    llvmPackages.libcxxStdenv
   ]
   # Build also all cargo deps
   ++ pkgs.cargoDeps.all;
