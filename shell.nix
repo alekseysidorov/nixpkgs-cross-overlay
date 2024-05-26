@@ -30,7 +30,7 @@ pkgs.mkShell {
     bash
     toml11
     nano
-  ] ++ lib.optionals (!stdenv.cc.isClang) [
+  ] ++ lib.optionals (!stdenv.cc.isClang && !stdenv.targetPlatform.isMusl) [
     msgpack-cxx
     boost178
   ];
