@@ -27,11 +27,11 @@ pkgs.mkShell {
     # List of tested native libraries
     icu
     boost178
-    jemalloc
     coreutils
     bash
     msgpack-cxx
     toml11
+    nano
   ];
 
   shellHook = "${pkgs.crossBashPrompt}";
