@@ -17,6 +17,8 @@ pkgs.mkShell {
     shellcheck
     # Useful utilites
     ldproxy
+    # Cache llvm stdenv on gcc platforms
+    (pkgs.hello.override { stdenv = llvmPackages.libcxxStdenv; })
   ]
   # Build also all cargo deps
   ++ pkgs.cargoDeps.all;
@@ -26,6 +28,13 @@ pkgs.mkShell {
     rustCrossHook
     # List of tested native libraries
     icu
+    coreutils
+    bash
+    toml11
+    nano
+  ] ++ lib.optionals (!stdenv.targetPlatform.isMusl) [
+    msgpack-cxx
+    boost178
   ];
 
   shellHook = "${pkgs.crossBashPrompt}";
