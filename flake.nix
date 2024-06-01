@@ -9,46 +9,55 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    flake-root.url = "github:srid/flake-root";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [
-        inputs.treefmt-nix.flakeModule
-        inputs.flake-root.flakeModule
-      ];
+  outputs =
+    { self
+    , nixpkgs
+    , rust-overlay
+    , flake-utils
+    , treefmt-nix
+    }: flake-utils.lib.eachDefaultSystem
+      (system:
+      let
+        # Setup nixpkgs.
+        pkgs = import nixpkgs {
+          inherit system;
 
-      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+          overlays = [
+            (import rust-overlay)
+          ];
+        };
+        treefmt = (treefmt-nix.lib.evalModule pkgs ./treefmt.nix).config.build;
 
-      flake = {
-        # The usual flake attributes can be defined here, including system-
-        # agnostic ones like nixosModule and system-enumerating ones, although
-        # those are more easily expressed in perSystem.
-        overlays =
-          let
-            nixpkgs-cross-overlay = import ./.;
-            rust-overlay' = import inputs.rust-overlay;
-          in
-          {
-            default = nixpkgs-cross-overlay;
-            rust-overlay = rust-overlay';
-            # Export as a flake overlay including all dependent overlays.
-            full = final: prev:
-              (rust-overlay' final prev) // (nixpkgs-cross-overlay final prev);
-          };
-      };
-
-      perSystem = { config, self', inputs', pkgs, system, ... }: {
-        # Per-system attributes can be defined here. The self' and inputs'
-        # module parameters provide easy access to attributes of the same
-        # system.
+        # List of supported cross systems 
+        supportedCrossSystems = [
+          ''null''
+          ''{ config = "x86_64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }''
+          ''{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }''
+          ''{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }''
+          ''{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = true; }''
+          ''{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = false; }''
+          ''{ config = "aarch64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }''
+          ''{ config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = false; }''
+          ''{ config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = true; }''
+          ''{ config = "aarch64-unknown-linux-musl"; useLLVM = false; isStatic = false; }''
+          ''{ config = "riscv64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }''
+        ];
+      in
+      {
+        # for `nix fmt`
+        formatter = treefmt.wrapper;
+        # for `nix flake check`
+        checks.formatting = treefmt.check self;
 
         devShells = {
-          default = import ./shell.nix { localSystem = system; }
-            # Add treefmt to your devshell
-            // config.treefmt.build.devShell;
+          default = import ./shell.nix { localSystem = system; };
 
           # Example cross shells
           example-cross = import ./shell.nix {
@@ -62,16 +71,61 @@
           };
         };
 
-        treefmt.config = {
-          inherit (config.flake-root) projectRootFile;
-          programs.nixpkgs-fmt.enable = true;
-          programs.rustfmt.enable = true;
-          programs.beautysh.enable = true;
-          programs.deno.enable = true;
-          programs.taplo.enable = true;
-        };
+        packages = rec {
+          build-cross-system = pkgs.writeShellApplication {
+            name = "build-cross-system";
+            runtimeInputs = with pkgs; [ nix ];
+            text = ''
+              CROSS_SYSTEM="''${1:-null}"
 
-        formatter = config.treefmt.build.wrapper;
-      };
+              echo "-> Compiling '$CROSS_SYSTEM' cross system" >&2
+              BUILD_OUTPUT=$(nix-build shell.nix -A inputDerivation --arg crossSystem "$CROSS_SYSTEM")
+
+              echo "-> Performing '$CROSS_SYSTEM' testing" >&2
+              nix-shell --pure --arg crossSystem "$CROSS_SYSTEM" --run ./tests/crates/build_all.sh
+              echo "$BUILD_OUTPUT"
+            '';
+          };
+
+          push-all = with pkgs; writeShellApplication {
+            name = "push-all";
+            runtimeInputs = [ nix build-cross-system ];
+            text =
+              let
+                push-all = lib.lists.foldr
+                  (crossSystem: output:
+                    let
+                      cmd = ''
+                        # Compile '${crossSystem}'
+                        BUILD_OUTPUT=$(build-cross-system '${crossSystem}')
+                        echo "-> Pushing artifacts to the Cachix"
+                        cachix push nixpkgs-cross-overlay "$BUILD_OUTPUT"
+
+                      '';
+                    in
+                    cmd + output)
+                  "";
+              in
+              push-all supportedCrossSystems;
+          };
+        };
+      })
+    # System independent modules.
+    // {
+      # The usual flake attributes can be defined here, including system-
+      # agnostic ones like nixosModule and system-enumerating ones, although
+      # those are more easily expressed in perSystem.
+      overlays =
+        let
+          nixpkgs-cross-overlay = import ./.;
+          rust-overlay' = (import rust-overlay);
+        in
+        {
+          default = nixpkgs-cross-overlay;
+          rust-overlay = rust-overlay';
+          # Export as a flake overlay including all dependent overlays.
+          full = final: prev:
+            (rust-overlay' final prev) // (nixpkgs-cross-overlay final prev);
+        };
     };
 }
