@@ -82,7 +82,7 @@
               BUILD_OUTPUT=$(nix-build shell.nix -A inputDerivation --arg crossSystem "$CROSS_SYSTEM")
 
               echo "-> Performing '$CROSS_SYSTEM' testing" >&2
-              nix-shell --pure --arg crossSystem "$CROSS_SYSTEM" --run ./tests/crates/build_all.sh
+              nix-shell --pure --arg crossSystem "$CROSS_SYSTEM" --run cargo-tests.sh
               echo "$BUILD_OUTPUT"
             '';
           };
