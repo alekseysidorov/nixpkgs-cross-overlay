@@ -76,38 +76,22 @@
 
         devShells = mkDevShells supportedCrossSystems;
 
-        packages = {
-          build-cross-system = pkgs.writeShellApplication {
-            name = "build-cross-system";
-            runtimeInputs = with pkgs; [ nix ];
-            text = ''
-              CROSS_SYSTEM="''${1:-null}"
-
-              echo "-> Compiling '$CROSS_SYSTEM' cross system" >&2
-              BUILD_OUTPUT=$(nix-build shell.nix -A inputDerivation --arg crossSystem "$CROSS_SYSTEM")
-
-              echo "-> Testing '$CROSS_SYSTEM'" >&2
-              nix-shell --pure --arg crossSystem "$CROSS_SYSTEM" --run cargo-tests.sh >&2
-              echo "$BUILD_OUTPUT"
-            '';
-          };
-
-          push-all = with pkgs; writeShellApplication {
-            name = "push-all";
-            runtimeInputs = [ cachix ];
-            text = pkgs.lib.attrsets.foldlAttrs
-              (output: name: crossShell:
-                ''
-                  cachix push nixpkgs-cross-overlay ${crossShell}
-                  echo "-> Pushed artifacts of ${name} to cachix"
-                ''
-                + output)
+        packages.push-all = with pkgs; writeShellApplication {
+          name = "push-all";
+          runtimeInputs = [ cachix ];
+          
+          text = pkgs.lib.attrsets.foldlAttrs
+            (output: name: crossShell:
               ''
-                cachix push nixpkgs-cross-overlay ${devShells.default}
-                echo "-> Pushed artifacts of native shell to cachix"
+                cachix push nixpkgs-cross-overlay ${crossShell}
+                echo "-> Pushed artifacts of ${name} to cachix"
               ''
-              devShells;
-          };
+              + output)
+            ''
+              cachix push nixpkgs-cross-overlay ${devShells.default}
+              echo "-> Pushed artifacts of native shell to cachix"
+            ''
+            devShells;
         };
       })
     # System independent modules.
