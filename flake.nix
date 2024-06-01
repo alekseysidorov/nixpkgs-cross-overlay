@@ -37,41 +37,46 @@
 
         # List of supported cross systems 
         supportedCrossSystems = [
-          ''null''
-          ''{ config = "x86_64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }''
-          ''{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }''
-          ''{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }''
-          ''{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = true; }''
-          ''{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = false; }''
-          ''{ config = "aarch64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }''
-          ''{ config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = false; }''
-          ''{ config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = true; }''
-          ''{ config = "aarch64-unknown-linux-musl"; useLLVM = false; isStatic = false; }''
-          ''{ config = "riscv64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }''
+          { config = "x86_64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }
+          { config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }
+          { config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }
+          { config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = true; }
+          { config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = false; }
+          { config = "aarch64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }
+          { config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = false; }
+          { config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = true; }
+          { config = "aarch64-unknown-linux-musl"; useLLVM = false; isStatic = false; }
+          { config = "riscv64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }
         ];
+
+        mkDevShells = pkgs.lib.lists.foldr
+          (crossSystem: output:
+            let
+              compiler = if crossSystem.useLLVM then "llvm" else "gcc";
+              ty = if crossSystem.isStatic then "static" else "dymanic";
+            in
+            output // {
+              "cross/${crossSystem.config}/${compiler}/${ty}" = import ./shell.nix {
+                localSystem = system;
+                inherit crossSystem;
+              };
+            })
+          {
+            default = import ./shell.nix {
+              localSystem = system;
+            };
+          };
       in
+      rec
       {
         # for `nix fmt`
         formatter = treefmt.wrapper;
         # for `nix flake check`
         checks.formatting = treefmt.check self;
 
-        devShells = {
-          default = import ./shell.nix { localSystem = system; };
+        devShells = mkDevShells supportedCrossSystems;
 
-          # Example cross shells
-          example-cross = import ./shell.nix {
-            localSystem = system;
-            crossSystem = { config = "x86_64-unknown-linux-musl"; useLLVM = true; };
-          };
-
-          example-cross-gnu = import ./shell.nix {
-            localSystem = system;
-            crossSystem = { config = "x86_64-unknown-linux-gnu"; };
-          };
-        };
-
-        packages = rec {
+        packages = {
           build-cross-system = pkgs.writeShellApplication {
             name = "build-cross-system";
             runtimeInputs = with pkgs; [ nix ];
@@ -81,32 +86,27 @@
               echo "-> Compiling '$CROSS_SYSTEM' cross system" >&2
               BUILD_OUTPUT=$(nix-build shell.nix -A inputDerivation --arg crossSystem "$CROSS_SYSTEM")
 
-              echo "-> Performing '$CROSS_SYSTEM' testing" >&2
-              nix-shell --pure --arg crossSystem "$CROSS_SYSTEM" --run cargo-tests.sh
+              echo "-> Testing '$CROSS_SYSTEM'" >&2
+              nix-shell --pure --arg crossSystem "$CROSS_SYSTEM" --run cargo-tests.sh >&2
               echo "$BUILD_OUTPUT"
             '';
           };
 
           push-all = with pkgs; writeShellApplication {
             name = "push-all";
-            runtimeInputs = [ nix build-cross-system ];
-            text =
-              let
-                push-all = lib.lists.foldr
-                  (crossSystem: output:
-                    let
-                      cmd = ''
-                        # Compile '${crossSystem}'
-                        BUILD_OUTPUT=$(build-cross-system '${crossSystem}')
-                        echo "-> Pushing artifacts to the Cachix"
-                        cachix push nixpkgs-cross-overlay "$BUILD_OUTPUT"
-
-                      '';
-                    in
-                    cmd + output)
-                  "";
-              in
-              push-all supportedCrossSystems;
+            runtimeInputs = [ cachix ];
+            text = pkgs.lib.attrsets.foldlAttrs
+              (output: name: crossShell:
+                ''
+                  cachix push nixpkgs-cross-overlay ${crossShell}
+                  echo "-> Pushed artifacts of ${name} to cachix"
+                ''
+                + output)
+              ''
+                cachix push nixpkgs-cross-overlay ${devShells.default}
+                echo "-> Pushed artifacts of native shell to cachix"
+              ''
+              devShells;
           };
         };
       })

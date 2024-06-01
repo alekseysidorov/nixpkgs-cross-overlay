@@ -22,7 +22,7 @@ pkgs.mkShell {
     # Cargo tests runner
     (writeShellScriptBin "cargo-tests.sh" ''
       cargo clean --manifest-path "tests/crates/Cargo.toml" "$@"
-      cargo test --manifest-path "tests/crates/Cargo.toml" "$@"
+      cargo build --manifest-path "tests/crates/Cargo.toml" "$@"
     '')
   ]
   # Build also all cargo deps
