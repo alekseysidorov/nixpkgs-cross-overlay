@@ -49,14 +49,17 @@
           { config = "riscv64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }
         ];
 
+        mkDevShellName = crossSystem:
+          let
+            compiler = if crossSystem.useLLVM then "llvm" else "gcc";
+            ty = if crossSystem.isStatic then "static" else "dymanic";
+          in
+          "cross/${crossSystem.config}/${compiler}/${ty}";
+
         mkDevShells = pkgs.lib.lists.foldr
           (crossSystem: output:
-            let
-              compiler = if crossSystem.useLLVM then "llvm" else "gcc";
-              ty = if crossSystem.isStatic then "static" else "dymanic";
-            in
             output // {
-              "cross/${crossSystem.config}/${compiler}/${ty}" = import ./shell.nix {
+              "${mkDevShellName crossSystem}" = import ./shell.nix {
                 localSystem = system;
                 inherit crossSystem;
               };
@@ -79,18 +82,15 @@
         packages.push-all = with pkgs; writeShellApplication {
           name = "push-all";
           runtimeInputs = [ cachix ];
-          
+
           text = pkgs.lib.attrsets.foldlAttrs
-            (output: name: crossShell:
+            (output: name: drv:
               ''
-                cachix push nixpkgs-cross-overlay ${crossShell}
+                cachix push nixpkgs-cross-overlay ${drv}
                 echo "-> Pushed artifacts of ${name} to cachix"
               ''
               + output)
-            ''
-              cachix push nixpkgs-cross-overlay ${devShells.default}
-              echo "-> Pushed artifacts of native shell to cachix"
-            ''
+            ""
             devShells;
         };
       })
