@@ -67,11 +67,11 @@
           else
             "default";
 
-        foreachCrossSystem = (f:
+        foreachCrossSystem = (name: f:
           pkgs.lib.lists.foldr
             (crossSystem: output:
               output // {
-                "${mkDevShellName "crossShell" crossSystem}" = (f crossSystem);
+                "${mkDevShellName name crossSystem}" = (f crossSystem);
               })
             { }
             supportedCrossSystems);
@@ -82,14 +82,14 @@
         # for `nix flake check`
         checks.formatting = treefmt.check self;
 
-        devShells = foreachCrossSystem (crossSystem:
+        devShells = foreachCrossSystem "crossShell" (crossSystem:
           import ./shell.nix {
             localSystem = system; inherit crossSystem;
           });
 
         packages =
           # Targets for CI. 
-          foreachCrossSystem
+          foreachCrossSystem "pkgs"
             (crossSystem:
               import ./tests {
                 inherit pkgs;
