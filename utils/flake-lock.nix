@@ -4,7 +4,7 @@
 # This method was taken from the `flake-compat` project.
 # https://github.com/edolstra/flake-compat/blob/master/default.nix#L16
 
-{ src, system ? builtins.currentSystem or "unknown-system" }:
+{ src }:
 let
   lockFilePath = src + "/flake.lock";
   lockFile = builtins.fromJSON (builtins.readFile lockFilePath);

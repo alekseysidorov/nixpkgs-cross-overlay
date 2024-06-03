@@ -7,9 +7,12 @@ final: prev: {
     , config ? { }
     , overlays ? [ ]
     }:
+
     let
       localPkgs = import src { inherit localSystem config; };
       stdenv = localPkgs.stdenv;
+
+      targetIsMusl = crossSystem != null && localPkgs.lib.strings.hasInfix "musl" crossSystem.config;
 
       patchedPkgs = localPkgs.applyPatches {
         name = "patched-pkgs";
@@ -21,7 +24,7 @@ final: prev: {
       };
 
       nixpkgs =
-        if (stdenv.isDarwin && crossSystem != null)
+        if (stdenv.isDarwin && targetIsMusl)
         then patchedPkgs
         else src;
 
