@@ -79,8 +79,8 @@
 
         devShells = mkDevShells supportedCrossSystems;
 
-        packages.push-all = with pkgs; writeShellApplication {
-          name = "push-all";
+        packages.pushAll = with pkgs; writeShellApplication {
+          name = "pushAll";
           runtimeInputs = [ cachix ];
 
           text = pkgs.lib.attrsets.foldlAttrs
