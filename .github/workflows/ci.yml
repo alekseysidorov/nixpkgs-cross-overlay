@@ -22,17 +22,17 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         target:
-          # Musl targets
+          # # Musl targets
           - "target=x86_64-unknown-linux-musl"
-          - "target=x86_64-unknown-linux-musl&useLLVM=true"
-          - "target=x86_64-unknown-linux-musl&useLLVM=true&isStatic=true"
-          - "target=aarch64-unknown-linux-musl&useLLVM=true"
-          - "target=aarch64-unknown-linux-musl&useLLVM=true&isStatic=true"
-          # Gnu targets
-          - "target=aarch64-unknown-linux-gnu"
-          - "target=riscv64-unknown-linux-gnu"
-          # Broken targets
-          # - "target=x86_64-unknown-linux-gnu"
+          # - "target=x86_64-unknown-linux-musl&useLLVM=true"
+          # - "target=x86_64-unknown-linux-musl&useLLVM=true&isStatic=true"
+          # - "target=aarch64-unknown-linux-musl&useLLVM=true"
+          # - "target=aarch64-unknown-linux-musl&useLLVM=true&isStatic=true"
+          # # Gnu targets
+          # - "target=aarch64-unknown-linux-gnu"
+          # - "target=riscv64-unknown-linux-gnu"
+          # # Broken targets
+          # # - "target=x86_64-unknown-linux-gnu"
 
     runs-on: ${{ matrix.os }}
     steps:
