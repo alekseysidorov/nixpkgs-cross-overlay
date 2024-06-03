@@ -48,10 +48,10 @@ jobs:
         uses: tj-actions/branch-names@v6
 
       - name: "Build Packages"
-        run:  nix build .#pkgs?'${{ matrix.target }}'
+        run:  nix build ".#pkgs?${{ matrix.target }}"
   
       - name: "Check devshell"
-        run:  nix develop .#crossShell?'${{ matrix.target }}' --command "cargo-tests.sh"
+        run:  nix develop ".#crossShell?${{ matrix.target }}" --command "cargo-tests.sh"
   
   test-example-shell:
     strategy:
