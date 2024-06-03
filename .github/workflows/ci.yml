@@ -21,19 +21,18 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        crossSystem:
-          - 'null'
-          - '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = false;  }'
-          - '{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false;  }'
-          - '{ config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = true;  }'
-          - '{ config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = false; }'
-          - '{ config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = true; }'
-          - '{ config = "aarch64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }'
-          - '{ config = "riscv64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }'
+        target:
+          # Musl targets
+          - "target=x86_64-unknown-linux-musl"
+          - "target=x86_64-unknown-linux-musl&useLLVM=true"
+          - "target=x86_64-unknown-linux-musl&useLLVM=true&isStatic=true"
+          - "target=aarch64-unknown-linux-musl&useLLVM=true"
+          - "target=aarch64-unknown-linux-musl&useLLVM=true&isStatic=true"
+          # Gnu targets
+          - "target=aarch64-unknown-linux-gnu"
+          - "target=riscv64-unknown-linux-gnu"
           # Broken targets
-          # - '{ config = "x86_64-unknown-linux-gnu"; useLLVM = false; isStatic = false;  }'
-          # - '{ config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = true;  }'
-          # - '{ config = "aarch64-unknown-linux-musl"; useLLVM = false; isStatic = false; }'
+          # - "target=x86_64-unknown-linux-gnu"
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -50,18 +49,17 @@ jobs:
         uses: tj-actions/branch-names@v6
 
       - name: "Build Packages"
-        run: |
-          nix-build shell.nix \
-            --no-out-link \
-            --arg crossSystem '${{ matrix.crossSystem }}'
-      - name: "Test default shell"
-        run: |
-          nix-shell --pure \
-            --arg crossSystem '${{ matrix.crossSystem }}' \
-            --run "cargo-tests.sh"
+        run:  nix build ".#pkgs?${{ matrix.target }}"
+  
+      - name: "Check devshell"
+        run:  nix develop ".#crossShell?${{ matrix.target }}" --command "cargo-tests.sh"
   
   test-example-shell:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - uses: cachix/install-nix-action@v22
@@ -74,6 +72,10 @@ jobs:
       - name: Get branch name
         id: branch-name
         uses: tj-actions/branch-names@v6
+
+      - name: "Check devshell"
+        run:  nix develop --command "cargo-tests.sh"
+
       - name: "Test example shell"
         run: |
           nix-shell ./examples/shell-rust-cross.nix \
