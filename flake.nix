@@ -87,29 +87,31 @@
             localSystem = system; inherit crossSystem;
           });
 
-        packages = {
-          pkgsAll = import ./tests {
-            inherit pkgs;
-            localSystem = system;
-            crossSystems = supportedCrossSystems;
-            src = nixpkgs;
-          };
+        packages =
+          # Targets for CI. 
+          foreachCrossSystem
+            (crossSystem:
+              import ./tests {
+                inherit pkgs;
+                localSystem = system;
+                crossSystems = [ crossSystem ];
+                src = nixpkgs;
+              })
+          # Other targets.
+          // {
+            pkgsAll = import ./tests {
+              inherit pkgs;
+              localSystem = system;
+              crossSystems = supportedCrossSystems;
+              src = nixpkgs;
+            };
 
-          pushAll = with pkgs; writeShellApplication {
-            name = "push-all";
-            runtimeInputs = [
-              cachix
-              nix 
-            ];
-            text = ''cachix push nixpkgs-cross-overlay "$(nix build .#pushAll --print-out-paths)"'';
+            pushAll = with pkgs; writeShellApplication {
+              name = "push-all";
+              runtimeInputs = [ cachix nix ];
+              text = ''cachix push nixpkgs-cross-overlay "$(nix build .#pushAll --print-out-paths)"'';
+            };
           };
-        } // foreachCrossSystem (crossSystem:
-          import ./tests {
-            inherit pkgs;
-            localSystem = system;
-            crossSystems = [ crossSystem ];
-            src = nixpkgs;
-          });
       })
     # System independent modules.
     // {
