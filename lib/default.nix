@@ -21,6 +21,7 @@ rec {
       [
         prev.pkgsBuildHost.git
         prev.pkgsBuildHost.zlib.dev
+        prev.pkgsBuildHost.libiconv
         cacert
       ]
       # Some additional libraries for the Darwin platform

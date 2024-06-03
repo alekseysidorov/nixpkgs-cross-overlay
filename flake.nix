@@ -31,12 +31,14 @@
 
           overlays = [
             (import rust-overlay)
+            (import ./.)
           ];
         };
         treefmt = (treefmt-nix.lib.evalModule pkgs ./treefmt.nix).config.build;
 
         # List of supported cross systems 
         supportedCrossSystems = [
+          null
           { config = "x86_64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }
           { config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }
           { config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }
@@ -49,50 +51,56 @@
           { config = "riscv64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }
         ];
 
-        mkDevShellName = crossSystem:
+        mkDevShellName = name: crossSystem:
           let
-            compiler = if crossSystem.useLLVM then "llvm" else "gcc";
-            ty = if crossSystem.isStatic then "static" else "dymanic";
-          in
-          "cross/${crossSystem.config}/${compiler}/${ty}";
+            useLLVM =
+              if crossSystem.useLLVM
+              then "&useLLVM=true"
+              else "";
+            isStatic =
+              if crossSystem.isStatic
+              then "&isStatic=true"
+              else "";
 
-        mkDevShells = pkgs.lib.lists.foldr
-          (crossSystem: output:
-            output // {
-              "${mkDevShellName crossSystem}" = import ./shell.nix {
-                localSystem = system;
-                inherit crossSystem;
-              };
-            })
-          {
-            default = import ./shell.nix {
-              localSystem = system;
-            };
-          };
+            targetStr = "${name}?target=${crossSystem.config}${useLLVM}${isStatic}";
+          in
+          if crossSystem != null then targetStr else "default";
       in
-      rec
       {
         # for `nix fmt`
         formatter = treefmt.wrapper;
         # for `nix flake check`
         checks.formatting = treefmt.check self;
 
-        devShells = mkDevShells supportedCrossSystems;
+        devShells = pkgs.lib.lists.foldr
+          (crossSystem: output:
+            output // {
+              "${mkDevShellName "crossShell" crossSystem}" = import ./shell.nix {
+                localSystem = system; inherit crossSystem;
+              };
+            })
+          { }
+          supportedCrossSystems;
 
-        packages.pushAll = with pkgs; writeShellApplication {
-          name = "pushAll";
-          runtimeInputs = [ cachix ];
-
-          text = pkgs.lib.attrsets.foldlAttrs
-            (output: name: drv:
-              ''
-                cachix push nixpkgs-cross-overlay ${drv}
-                echo "-> Pushed artifacts of ${name} to cachix"
-              ''
-              + output)
-            ""
-            devShells;
-        };
+        packages = pkgs.lib.lists.foldr
+          (crossSystem: output:
+            output // {
+              "${mkDevShellName "pkgs" crossSystem}" = import ./tests {
+                inherit pkgs;
+                localSystem = system;
+                crossSystems = [ crossSystem ];
+                src = nixpkgs;
+              };
+            })
+          {
+            pkgsAll = import ./tests {
+              inherit pkgs;
+              localSystem = system;
+              crossSystems = supportedCrossSystems;
+              src = nixpkgs;
+            };
+          }
+          supportedCrossSystems;
       })
     # System independent modules.
     // {
