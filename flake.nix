@@ -61,10 +61,20 @@
               if crossSystem.isStatic
               then "&isStatic=true"
               else "";
-
-            targetStr = "${name}?target=${crossSystem.config}${useLLVM}${isStatic}";
           in
-          if crossSystem != null then targetStr else "default";
+          if crossSystem != null then
+            "${name}?target=${crossSystem.config}${useLLVM}${isStatic}"
+          else
+            "default";
+
+        foreachCrossSystem = (f:
+          pkgs.lib.lists.foldr
+            (crossSystem: output:
+              output // {
+                "${mkDevShellName "crossShell" crossSystem}" = (f crossSystem);
+              })
+            { }
+            supportedCrossSystems);
       in
       {
         # for `nix fmt`
@@ -72,35 +82,34 @@
         # for `nix flake check`
         checks.formatting = treefmt.check self;
 
-        devShells = pkgs.lib.lists.foldr
-          (crossSystem: output:
-            output // {
-              "${mkDevShellName "crossShell" crossSystem}" = import ./shell.nix {
-                localSystem = system; inherit crossSystem;
-              };
-            })
-          { }
-          supportedCrossSystems;
+        devShells = foreachCrossSystem (crossSystem:
+          import ./shell.nix {
+            localSystem = system; inherit crossSystem;
+          });
 
-        packages = pkgs.lib.lists.foldr
-          (crossSystem: output:
-            output // {
-              "${mkDevShellName "pkgs" crossSystem}" = import ./tests {
-                inherit pkgs;
-                localSystem = system;
-                crossSystems = [ crossSystem ];
-                src = nixpkgs;
-              };
-            })
-          {
-            pkgsAll = import ./tests {
-              inherit pkgs;
-              localSystem = system;
-              crossSystems = supportedCrossSystems;
-              src = nixpkgs;
-            };
-          }
-          supportedCrossSystems;
+        packages = {
+          pkgsAll = import ./tests {
+            inherit pkgs;
+            localSystem = system;
+            crossSystems = supportedCrossSystems;
+            src = nixpkgs;
+          };
+
+          pushAll = with pkgs; writeShellApplication {
+            name = "push-all";
+            runtimeInputs = [
+              cachix
+              nix 
+            ];
+            text = ''cachix push nixpkgs-cross-overlay "$(nix build .#pushAll --print-out-paths)"'';
+          };
+        } // foreachCrossSystem (crossSystem:
+          import ./tests {
+            inherit pkgs;
+            localSystem = system;
+            crossSystems = [ crossSystem ];
+            src = nixpkgs;
+          });
       })
     # System independent modules.
     // {
