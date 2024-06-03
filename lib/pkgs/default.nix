@@ -20,8 +20,6 @@ in
 {
   # Metapackage with all crates dependencies.
   cargoDeps = (import ./crates prev);
-  # Link libc++ libraries together just like it's done in the Android NDK.
-  libcxx-full-static = prev.callPackage ./libcxx_static { };
   # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
   llvm-gcc_s-compat = prev.runCommand
     "llvm-gcc_s-compat"
@@ -65,12 +63,12 @@ in
         "libcxx-gcc-compat-static"
         {
           propagatedBuildInputs = [
-            final.libcxx-full-static
+            final.llvmPackages.libcxx
           ];
         }
         ''
           mkdir -p $out/lib
-          libdir=${final.libcxx-full-static}/lib
+          libdir=${final.llvmPackages.libcxx}/lib
           ln -svf $libdir/libc++_static.a $out/lib/libstdc++.a
         '';
 
