@@ -2,19 +2,7 @@ final: prev:
 let
   lib = prev.lib;
   stdenv = prev.stdenv;
-  isCross = stdenv.hostPlatform != stdenv.buildPlatform;
   isStatic = stdenv.targetPlatform.isStatic;
-
-  # Fix 'x86_64-unknown-linux-musl-gcc: error: unrecognized command-line option' error
-  gccCrossCompileWorkaround = (final: prev: {
-    #ToDo more precise
-    UNAME = ''echo "Linux"'';
-    TARGET_OS = "Linux";
-  });
-  # Disable checks
-  disableChecks = (old: {
-    doCheck = false;
-  });
 in
 {
   # Useful utilites
@@ -71,7 +59,7 @@ in
           ];
         }
         ''
-          mkdir -p $out/lib
+          mkdir -p $out/lib 
           libdir=${final.libcxx-full-static}/lib
           ln -svf $libdir/libc++_static.a $out/lib/libstdc++.a
         '';
@@ -90,13 +78,4 @@ in
   });
   # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
   # rdkafka = prev.callPackage ./rdkafka.nix { };
-} # Special case for the cross-compilation.
-  // lib.optionalAttrs isCross {
-  # Fix compilation by overriding the packages attributes.
-  gmp = prev.gmp.overrideAttrs disableChecks;
-  gnugrep = prev.gnugrep.overrideAttrs disableChecks;
-  libopus = prev.libopus.overrideAttrs disableChecks;
-  libuv = prev.libuv.overrideAttrs disableChecks;
-  lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
-  zlib = prev.zlib.overrideAttrs disableChecks;
 }
