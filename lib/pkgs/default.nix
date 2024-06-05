@@ -20,6 +20,8 @@ in
 {
   # Metapackage with all crates dependencies.
   cargoDeps = (import ./crates prev);
+  # Link libc++ libraries together just like it's done in the Android NDK.
+  libcxx-full-static = prev.callPackage ./libcxx_static { };
   # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
   llvm-gcc_s-compat = prev.runCommand
     "llvm-gcc_s-compat"
@@ -63,12 +65,12 @@ in
         "libcxx-gcc-compat-static"
         {
           propagatedBuildInputs = [
-            final.llvmPackages.libcxx
+            final.libcxx-full-static
           ];
         }
         ''
           mkdir -p $out/lib
-          libdir=${final.llvmPackages.libcxx}/lib
+          libdir=${final.libcxx-full-static}/lib
           ln -svf $libdir/libc++_static.a $out/lib/libstdc++.a
         '';
 
@@ -76,16 +78,16 @@ in
     if isStatic then compat-static else compat-dynamic;
 
   # Cmake-built Kafka works better than the origin one.
-  # rdkafka = prev.rdkafka.overrideAttrs (now: old: {
-  #   nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
-  #   buildInputs = old.buildInputs ++ [ final.lz4 final.openssl.dev ];
-  #   cmakeFlags = [
-  #     "-DRDKAFKA_BUILD_TESTS=0"
-  #     "-DRDKAFKA_BUILD_EXAMPLES=0"
-  #   ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
-  # });
+  rdkafka = prev.rdkafka.overrideAttrs (now: old: {
+    nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
+    buildInputs = old.buildInputs ++ [ final.lz4 final.openssl.dev ];
+    cmakeFlags = [
+      "-DRDKAFKA_BUILD_TESTS=0"
+      "-DRDKAFKA_BUILD_EXAMPLES=0"
+    ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
+  });
   # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
-  rdkafka = prev.callPackage ./rdkafka.nix { };
+  # rdkafka = prev.callPackage ./rdkafka.nix { };
 
   # Fix rocksdb on some environments.
   rocksdb = prev.rocksdb.overrideAttrs (now: old: {

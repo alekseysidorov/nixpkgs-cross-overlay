@@ -11,7 +11,6 @@ stdenv.mkDerivation {
 
   buildInputs = [
     llvmPackages.libcxx
-    llvmPackages.libcxxabi
   ];
 
   installPhase = ''
