@@ -2,7 +2,6 @@
 , crossSystems
 , pkgs
 , src
-,
 }:
 let
   targets = builtins.map
@@ -16,15 +15,29 @@ let
 
   forEachCrossSystem = f: pkgs.lib.lists.foldr
     (pkgsCross: inputs: (f pkgsCross) ++ inputs)
-    [ ]
-    targets;
+    [ ];
+
+  # List of well-known packages that are buildable with this overlay.
+  supportedPkgs = with pkgs; [
+    icu
+    coreutils
+    bashInteractive
+    toml11
+    nano
+  ] ++ lib.optionals (!stdenv.targetPlatform.isMusl) [
+    msgpack-cxx
+    boost178
+  ];
 in
 pkgs.writeShellApplication {
   name = "build-cross-systems";
 
-  runtimeInputs = forEachCrossSystem (pkgsCross: [
-    (pkgsCross.callPackage ./crates { })
-  ]);
-  text = ''
-  '';
+  runtimeInputs = supportedPkgs ++
+    (forEachCrossSystem
+      (pkgsCross: [
+        (pkgsCross.callPackage ./crates { })
+      ])
+      targets);
+
+  text = '''';
 }

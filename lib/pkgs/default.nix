@@ -4,7 +4,6 @@ let
   stdenv = prev.stdenv;
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
   isStatic = stdenv.targetPlatform.isStatic;
-  isClang = stdenv.cc.isClang;
 
   # Fix 'x86_64-unknown-linux-musl-gcc: error: unrecognized command-line option' error
   gccCrossCompileWorkaround = (final: prev: {
@@ -18,6 +17,9 @@ let
   });
 in
 {
+  # Useful utilites
+  ldproxy = prev.callPackage ./utils/ldproxy.nix { };
+
   # Metapackage with all crates dependencies.
   cargoDeps = (import ./crates prev);
   # Link libc++ libraries together just like it's done in the Android NDK.
@@ -88,20 +90,6 @@ in
   });
   # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
   # rdkafka = prev.callPackage ./rdkafka.nix { };
-
-  # Fix rocksdb on some environments.
-  rocksdb = prev.rocksdb.overrideAttrs (now: old: {
-    # Fix "relocation R_X86_64_32 against `.bss._ZGVZN12_GLOBAL__N_18key_initEvE2ks'"
-    cmakeFlags = old.cmakeFlags
-    ++ lib.optional isStatic "-DCMAKE_POSITION_INDEPENDENT_CODE=ON";
-  });
-  # Fix snappy cross-compilation.
-  snappy = prev.snappy.overrideAttrs (now: old: {
-    # Fix "error: comparison of integers of different signs: 'unsigned long' and 'ptrdiff_t"
-    env.NIX_CFLAGS_COMPILE = lib.optionalString isClang "-Wno-sign-compare";
-  });
-  # Useful utilites
-  ldproxy = prev.callPackage ./utils/ldproxy.nix { };
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   # Fix compilation by overriding the packages attributes.
