@@ -34,9 +34,12 @@ pkgs.writeShellApplication {
 
   runtimeInputs = supportedPkgs ++
     (forEachCrossSystem
-      (pkgsCross: [
-        (pkgsCross.callPackage ./crates { })
-      ])
+      (pkgs: 
+      [
+        (pkgs.callPackage ./crates { })
+        (pkgs.callPackage ./dockerImage.nix {})
+      ]
+      )
       targets);
 
   text = '''';
