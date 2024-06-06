@@ -34,11 +34,11 @@ pkgs.writeShellApplication {
 
   runtimeInputs = supportedPkgs ++
     (forEachCrossSystem
-      (pkgs: 
-      [
-        (pkgs.callPackage ./crates { })
-        (pkgs.callPackage ./dockerImage.nix {})
-      ]
+      (pkgs:
+        [
+          (pkgs.callPackage ./crates { })
+          (pkgs.callPackage ./dockerImage.nix { })
+        ]
       )
       targets);
 
