@@ -31,8 +31,8 @@ jobs:
           # Gnu targets
           - "target=aarch64-unknown-linux-gnu"
           - "target=riscv64-unknown-linux-gnu"
-          # Broken targets
-          # - "target=x86_64-unknown-linux-gnu"
+          # # Broken targets
+          # # - "target=x86_64-unknown-linux-gnu"
 
     runs-on: ${{ matrix.os }}
     steps:

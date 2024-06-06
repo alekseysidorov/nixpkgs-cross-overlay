@@ -2,22 +2,12 @@ final: prev:
 let
   lib = prev.lib;
   stdenv = prev.stdenv;
-  isCross = stdenv.hostPlatform != stdenv.buildPlatform;
   isStatic = stdenv.targetPlatform.isStatic;
-  isClang = stdenv.cc.isClang;
-
-  # Fix 'x86_64-unknown-linux-musl-gcc: error: unrecognized command-line option' error
-  gccCrossCompileWorkaround = (final: prev: {
-    #ToDo more precise
-    UNAME = ''echo "Linux"'';
-    TARGET_OS = "Linux";
-  });
-  # Disable checks
-  disableChecks = (old: {
-    doCheck = false;
-  });
 in
 {
+  # Useful utilites
+  ldproxy = prev.callPackage ./utils/ldproxy.nix { };
+
   # Metapackage with all crates dependencies.
   cargoDeps = (import ./crates prev);
   # Link libc++ libraries together just like it's done in the Android NDK.
@@ -69,7 +59,7 @@ in
           ];
         }
         ''
-          mkdir -p $out/lib
+          mkdir -p $out/lib 
           libdir=${final.libcxx-full-static}/lib
           ln -svf $libdir/libc++_static.a $out/lib/libstdc++.a
         '';
@@ -78,37 +68,14 @@ in
     if isStatic then compat-static else compat-dynamic;
 
   # Cmake-built Kafka works better than the origin one.
-  # rdkafka = prev.rdkafka.overrideAttrs (now: old: {
-  #   nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
-  #   buildInputs = old.buildInputs ++ [ final.lz4 final.openssl.dev ];
-  #   cmakeFlags = [
-  #     "-DRDKAFKA_BUILD_TESTS=0"
-  #     "-DRDKAFKA_BUILD_EXAMPLES=0"
-  #   ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
-  # });
+  rdkafka = prev.rdkafka.overrideAttrs (now: old: {
+    nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkgsBuildHost.cmake ];
+    buildInputs = old.buildInputs ++ [ final.lz4 final.openssl.dev ];
+    cmakeFlags = [
+      "-DRDKAFKA_BUILD_TESTS=0"
+      "-DRDKAFKA_BUILD_EXAMPLES=0"
+    ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
+  });
   # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
-  rdkafka = prev.callPackage ./rdkafka.nix { };
-
-  # Fix rocksdb on some environments.
-  rocksdb = prev.rocksdb.overrideAttrs (now: old: {
-    # Fix "relocation R_X86_64_32 against `.bss._ZGVZN12_GLOBAL__N_18key_initEvE2ks'"
-    cmakeFlags = old.cmakeFlags
-    ++ lib.optional isStatic "-DCMAKE_POSITION_INDEPENDENT_CODE=ON";
-  });
-  # Fix snappy cross-compilation.
-  snappy = prev.snappy.overrideAttrs (now: old: {
-    # Fix "error: comparison of integers of different signs: 'unsigned long' and 'ptrdiff_t"
-    env.NIX_CFLAGS_COMPILE = lib.optionalString isClang "-Wno-sign-compare";
-  });
-  # Useful utilites
-  ldproxy = prev.callPackage ./utils/ldproxy.nix { };
-} # Special case for the cross-compilation.
-  // lib.optionalAttrs isCross {
-  # Fix compilation by overriding the packages attributes.
-  gmp = prev.gmp.overrideAttrs disableChecks;
-  gnugrep = prev.gnugrep.overrideAttrs disableChecks;
-  libopus = prev.libopus.overrideAttrs disableChecks;
-  libuv = prev.libuv.overrideAttrs disableChecks;
-  lz4 = prev.lz4.overrideAttrs gccCrossCompileWorkaround;
-  zlib = prev.zlib.overrideAttrs disableChecks;
+  # rdkafka = prev.callPackage ./rdkafka.nix { };
 }
