@@ -98,7 +98,7 @@
                 src = nixpkgs;
               })
           # Other targets.
-          // {
+          // rec {
             pkgsAll = import ./tests {
               inherit pkgs;
               localSystem = system;
@@ -109,7 +109,7 @@
             pushAll = with pkgs; writeShellApplication {
               name = "push-all";
               runtimeInputs = [ cachix nix ];
-              text = ''cachix push nixpkgs-cross-overlay "$(nix build .#pushAll --print-out-paths)"'';
+              text = ''cachix push nixpkgs-cross-overlay "${pkgsAll}"'';
             };
           };
       })
