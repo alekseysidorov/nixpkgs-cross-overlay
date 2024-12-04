@@ -36,7 +36,7 @@
         };
         treefmt = (treefmt-nix.lib.evalModule pkgs ./treefmt.nix).config.build;
 
-        # List of supported cross systems 
+        # List of supported cross systems
         supportedCrossSystems = [
           null
           { config = "x86_64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }
@@ -88,7 +88,7 @@
           });
 
         packages =
-          # Targets for CI. 
+          # Targets for CI.
           foreachCrossSystem "pkgs"
             (crossSystem:
               import ./tests {
