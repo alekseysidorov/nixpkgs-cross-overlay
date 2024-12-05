@@ -2,7 +2,7 @@ final: prev:
 let
   lib = prev.lib;
   stdenv = prev.stdenv;
-  isStatic = stdenv.targetPlatform.isStatic;
+  isStatic = stdenv.hostPlatform.isStatic;
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
   # Disable checks
   disableChecks = (old: {
@@ -35,7 +35,7 @@ in
       done
     '';
   # Use libcxx as libstdc++ replacement on the LLVM targets.
-  # It can fix some crates like Rocksdb that relies that there is only `libstdc++` 
+  # It can fix some crates like Rocksdb that relies that there is only `libstdc++`
   # on Linux systems.
   libcxx-gcc-compat =
     let
@@ -64,7 +64,7 @@ in
           ];
         }
         ''
-          mkdir -p $out/lib 
+          mkdir -p $out/lib
           libdir=${final.libcxx-full-static}/lib
           ln -svf $libdir/libc++_static.a $out/lib/libstdc++.a
         '';
@@ -84,9 +84,14 @@ in
   # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
   # rdkafka = prev.callPackage ./rdkafka.nix { };
 
+  rocksdb =
+    if isStatic then
+    # There is no way to just override rocksdb attributes. So we have to fork it.
+      prev.callPackage ./rocksdb.nix { }
+    else
+      prev.rocksdb;
   # Fix compilation by overriding the packages attributes.
   libopus = prev.libopus.overrideAttrs disableChecks;
-
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   libuv = prev.libuv.overrideAttrs disableChecks;

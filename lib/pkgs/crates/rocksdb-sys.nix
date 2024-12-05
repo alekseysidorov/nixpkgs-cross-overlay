@@ -1,7 +1,6 @@
 { mkEnvHook
 , rocksdb
 , snappy
-, liburing
 , pkgs
 , lib
 , stdenv
@@ -19,10 +18,7 @@ mkEnvHook {
   ]
   # The rocksdb build script thinks that Linux targets can have only the `libstdc++` library.
   # We have to pretend that the `libc++` is the `libstdc++`.
-  ++ lib.optionals stdenv.cc.isClang [ libcxx-gcc-compat ]
-  # Add liburing for linux builds
-  ++ lib.optionals stdenv.targetPlatform.isLinux [ liburing ]
-  ;
+  ++ lib.optionals stdenv.cc.isClang [ libcxx-gcc-compat ];
 
   env = {
     ROCKSDB_LIB_DIR = "${rocksdb}/lib";
