@@ -84,12 +84,11 @@ in
   # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
   # rdkafka = prev.callPackage ./rdkafka.nix { };
 
-  rocksdb =
-    if isStatic then
-    # There is no way to just override rocksdb attributes. So we have to fork it.
-      prev.callPackage ./rocksdb.nix { }
-    else
-      prev.rocksdb;
+  # Disable liburing in rockrocksdb, because it cannot be cross compiled.
+  #
+  # There is no way to just override rocksdb attributes. So we have to fork it.
+  rocksdb = prev.callPackage ./rocksdb.nix { };
+
   # Fix compilation by overriding the packages attributes.
   libopus = prev.libopus.overrideAttrs disableChecks;
 } # Special case for the cross-compilation.
