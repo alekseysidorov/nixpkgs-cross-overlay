@@ -23,11 +23,7 @@ final: prev: {
         ];
       };
 
-      nixpkgs =
-        if (stdenv.isDarwin && targetIsMusl)
-        then patchedPkgs
-        else src;
-
+      nixpkgs = src;
       crossOverlay = import ./.;
     in
     import nixpkgs {
