@@ -1,6 +1,7 @@
 { mkEnvHook
 , rocksdb
 , snappy
+, liburing
 , pkgs
 , lib
 , stdenv
@@ -15,6 +16,7 @@ mkEnvHook {
   ];
   depsTargetTargetPropagated = [
     rocksdb
+    liburing
   ]
   # The rocksdb build script thinks that Linux targets can have only the `libstdc++` library.
   # We have to pretend that the `libc++` is the `libstdc++`.

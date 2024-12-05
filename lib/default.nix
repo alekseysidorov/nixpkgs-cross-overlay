@@ -12,8 +12,7 @@ rec {
 
   # Rust host dependencies
   rustBuildHostDependencies = prev.callPackage
-    ({ pkgs
-     , darwin
+    ({ darwin
      , libiconv
      , cacert
      , lib
@@ -42,7 +41,7 @@ rec {
   crossBashPrompt = mkBashPrompt final.stdenv.targetPlatform.config;
 
   # Utility to copy built by cargo binary into the `bin` directory.
-  # Can be used to copy binaries built by the `nix-shell` with the corresponding Rust 
+  # Can be used to copy binaries built by the `nix-shell` with the corresponding Rust
   # toolchain to the docker images.
   copyBinaryFromCargoBuild =
     { name
