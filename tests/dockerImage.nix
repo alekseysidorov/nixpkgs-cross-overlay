@@ -1,6 +1,7 @@
 { dockerTools
 , buildEnv
-, hello
+, bashInteractive
+, extraPkgs ? [ ]
 }:
 
 dockerTools.buildImage {
@@ -17,9 +18,9 @@ dockerTools.buildImage {
       dockerTools.caCertificates
       dockerTools.fakeNss
       # Service
-      hello
-    ];
+      bashInteractive
+    ] ++ extraPkgs;
   };
 
-  config.Cmd = [ "/bin/hello" ];
+  config.Cmd = [ "/bin/bash" ];
 }

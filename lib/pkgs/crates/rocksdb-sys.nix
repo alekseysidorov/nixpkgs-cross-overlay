@@ -1,17 +1,19 @@
 { mkEnvHook
 , rocksdb
 , snappy
-, pkgs
 , lib
 , stdenv
 , libcxx-gcc-compat
+, pkgs
 }:
-
+let
+  bindgenHook = pkgs.pkgsBuildBuild.rustPlatform.bindgenHook;
+in
 mkEnvHook {
   name = "cargo-rocksdb-sys";
 
   propagatedBuildInputs = [
-    pkgs.pkgsBuildHost.rustPlatform.bindgenHook
+    bindgenHook
   ];
   depsTargetTargetPropagated = [
     rocksdb
