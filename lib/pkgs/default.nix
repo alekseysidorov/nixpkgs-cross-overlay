@@ -82,13 +82,14 @@ in
   });
   # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
   # rdkafka = prev.callPackage ./rdkafka.nix { };
+
+  openldap = prev.openldap.overrideAttrs disableChecks;
 } # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   libuv = prev.libuv.overrideAttrs disableChecks;
   gmp = prev.gmp.overrideAttrs disableChecks;
   zlib = prev.zlib.overrideAttrs disableChecks;
   gnugrep = prev.gnugrep.overrideAttrs disableChecks;
-  openldap = prev.openldap.overrideAttrs disableChecks;
   # Disable liburing in rockrocksdb, because it cannot be cross compiled.
   #
   # There is no way to just override rocksdb attributes. So we have to fork it.
