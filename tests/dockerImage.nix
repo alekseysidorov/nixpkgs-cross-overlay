@@ -1,20 +1,25 @@
 { dockerTools
+, buildEnv
 , hello
 }:
 
-dockerTools.buildLayeredImage {
+dockerTools.buildImage {
   name = "test-docker-tools";
   tag = "latest";
 
-  contents = [
-    # Certificates
-    dockerTools.usrBinEnv
-    dockerTools.binSh
-    dockerTools.caCertificates
-    dockerTools.fakeNss
-    # Service
-    hello
-  ];
+  copyToRoot = buildEnv {
+    name = "image-root";
+    pathsToLink = [ "/bin" ];
+    paths = [
+      # Certificates
+      dockerTools.usrBinEnv
+      dockerTools.binSh
+      dockerTools.caCertificates
+      dockerTools.fakeNss
+      # Service
+      hello
+    ];
+  };
 
   config.Cmd = [ "/bin/hello" ];
 }
