@@ -97,4 +97,5 @@ in
   gmp = prev.gmp.overrideAttrs disableChecks;
   zlib = prev.zlib.overrideAttrs disableChecks;
   gnugrep = prev.gnugrep.overrideAttrs disableChecks;
+  openldap = prev.openldap.overrideAttrs disableChecks;
 }
