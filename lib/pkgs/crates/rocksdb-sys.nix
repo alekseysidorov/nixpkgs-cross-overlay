@@ -4,13 +4,13 @@
 , lib
 , stdenv
 , libcxx-gcc-compat
-, rustPlatform
+, pkgs
 }:
 mkEnvHook {
   name = "cargo-rocksdb-sys";
 
   propagatedBuildInputs = [
-    rustPlatform.bindgenHook
+    pkgs.pkgsBuildHost.rustPlatform.bindgenHook
   ];
   depsTargetTargetPropagated = [
     rocksdb
