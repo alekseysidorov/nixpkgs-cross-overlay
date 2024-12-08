@@ -35,12 +35,17 @@ pkgs.writeShellApplication {
   runtimeInputs = supportedPkgs ++
     (forEachCrossSystem
       (pkgs:
+        let
+          crateTests = pkgs.callPackage ./crates { };
+          dockerImage = pkgs.callPackage ./dockerImage.nix { extraPkgs = [ crateTests ]; };
+        in
         [
-          (pkgs.callPackage ./crates { })
-          (pkgs.callPackage ./dockerImage.nix { })
+          dockerImage
+          crateTests
         ]
       )
       targets);
 
-  text = '''';
+  text = ''
+  '';
 }
