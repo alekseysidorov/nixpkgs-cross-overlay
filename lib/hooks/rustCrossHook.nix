@@ -26,7 +26,6 @@ let
       [ llvm-gcc_s-compat ]
   ;
 
-
   crossHook = (makeSetupHook
     {
       name = "rust-cross-hook";

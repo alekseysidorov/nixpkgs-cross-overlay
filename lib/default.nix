@@ -23,6 +23,9 @@ rec {
         prev.pkgsBuildHost.libiconv
         cacert
       ]
+      ++ lib.optionals stdenv.hostPlatform.isMusl [
+        prev.pkgsBuildHost.libiconv
+      ]
       # Some additional libraries for the Darwin platform
       ++ lib.optionals stdenv.isDarwin [
         libiconv
@@ -38,7 +41,7 @@ rec {
   mkBashPrompt = envName: ''
     PS1="\[\033[38;5;39m\]\w \[\033[38;5;35m\](${envName}) \[\033[0m\]\$ "
   '';
-  crossBashPrompt = mkBashPrompt final.stdenv.targetPlatform.config;
+  crossBashPrompt = mkBashPrompt final.stdenv.hostPlatform.config;
 
   # Utility to copy built by cargo binary into the `bin` directory.
   # Can be used to copy binaries built by the `nix-shell` with the corresponding Rust
