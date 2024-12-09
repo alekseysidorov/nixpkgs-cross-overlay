@@ -25,7 +25,7 @@ rec {
       ]
       # Some additional libraries for the Darwin platform
       ++ lib.optionals stdenv.isDarwin [
-        pkgs.libiconv
+        pkgs.pkgsBuildBuild.libiconv
         darwin.apple_sdk.frameworks.CoreFoundation
         darwin.apple_sdk.frameworks.CoreServices
         darwin.apple_sdk.frameworks.IOKit

@@ -1,24 +1,15 @@
 { makeSetupHook
 , stdenv
 , lib
-, runCommand
 , llvm-gcc_s-compat
-, rust
 }:
 
 let
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
-  # FIXME: This workaround was taken from the
-  # https://github.com/oxalica/rust-overlay/blob/be3a8a8b59aaec5cd96d3ea6e4470bd14bdd8b37/rust-overlay.nix#L18
-  toRustTarget = platform:
-    if platform.isWasi then
-      "${platform.parsed.cpu.name}-wasi"
-    else
-      rust.toRustTarget platform;
 
-  cargoBuildTarget = toRustTarget stdenv.targetPlatform;
+  cargoBuildTarget = stdenv.hostPlatform.rust.rustcTarget;
   cargoLinkerInfix = builtins.replaceStrings [ "-" "." ] [ "_" "_" ] (lib.toUpper cargoBuildTarget);
-  # Override cargo target dir in order to make it easier to write 
+  # Override cargo target dir in order to make it easier to write
   # complex build scripts
   cargoBuildDir = builtins.toString cargoBuildTarget;
   # Fix segfaults in the Rust code, see this issue:
