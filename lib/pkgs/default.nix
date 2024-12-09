@@ -83,8 +83,15 @@ in
   # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
   # rdkafka = prev.callPackage ./rdkafka.nix { };
 
+
+} # Special case for the Darwin platform
+// lib.optionalAttrs stdenv.isDarwin {
+  # Openldap checks are broken on the Darwin platform.
   openldap = prev.openldap.overrideAttrs disableChecks;
-} # Special case for the cross-compilation.
+  # New version of the fakeroot package are broken on the Darwin platform.
+  fakeroot = prev.callPackage ./fakeroot.nix { };
+}
+  # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   libuv = prev.libuv.overrideAttrs disableChecks;
   gmp = prev.gmp.overrideAttrs disableChecks;
