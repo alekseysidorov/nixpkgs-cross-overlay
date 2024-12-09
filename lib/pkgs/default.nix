@@ -2,7 +2,7 @@ final: prev:
 let
   lib = prev.lib;
   stdenv = prev.stdenv;
-  isStatic = stdenv.targetPlatform.isStatic;
+  isStatic = stdenv.hostPlatform.isStatic;
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
   # Disable checks
   disableChecks = (old: {
@@ -12,7 +12,6 @@ in
 {
   # Useful utilites
   ldproxy = prev.callPackage ./utils/ldproxy.nix { };
-
   # Metapackage with all crates dependencies.
   cargoDeps = (import ./crates prev);
   # Link libc++ libraries together just like it's done in the Android NDK.
@@ -35,7 +34,7 @@ in
       done
     '';
   # Use libcxx as libstdc++ replacement on the LLVM targets.
-  # It can fix some crates like Rocksdb that relies that there is only `libstdc++` 
+  # It can fix some crates like Rocksdb that relies that there is only `libstdc++`
   # on Linux systems.
   libcxx-gcc-compat =
     let
@@ -64,7 +63,7 @@ in
           ];
         }
         ''
-          mkdir -p $out/lib 
+          mkdir -p $out/lib
           libdir=${final.libcxx-full-static}/lib
           ln -svf $libdir/libc++_static.a $out/lib/libstdc++.a
         '';
@@ -81,16 +80,23 @@ in
       "-DRDKAFKA_BUILD_EXAMPLES=0"
     ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
   });
-  # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
-  # rdkafka = prev.callPackage ./rdkafka.nix { };
-
-  # Fix compilation by overriding the packages attributes.
-  libopus = prev.libopus.overrideAttrs disableChecks;
-
-} # Special case for the cross-compilation.
+} # Special case for the Darwin platform
+// lib.optionalAttrs stdenv.isDarwin {
+  # Openldap checks are broken on the Darwin platform.
+  openldap = prev.openldap.overrideAttrs disableChecks;
+  # New version of the fakeroot package are broken on the Darwin platform.
+  fakeroot = prev.callPackage ./fakeroot.nix { };
+}
+  # Special case for the cross-compilation.
   // lib.optionalAttrs isCross {
   libuv = prev.libuv.overrideAttrs disableChecks;
   gmp = prev.gmp.overrideAttrs disableChecks;
   zlib = prev.zlib.overrideAttrs disableChecks;
   gnugrep = prev.gnugrep.overrideAttrs disableChecks;
+  # Disable liburing in rockrocksdb, because it cannot be cross compiled.
+  #
+  # There is no way to just override rocksdb attributes. So we have to fork it.
+  rocksdb = prev.callPackage ./rocksdb.nix { };
+  # Fix compilation by overriding the packages attributes.
+  libopus = prev.libopus.overrideAttrs disableChecks;
 }

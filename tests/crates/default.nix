@@ -1,6 +1,5 @@
 { pkgs
 , cargoDeps
-
 , rustBuildHostDependencies
 }:
 let

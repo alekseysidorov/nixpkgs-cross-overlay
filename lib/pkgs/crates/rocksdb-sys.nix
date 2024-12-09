@@ -1,12 +1,11 @@
 { mkEnvHook
 , rocksdb
 , snappy
-, pkgs
 , lib
 , stdenv
 , libcxx-gcc-compat
+, pkgs
 }:
-
 mkEnvHook {
   name = "cargo-rocksdb-sys";
 
