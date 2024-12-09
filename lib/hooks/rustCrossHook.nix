@@ -24,12 +24,8 @@ let
     # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
     lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic)
       [ llvm-gcc_s-compat ]
-    ++
-    # Add libiconv for the musl hosts
-    lib.optionals stdenv.targetPlatform.isMusl
-      [ libiconv ];
+  ;
 
-  propagatedBuildInputs = lib.optionals stdenv.targetPlatform.isMusl [ pkgs.pkgsBuildBuild.libiconv ];
 
   crossHook = (makeSetupHook
     {
@@ -41,7 +37,7 @@ let
         nativePrefix = stdenv.cc.nativePrefix;
         targetPrefix = stdenv.cc.targetPrefix;
       };
-      inherit depsTargetTargetPropagated propagatedBuildInputs;
+      inherit depsTargetTargetPropagated;
     }
     ./rust-cross-hook.sh
   );

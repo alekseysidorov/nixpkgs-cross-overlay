@@ -10,12 +10,12 @@ rec {
   rustCrossHook = final.callPackage ./hooks/rustCrossHook.nix { };
   mkEnvHook = final.callPackage ./hooks/mkEnvHook.nix { };
 
-  # Extra dependencies for the rust cross-compilation.
+  # Most popular extra dependencies for the rust cross-compilation.
   rustBuildHostDependencies = prev.callPackage
     ({ darwin
      , cacert
      , lib
-     , pkgs
+     , libiconv
      }:
       [
         prev.pkgsBuildHost.git
@@ -25,7 +25,7 @@ rec {
       ]
       # Some additional libraries for the Darwin platform
       ++ lib.optionals stdenv.isDarwin [
-        pkgs.pkgsBuildBuild.libiconv
+        libiconv
         darwin.apple_sdk.frameworks.CoreFoundation
         darwin.apple_sdk.frameworks.CoreServices
         darwin.apple_sdk.frameworks.IOKit
