@@ -35,9 +35,9 @@ pkgs.writeShellApplication {
     (forEachCrossSystem
       (pkgs:
         [
-          pkgs.callPackage
-          ./crates
-          { }
+          (pkgs.callPackage
+            ./crates
+            { })
         ]
       )
       targets);
