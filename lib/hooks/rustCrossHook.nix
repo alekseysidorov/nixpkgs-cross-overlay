@@ -2,6 +2,8 @@
 , stdenv
 , lib
 , llvm-gcc_s-compat
+, libiconv
+, pkgs
 }:
 
 let
@@ -18,9 +20,16 @@ let
     if stdenv.targetPlatform.isStatic then "-Ctarget-feature=+crt-static"
     else "-Ctarget-feature=-crt-static";
   # Cross hook dependencies
-  hookDeps =
+  depsTargetTargetPropagated =
     # Use llvm_unwind as libgcc_s replacement on the LLVM targets.
-    lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic) [ llvm-gcc_s-compat ];
+    lib.optionals (stdenv.cc.isClang && !stdenv.targetPlatform.isStatic)
+      [ llvm-gcc_s-compat ]
+    ++
+    # Add libiconv for the musl hosts
+    lib.optionals stdenv.targetPlatform.isMusl
+      [ libiconv ];
+
+  propagatedBuildInputs = lib.optionals stdenv.targetPlatform.isMusl [ pkgs.pkgsBuildBuild.libiconv ];
 
   crossHook = (makeSetupHook
     {
@@ -32,8 +41,7 @@ let
         nativePrefix = stdenv.cc.nativePrefix;
         targetPrefix = stdenv.cc.targetPrefix;
       };
-      depsTargetTargetPropagated = hookDeps;
-      propagatedBuildInputs = hookDeps;
+      inherit depsTargetTargetPropagated propagatedBuildInputs;
     }
     ./rust-cross-hook.sh
   );

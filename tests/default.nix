@@ -24,7 +24,6 @@ let
     bashInteractive
     toml11
     nano
-  ] ++ lib.optionals (!stdenv.targetPlatform.isMusl) [
     msgpack-cxx
     boost178
   ];
