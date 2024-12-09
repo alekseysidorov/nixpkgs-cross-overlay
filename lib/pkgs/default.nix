@@ -80,10 +80,6 @@ in
       "-DRDKAFKA_BUILD_EXAMPLES=0"
     ] ++ lib.optional isStatic "-DRDKAFKA_BUILD_STATIC=1";
   });
-  # Uncomment this line if rdkafka sys again breaks compatibility with the shipped by Nix version.
-  # rdkafka = prev.callPackage ./rdkafka.nix { };
-
-
 } # Special case for the Darwin platform
 // lib.optionalAttrs stdenv.isDarwin {
   # Openldap checks are broken on the Darwin platform.
