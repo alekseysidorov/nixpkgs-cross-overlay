@@ -10,19 +10,21 @@ rec {
   rustCrossHook = final.callPackage ./hooks/rustCrossHook.nix { };
   mkEnvHook = final.callPackage ./hooks/mkEnvHook.nix { };
 
-  # Rust host dependencies
+  # Most popular extra dependencies for the rust cross-compilation.
   rustBuildHostDependencies = prev.callPackage
-    ({ pkgs
-     , darwin
-     , libiconv
+    ({ darwin
      , cacert
      , lib
+     , libiconv
      }:
       [
         prev.pkgsBuildHost.git
         prev.pkgsBuildHost.zlib.dev
         prev.pkgsBuildHost.libiconv
         cacert
+      ]
+      ++ lib.optionals stdenv.hostPlatform.isMusl [
+        prev.pkgsBuildHost.libiconv
       ]
       # Some additional libraries for the Darwin platform
       ++ lib.optionals stdenv.isDarwin [
@@ -39,10 +41,10 @@ rec {
   mkBashPrompt = envName: ''
     PS1="\[\033[38;5;39m\]\w \[\033[38;5;35m\](${envName}) \[\033[0m\]\$ "
   '';
-  crossBashPrompt = mkBashPrompt final.stdenv.targetPlatform.config;
+  crossBashPrompt = mkBashPrompt final.stdenv.hostPlatform.config;
 
   # Utility to copy built by cargo binary into the `bin` directory.
-  # Can be used to copy binaries built by the `nix-shell` with the corresponding Rust 
+  # Can be used to copy binaries built by the `nix-shell` with the corresponding Rust
   # toolchain to the docker images.
   copyBinaryFromCargoBuild =
     { name

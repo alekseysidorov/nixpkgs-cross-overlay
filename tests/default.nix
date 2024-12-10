@@ -24,7 +24,6 @@ let
     bashInteractive
     toml11
     nano
-  ] ++ lib.optionals (!stdenv.targetPlatform.isMusl) [
     msgpack-cxx
     boost178
   ];
@@ -36,11 +35,13 @@ pkgs.writeShellApplication {
     (forEachCrossSystem
       (pkgs:
         [
-          (pkgs.callPackage ./crates { })
-          (pkgs.callPackage ./dockerImage.nix { })
+          (pkgs.callPackage
+            ./crates
+            { })
         ]
       )
       targets);
 
-  text = '''';
+  text = ''
+  '';
 }
