@@ -34,7 +34,10 @@
             (import ./.)
           ];
         };
-        treefmt = (treefmt-nix.lib.evalModule pkgs ./treefmt.nix).config.build;
+
+        # Eval the treefmt modules from ./treefmt.nix
+        treefmtPkgs = import nixpkgs { inherit system; };
+        treefmt = (treefmt-nix.lib.evalModule treefmtPkgs ./treefmt.nix).config.build;
 
         # List of supported cross systems
         supportedCrossSystems = [
