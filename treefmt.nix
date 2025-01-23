@@ -7,7 +7,7 @@
   programs.nixpkgs-fmt.enable = true;
   programs.rustfmt = {
     enable = true;
-    package = pkgs.rust-bin.nightly.latest.default;
+    package = pkgs.rustfmt;
   };
   programs.beautysh.enable = true;
   programs.deno.enable = true;
