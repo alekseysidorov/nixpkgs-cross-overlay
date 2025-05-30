@@ -1,4 +1,10 @@
 [workspace]
 resolver = "2"
 
-members = ["opus", "protobuf", "rdkafka", "rocksdb", "ring"]
+members = [
+"opus",
+"protobuf",
+"rdkafka",
+# "rocksdb",
+"ring"
+]

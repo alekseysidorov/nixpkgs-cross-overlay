@@ -94,9 +94,7 @@ in
   zlib = prev.zlib.overrideAttrs disableChecks;
   gnugrep = prev.gnugrep.overrideAttrs disableChecks;
   # Disable liburing in rockrocksdb, because it cannot be cross compiled.
-  #
-  # There is no way to just override rocksdb attributes. So we have to fork it.
-  rocksdb = prev.callPackage ./rocksdb.nix { };
+  rocksdb = prev.rocksdb.override { enableLiburing = stdenv.buildPlatform.isLinux; };
   # Fix compilation by overriding the packages attributes.
   libopus = prev.libopus.overrideAttrs disableChecks;
 }
