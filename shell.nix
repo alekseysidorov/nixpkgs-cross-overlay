@@ -36,7 +36,6 @@ pkgs.mkShell {
     coreutils
     bash
     toml11
-    nano
   ] ++ lib.optionals (!stdenv.targetPlatform.isMusl) [
     msgpack-cxx
     boost178

@@ -12,8 +12,7 @@ rec {
 
   # Most popular extra dependencies for the rust cross-compilation.
   rustBuildHostDependencies = prev.callPackage
-    ({ darwin
-     , cacert
+    ({ cacert
      , lib
      , libiconv
      }:
