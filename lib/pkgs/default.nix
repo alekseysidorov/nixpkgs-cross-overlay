@@ -10,8 +10,6 @@ let
   });
 in
 {
-  # Useful utilites
-  ldproxy = prev.callPackage ./utils/ldproxy.nix { };
   # Metapackage with all crates dependencies.
   cargoDeps = (import ./crates prev);
   # Link libc++ libraries together just like it's done in the Android NDK.
