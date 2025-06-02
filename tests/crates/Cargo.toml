@@ -5,6 +5,6 @@ members = [
   "opus",
   "protobuf",
   "rdkafka",
-  # "rocksdb",
+  "rocksdb",
   "ring",
 ]
