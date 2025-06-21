@@ -10,8 +10,6 @@ let
   });
 in
 {
-  # Useful utilites
-  ldproxy = prev.callPackage ./utils/ldproxy.nix { };
   # Metapackage with all crates dependencies.
   cargoDeps = (import ./crates prev);
   # Link libc++ libraries together just like it's done in the Android NDK.
@@ -94,9 +92,7 @@ in
   zlib = prev.zlib.overrideAttrs disableChecks;
   gnugrep = prev.gnugrep.overrideAttrs disableChecks;
   # Disable liburing in rockrocksdb, because it cannot be cross compiled.
-  #
-  # There is no way to just override rocksdb attributes. So we have to fork it.
-  rocksdb = prev.callPackage ./rocksdb.nix { };
+  rocksdb = prev.rocksdb.override { enableLiburing = stdenv.buildPlatform.isLinux; };
   # Fix compilation by overriding the packages attributes.
   libopus = prev.libopus.overrideAttrs disableChecks;
 }

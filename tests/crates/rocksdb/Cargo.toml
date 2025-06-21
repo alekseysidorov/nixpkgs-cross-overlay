@@ -5,5 +5,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rocksdb = "0.21"
-tempfile = "3.3"
+rocksdb = "0.23"
+tempfile = "3"

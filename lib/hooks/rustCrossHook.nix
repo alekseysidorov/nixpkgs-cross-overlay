@@ -2,8 +2,6 @@
 , stdenv
 , lib
 , llvm-gcc_s-compat
-, libiconv
-, pkgs
 }:
 
 let

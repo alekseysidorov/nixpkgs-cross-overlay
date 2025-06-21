@@ -12,8 +12,7 @@ rec {
 
   # Most popular extra dependencies for the rust cross-compilation.
   rustBuildHostDependencies = prev.callPackage
-    ({ darwin
-     , cacert
+    ({ cacert
      , lib
      , libiconv
      }:
@@ -29,11 +28,6 @@ rec {
       # Some additional libraries for the Darwin platform
       ++ lib.optionals stdenv.isDarwin [
         libiconv
-        darwin.apple_sdk.frameworks.CoreFoundation
-        darwin.apple_sdk.frameworks.CoreServices
-        darwin.apple_sdk.frameworks.IOKit
-        darwin.apple_sdk.frameworks.Security
-        darwin.apple_sdk.frameworks.SystemConfiguration
       ])
     { };
 
@@ -84,8 +78,8 @@ rec {
     let
       extraRustcFlags = lib.optionalString isCross
         (
-          "--remap-path-prefix=$HOME=/home/cprc"
-          + " --remap-path-prefix=$PWD=/home/cprc"
+          "--remap-path-prefix=$HOME=/home/nixpkgs-cross-overlay"
+          + " --remap-path-prefix=$PWD=/home/nixpkgs-cross-overlay"
         );
     in
     ''

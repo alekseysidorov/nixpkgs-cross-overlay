@@ -2,12 +2,10 @@
   description = "Rust cross-compilatilon utils";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -45,13 +43,17 @@
           { config = "x86_64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }
           { config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }
           { config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = false; }
-          { config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = true; }
+          # { config = "x86_64-unknown-linux-musl"; useLLVM = true; isStatic = true; }
           { config = "x86_64-unknown-linux-musl"; useLLVM = false; isStatic = false; }
+
           { config = "aarch64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }
           { config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = false; }
-          { config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = true; }
+          # { config = "aarch64-unknown-linux-musl"; useLLVM = true; isStatic = true; }
           { config = "aarch64-unknown-linux-musl"; useLLVM = false; isStatic = false; }
+
           { config = "riscv64-unknown-linux-gnu"; useLLVM = false; isStatic = false; }
+          { config = "riscv64-unknown-linux-musl"; useLLVM = false; isStatic = false; }
+          { config = "riscv64-unknown-linux-musl"; useLLVM = true; isStatic = false; }
         ];
 
         mkDevShellName = name: crossSystem:

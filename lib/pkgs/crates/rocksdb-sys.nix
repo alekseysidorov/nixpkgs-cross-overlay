@@ -4,20 +4,16 @@
 , lib
 , stdenv
 , libcxx-gcc-compat
-, pkgs
+, cargoDeps
 }:
 mkEnvHook {
-  name = "cargo-rocksdb-sys";
+  name = "rocksdb-sys";
 
-  propagatedBuildInputs = [
-    pkgs.pkgsBuildHost.rustPlatform.bindgenHook
-  ];
-  depsTargetTargetPropagated = [
-    rocksdb
-  ]
-  # The rocksdb build script thinks that Linux targets can have only the `libstdc++` library.
-  # We have to pretend that the `libc++` is the `libstdc++`.
-  ++ lib.optionals stdenv.cc.isClang [ libcxx-gcc-compat ];
+  propagatedBuildInputs = [ cargoDeps.bindgen ];
+  depsTargetTargetPropagated = [ rocksdb ]
+    # The rocksdb build script thinks that Linux targets can have only the `libstdc++` library.
+    # We have to pretend that the `libc++` is the `libstdc++`.
+    ++ lib.optionals stdenv.cc.isClang [ libcxx-gcc-compat ];
 
   env = {
     ROCKSDB_LIB_DIR = "${rocksdb}/lib";

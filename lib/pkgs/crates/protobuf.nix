@@ -5,7 +5,7 @@ let
   protobuf = pkgs.pkgsBuildHost.protobuf;
 in
 mkEnvHook {
-  name = "cargo-audiopus_sys";
+  name = "protobuf";
 
   propagatedBuildInputs = [
     # Protoc compiler

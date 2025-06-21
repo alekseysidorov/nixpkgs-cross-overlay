@@ -1,17 +1,14 @@
 { mkEnvHook
+, stdenv
 , pkgs
-, zstd
-, cargoDeps
 }:
-
 mkEnvHook {
-  name = "zstd-sys";
+  name = "bindgen";
 
   propagatedBuildInputs = [
-    pkgs.pkgsBuildHost.pkg-config
-    cargoDeps.bindgen
+    pkgs.pkgsBuildHost.rustPlatform.bindgenHook
   ];
   depsTargetTargetPropagated = [
-    zstd
+    stdenv.cc.libc_dev
   ];
 }
