@@ -43,5 +43,5 @@ let
     };
 in
 mkEnvHook ({
-  name = "cargo-rdkafka-sys";
+  name = "rdkafka-sys";
 } // out)

@@ -10,6 +10,7 @@ let
   protobuf = prev.callPackage ./protobuf.nix { };
 
   cargoDeps = {
+    bindgen = prev.callPackage ./bindgen.nix { };
     audiopus_sys = prev.callPackage ./audiopus_sys.nix { };
     rdkafka-sys = prev.callPackage ./rdkafka-sys.nix { };
     rocksdb-sys = prev.callPackage ./rocksdb-sys.nix { };

@@ -4,7 +4,7 @@
 }:
 
 mkEnvHook {
-  name = "cargo-audiopus_sys";
+  name = "audiopus_sys";
 
   propagatedBuildInputs = with pkgs.pkgsBuildHost; [
     pkg-config

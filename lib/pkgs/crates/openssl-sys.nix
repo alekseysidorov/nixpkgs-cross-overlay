@@ -4,7 +4,7 @@
 }:
 
 mkEnvHook {
-  name = "cargo-openssl-sys";
+  name = "openssl-sys";
 
   propagatedBuildInputs = with pkgs.pkgsBuildHost; [
     pkg-config
