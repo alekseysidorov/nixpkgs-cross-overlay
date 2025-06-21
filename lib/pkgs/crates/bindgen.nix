@@ -7,6 +7,8 @@ mkEnvHook {
 
   propagatedBuildInputs = [
     pkgs.pkgsBuildHost.rustPlatform.bindgenHook
-    stdenv.cc.libc
+  ];
+  depsTargetTargetPropagated = [
+    stdenv.cc.libc_dev
   ];
 }
